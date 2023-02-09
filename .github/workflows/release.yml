@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Compress
-        run: tar -zcvf scan2html.tar.gz scan2html LICENSE
+        run: tar -zcvf scan2html.tar.gz scan2html.sh LICENSE
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
