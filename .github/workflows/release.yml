@@ -8,15 +8,15 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Compress
-        run: tar -zcvf scan2html.tar.gz scan2html.sh LICENSE
+        run: tar -zcvf scan2html.tar.gz scan2html html.tpl LICENSE
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             scan2html.tar.gz
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
