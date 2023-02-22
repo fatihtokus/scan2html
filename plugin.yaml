@@ -9,7 +9,7 @@ platforms:
   - selector:
       os: windows
     uri: ./scan2html
-    bin: ./scan2html
+    bin: ./scan2html.sh
   -
     uri: ./scan2html
-    bin: ./scan2html.sh
+    bin: ./scan2html
