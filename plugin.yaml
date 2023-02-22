@@ -8,4 +8,4 @@ description: |-
 platforms:
   -
     uri: https://github.com/fatihtokus/scan2html/releases/download/v0.0.1/scan2html.tar.gz
-    bin: ./scan2html
+    bin: ./scan2html.sh
