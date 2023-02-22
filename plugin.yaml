@@ -6,6 +6,10 @@ description: |-
   A Trivy plugin that scans and outputs the results to a html file.
   trivy scan2html [-h,--help] command target filename
 platforms:
+  - selector:
+      os: windows
+    uri: ./scan2html
+    bin: ./scan2html
   -
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.0.1/scan2html.tar.gz
+    uri: ./scan2html
     bin: ./scan2html.sh
