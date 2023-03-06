@@ -16,6 +16,13 @@ Examples:
 
   # Scan local folder
   trivy scan2html config . interactive_result.html
+  
+<details>
+<summary>Result</summary>
+
+![result](result.png)
+
+</details>
 ```
 
 ## Uninstall
