@@ -173,7 +173,7 @@ th:hover {
 	</style>
 
     <title>
-      Trivy Report -configs - 2023-03-05 22:00:09.0441908 +0000 GMT m=+4.237713301
+      Trivy Report - {{- escapeXML ( index . 0 ).Target }} - {{ now }}
     </title>
   </head>
   <body>
@@ -181,7 +181,7 @@ th:hover {
       <div class="row mt-5 mb-3">
         <div class="col-md-12">
           <div class="page-header">
-            <h2>Trivy Report -configs - 2023-03-05 22:00:09.0441908 +0000 GMT m=+4.237713301</h2>
+            <h2>Trivy Report - {{- escapeXML ( index . 0 ).Target }} - {{ now }}</h2>
           </div>
         </div>
       </div>
@@ -432,7 +432,6 @@ sorterColumns.forEach((col, idx) => {
 
   });
 });
-
 	</script>
   </body>
 </html>
