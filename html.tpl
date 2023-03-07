@@ -173,7 +173,7 @@ th:hover {
 	</style>
 
     <title>
-      Trivy Report - {{- escapeXML ( index . 0 ).Target }} - {{ now }}
+      Trivy Report -configs - 2023-03-05 22:00:09.0441908 +0000 GMT m=+4.237713301
     </title>
   </head>
   <body>
@@ -181,7 +181,7 @@ th:hover {
       <div class="row mt-5 mb-3">
         <div class="col-md-12">
           <div class="page-header">
-            <h2>Trivy Report - {{- escapeXML ( index . 0 ).Target }} - {{ now }}</h2>
+            <h2>Trivy Report -configs - 2023-03-05 22:00:09.0441908 +0000 GMT m=+4.237713301</h2>
           </div>
         </div>
       </div>
@@ -200,7 +200,35 @@ th:hover {
         <div class="col-md-12">
           <table class="table table-sm mt-5">
             <thead>
-              <tr>
+			<tr class="_filters">
+                <th scope="col">
+					<select id="_typeFilter" onchange="filterResults()">
+						<option></option>
+					</select>
+                </th>
+                <th scope="col">
+                  <select id="_idFilter" onchange="filterResults()">
+						<option></option>
+					</select>
+                </th>
+                <th scope="col">
+
+                </th>
+                <th scope="col">
+                     <select id="_severityFilter" onchange="filterResults()">
+						<option></option>
+					</select>
+                </th>
+                <th scope="col">
+                     <select id="_targetFilter" onchange="filterResults()">
+						<option></option>
+					</select>
+                </th>
+                 <th scope="col">
+
+                 </th>
+              </tr>
+              <tr class="_sorters">
                 <th scope="col">
                   Type  &nbsp;
                   <i class="fa fa-sort" aria-hidden="true"></i>
@@ -273,7 +301,8 @@ const resultJson = [
   ]
 const tbody = document.querySelector('tbody');
 const thead = document.querySelector('thead');
-const th = document.querySelectorAll('thead th');
+
+
 
 // TABLE CREATION
 resultJson.forEach((result) => {
@@ -287,17 +316,41 @@ resultJson.forEach((result) => {
   }
 });
 
-// FILTER
-let filterInput = document.querySelector('.filter-input');
-const results = document.querySelectorAll('.result');
 
-filterInput.addEventListener('keyup', () => {
-  let criteria = filterInput.value.toUpperCase().trim();
-  let j = 0;
 
+
+// Filter CREATION
+
+function filterId(field) {
+	return "_".concat(field.toLowerCase(), "Filter");
+}
+
+function createFilterOptions(field) {
+  const filter = document.getElementById(filterId(field));
+var distinctValues = [...new Set(resultJson.map((item)=>item[field]))]
+console.log(field, distinctValues);
+distinctValues.forEach((value) => {
+  filter.options[filter.options.length] = new Option(value, value);
+});
+
+}
+
+function rowIncludesCriterias(row, criterias) {
+	let result = true;
+  criterias.forEach((criteria) => {
+    if (row.toUpperCase().indexOf(criteria.toUpperCase().trim()) == -1) {
+      result = false;
+    }
+  });
+
+  return result;
+}
+
+function search(criterias) {
+	let j = 0;
   results.forEach((data) => {
     thead.style.opacity = '1'
-    if (data.innerText.toUpperCase().indexOf(criteria) > -1) {
+    if (rowIncludesCriterias(data.innerText, criterias)) {
       data.style.display = '';
     } else {
       data.style.display = 'none';
@@ -307,12 +360,65 @@ filterInput.addEventListener('keyup', () => {
       }
     }
   });
+}
+
+createFilterOptions('Type');
+createFilterOptions('ID');
+createFilterOptions('Severity');
+createFilterOptions('Target');
+
+function selectedOption(field) {
+	const filter = document.getElementById(filterId(field));
+	const criteria = filter.selectedOptions[0].value.trim();
+	console.log(field, criteria);
+	return criteria;
+}
+
+function selectedOptions() {
+	const filterType = selectedOption('Type');
+	const filterID = selectedOption('ID');
+	const filterSeverity = selectedOption('Severity');
+	const filterTarget = selectedOption('Target');
+	var selectedOptions = [];
+	if(filterType){
+		selectedOptions[selectedOptions.length] = filterType;
+	}
+		if(filterID){
+		selectedOptions[selectedOptions.length] = filterID;
+	}
+
+		if(filterSeverity){
+		selectedOptions[selectedOptions.length] = filterSeverity;
+	}
+
+		if(filterTarget){
+		selectedOptions[selectedOptions.length] = filterTarget;
+	}
+	console.log("selectedOptions: ", selectedOptions);
+	return selectedOptions;
+}
+
+function filterResults() {
+	const criterias = selectedOptions();
+	console.log("filterResults: ", criterias);
+	search(criterias);
+}
+
+
+
+// Search
+
+let filterInput = document.querySelector('.filter-input');
+const results = document.querySelectorAll('.result');
+
+filterInput.addEventListener('keyup', () => {
+search([filterInput.value]);
 });
 
 // SORT
 let sortDirection;
-
-th.forEach((col, idx) => {
+const sorterColumns = document.querySelectorAll('._sorters th');
+sorterColumns.forEach((col, idx) => {
   col.addEventListener('click', () => {
     sortDirection = !sortDirection;
     const rowsArrFromNodeList = Array.from(results);
