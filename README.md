@@ -1,6 +1,7 @@
+[![GitHub Downloads][github-downloads-img]][release]
+
 # scan2html
 A Trivy plugin that scans and outputs the results to an interactive html file.
-[![GitHub Downloads][github-downloads-img]][release]
 ## Install
 ```sh
 $ trivy plugin install github.com/fatihtokus/scan2html
