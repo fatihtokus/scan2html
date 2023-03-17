@@ -1,4 +1,4 @@
-[![GitHub Downloads][github-downloads-img]][release]
+![GitHub All Releases](https://img.shields.io/github/downloads/fatihtokus/scan2html/total)
 
 # scan2html
 A Trivy plugin that scans and outputs the results to an interactive html file.
