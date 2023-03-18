@@ -1,0 +1,22 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Compress
+        run: tar -zcvf scan2html.tar.gz scan2html scan2html.sh html.tpl LICENSE
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            scan2html.tar.gz
