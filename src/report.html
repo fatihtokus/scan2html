@@ -172,7 +172,7 @@ th:hover {
     </title>
   </head>
   <body>
-    <div class="container">
+    <div class="container-fluid">
       <div class="row mt-5 mb-3">
         <div class="col-md-12">
           <div class="page-header">
@@ -197,12 +197,12 @@ th:hover {
             <thead>
 			<tr class="_filters">
                 <th scope="col">
-					<select id="_typeFilter" onchange="filterResults()">
+					<select id="_typeFilter" class="custom-select custom-select-sm" onchange="filterResults()">
 						<option></option>
 					</select>
                 </th>
                 <th scope="col">
-                  <select id="_idFilter" onchange="filterResults()">
+                  <select id="_idFilter" class="custom-select custom-select-sm" onchange="filterResults()">
 						<option></option>
 					</select>
                 </th>
@@ -210,12 +210,12 @@ th:hover {
 
                 </th>
                 <th scope="col">
-                     <select id="_severityFilter" onchange="filterResults()">
+                     <select id="_severityFilter" class="custom-select custom-select-sm" onchange="filterResults()">
 						<option></option>
 					</select>
                 </th>
                 <th scope="col">
-                     <select id="_targetFilter" onchange="filterResults()">
+                     <select id="_targetFilter" class="custom-select custom-select-sm" onchange="filterResults()">
 						<option></option>
 					</select>
                 </th>
