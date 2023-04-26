@@ -19,7 +19,8 @@ $ trivy scan2html config . interactive_result.html
 <details>
 <summary>Result</summary>
   
-![result](result.png)
+![result](result-1.png)
+![result](result-2.png)
   
 </details>
 

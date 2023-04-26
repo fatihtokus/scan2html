@@ -19,9 +19,35 @@ EOS
   exit
 }
 
+
+tmp_result="result.json"
+
 function scan {
   BASEDIR=$(dirname "$0")
-  trivy $1 --format template --template @$BASEDIR/html.tpl --output $3 $2
+  args=("${@:2:$#-2}")
+  last_arg="${!#}"
+  scanner="$1"
+  set -- "$1" "${args[@]}" "$last_arg"
+  echo "$BASEDIR"
+  echo "$args"
+  echo "$last_arg"
+  trivy "$scanner" --format json -o "$BASEDIR"/$tmp_result "${args[@]}"
+  cat "$BASEDIR"/report_template.html >>$last_arg
+  {
+    echo "<script>"
+    echo "const resultJson = "
+    cat  "$BASEDIR"/$tmp_result
+    echo "</script>"
+    echo "<script>"
+    echo "const scanner = '$scanner';"
+    echo "const createdAt = $(date +%s);"
+    echo "init();"
+    echo "</script>"
+    echo "</body>"
+    echo "</html>"
+  } >>$last_arg
+
+  trap 'rm -f $tmp_result' EXIT
 }
 
 if [[ ($# -eq 0) || ($1 == "--help") || ($1 == "-h") ]]; then
