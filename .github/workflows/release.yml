@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Compress
-        run: tar -zcvf scan2html.tar.gz scan2html report_template.html LICENSE
+        run: tar -zcvf scan2html.tar.gz scan2html report_template.html LICENSE result.json
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
