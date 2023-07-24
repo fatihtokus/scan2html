@@ -345,6 +345,7 @@ th:hover {
         </div>
     </footer>
 </div>
+
 <script>
 var selectedReportTableSelector = '._vulnerabilityTable';
 
@@ -357,12 +358,12 @@ function selectedReportTable() {
 	return selectedReportTableSelector;
 }
 
-function isVulnerabilityTableSeleted() {
+function isVulnerabilityTableSelected() {
 	return selectedReportTable() == '._vulnerabilityTable';
 }
 
 function noSelectedReportTable() {
-	return isVulnerabilityTableSeleted() ? '._misconfigTable' : '._vulnerabilityTable';
+	return isVulnerabilityTableSelected() ? '._misconfigTable' : '._vulnerabilityTable';
 }
 
 
@@ -377,7 +378,7 @@ function thead() {
 function init() {
 	initializeReportTitle();
 	createTableRows();
-	if(isVulnerabilityTableSeleted()){
+	if(isVulnerabilityTableSelected()){
 		initializeVulnerabilityTableFilters();
 	} else {
 		initializeMisconfigurationTableFilters();
@@ -442,56 +443,95 @@ function createTableRows() {
 }
 
 function vulnerabilitiesOrMisconfigurations() {
-	return isVulnerabilityTableSeleted() ? vulnerabilities() : misconfigurations();
+	return isVulnerabilityTableSelected() ? vulnerabilities() : misconfigurations();
 }
 
 function vulnerabilities() {
-	var resultJson1 = [];
-	resultJson.Results.forEach((result) => {
-		var target = result.Target;
-		if(result.Vulnerabilities){
-			result.Vulnerabilities.forEach((vulnerability) => {
-			resultJson1.push(
-				{
-					"Target": target,
-					"Library": vulnerability.PkgName,
-					"Vulnerability": vulnerability.VulnerabilityID,
-					"Severity": vulnerability.Severity,
-					"InstalledVersion": vulnerability.InstalledVersion,
-					"FixedVersion": vulnerability.FixedVersion,
-					"Title": vulnerability.Title
-				}
-				);
-			});
-		}
+	if(resultJson.Results) {
+	    return mapVulnerabilityResults(resultJson.Results);
+	}
+
+	 // k8s format
+    return vulnerabilitiesForK8s();
+}
+
+function vulnerabilitiesForK8s() {
+	var formattedResultJson = [];
+	resultJson.Vulnerabilities.forEach((topVulnerability) => {
+	    formattedResultJson = formattedResultJson.concat(mapVulnerabilityResults(topVulnerability.Results));
 	});
 
-	return resultJson1;
+	return formattedResultJson;
+
+}
+
+function mapVulnerabilityResults(results) {
+	var formattedResultJson = [];
+    results.forEach((result) => {
+        var target = result.Target;
+        if(result.Vulnerabilities){
+            result.Vulnerabilities.forEach((vulnerability) => {
+                formattedResultJson.push(
+                    {
+                        "Target": target,
+                        "Library": vulnerability.PkgName,
+                        "Vulnerability": vulnerability.VulnerabilityID,
+                        "Severity": vulnerability.Severity,
+                        "InstalledVersion": vulnerability.InstalledVersion,
+                        "FixedVersion": vulnerability.FixedVersion,
+                        "Title": vulnerability.Title
+                    }
+                    );
+            });
+        }
+    });
+
+	return formattedResultJson;
 
 }
 
 function misconfigurations() {
-	var resultJson1 = [];
+	if(resultJson.Results) {
+	    return mapMisconfigurationResults(resultJson.Results);
+	}
 
-	resultJson.Results.forEach((result) => {
-		var target = result.Target;
-		if(result.Misconfigurations){
-			result.Misconfigurations.forEach((misconfiguration) => {
-			resultJson1.push(
-				{
-					"Target": target,
-					"ID": misconfiguration.ID,
-					"Title": misconfiguration.Title,
-					"Severity": misconfiguration.Severity,
-					"Type": misconfiguration.Type,
-					"Message": misconfiguration.Message
-				}
-				);
-			});
-		}
+	 // k8s format
+    return misconfigurationsForK8s();
+
+}
+
+function misconfigurationsForK8s() {
+	var formattedResultJson = [];
+	resultJson.Misconfigurations.forEach((topMisconfiguration) => {
+        formattedResultJson = formattedResultJson.concat(mapMisconfigurationResults(topMisconfiguration.Results));
 	});
 
-	return resultJson1;
+	return formattedResultJson;
+}
+
+function mapMisconfigurationResults(results) {
+	var formattedResultJson = [];
+    if(results){
+        results.forEach((result) => {
+            var target = result.Target;
+            if(result.Misconfigurations){
+                result.Misconfigurations.forEach((misconfiguration) => {
+                    formattedResultJson.push(
+                        {
+                            "Target": target,
+                            "ID": misconfiguration.ID,
+                            "Title": misconfiguration.Title,
+                            "Severity": misconfiguration.Severity,
+                            "Type": misconfiguration.Type,
+                            "Message": misconfiguration.Message
+                        }
+                    );
+                });
+            }
+        });
+    }
+
+	return formattedResultJson;
 
 }
 
@@ -605,7 +645,7 @@ function selectedOptionsForMisconfigurations() {
 }
 
 function selectedOptions() {
-	return isVulnerabilityTableSeleted() ? selectedOptionsForVulnerabilities() : selectedOptionsForMisconfigurations();
+	return isVulnerabilityTableSelected() ? selectedOptionsForVulnerabilities() : selectedOptionsForMisconfigurations();
 }
 
 function filterResults() {
@@ -647,8 +687,7 @@ sorterColumns.forEach((col, idx) => {
   });
 });
 }
-	</script>
-
+</script>
 <script>
 const resultJson =  {
   "SchemaVersion": 2,
