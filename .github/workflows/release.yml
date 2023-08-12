@@ -18,13 +18,18 @@ jobs:
           reportTemplate="report_template.html"
           # copy report file except the last 9 lines
           head -n -9 "src/report.html" > "$reportTemplate"
-          # copy js files
+          # copy util js file
           cat
           {
           echo ''
           echo '<script>'
           cat  "src/js/utils.js"
-          cat  "src/js/report.js"
+          echo ''
+          } >>"$reportTemplate"
+          # copy js file except the last 15 lines
+          head -n -15 "src/js/report.js" > "$reportTemplate"
+          cat
+          {
           echo '</script>'
           } >>"$reportTemplate"
       - name: Compress
