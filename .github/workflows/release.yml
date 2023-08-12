@@ -13,8 +13,22 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Preparing report_template.html
+        run: |
+          reportTemplate="report_template.html"
+          # copy report file except the last 9 lines
+          head -n -9 "$BASEDIR"/report.html > "$reportTemplate"
+          # copy js files
+          cat
+          {
+          echo ''
+          echo '<script>'
+          cat  "$BASEDIR"/"js/utils.js"
+          cat  "$BASEDIR"/"js/report.js"
+          echo '</script>'
+          } >>"$reportTemplate"
       - name: Compress
-        run: tar -zcvf scan2html.tar.gz scan2html report_template.html LICENSE result.json
+        run: tar -zcvf scan2html.tar.gz scan2html report_template.html LICENSE results.json
       - name: Release
         uses: softprops/action-gh-release@v1
         with:

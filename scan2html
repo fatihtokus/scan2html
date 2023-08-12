@@ -3,7 +3,7 @@
 # help
 function help() {
   cat << EOS >&2
-scan2html v0.2.1
+scan2html v0.2.2
 
 Usage: trivy scan2html [-h,--help] command target filename
  A Trivy plugin that scans and output the results to a html file.
@@ -20,7 +20,7 @@ EOS
 }
 
 
-tmp_result="result.json"
+tmp_result="results.json"
 
 function scan {
   BASEDIR=$(dirname "$0")
@@ -54,7 +54,7 @@ function scan {
     echo "<script>"
     echo "const scanner = '$scanner';"
     echo "const createdAt = $(date +%s);"
-    echo "init();"
+    echo "initTheReportDetails();"
     echo "</script>"
     echo "</body>"
     echo "</html>"
