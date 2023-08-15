@@ -11,17 +11,14 @@ jobs:
     permissions:
       contents: write
     env:
-      initialReportTemplate: 'report.html'
       reportTemplate: 'report_template.html'
     steps:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Preparing report_template.html
         run: |
-          cat "$initialReportTemplate" >>"$reportTemplate"
-          
           # copy report file except the last 9 lines
-          head -n -9 "src/report.html" > "$reportTemplate"
+          head -n -9 "src/report.html" >> "$reportTemplate"
           
           # copy util js file
           cat
