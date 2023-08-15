@@ -18,7 +18,8 @@ jobs:
       - name: Preparing report_template.html
         run: |
           # copy report file except the last 9 lines
-          head -n -9 "src/report.html" >> "$reportTemplate"
+          #head -n -9 "src/report.html" >> "$reportTemplate"
+          cat "src/report.html" >> "$reportTemplate"
           
           # copy util js file
           cat
