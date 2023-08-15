@@ -16,8 +16,11 @@ jobs:
       - name: Preparing report_template.html
         run: |
           reportTemplate="report_template.html"
+          
           # copy report file except the last 9 lines
-          head -n -9 "src/report.html" > "$reportTemplate"
+          head -n -9 "src/report.html" > "tmp.html"
+          cat "tmp.html" >>"$reportTemplate"
+          
           # copy util js file
           cat
           {
@@ -32,6 +35,8 @@ jobs:
           {
           echo '</script>'
           } >>"$reportTemplate"
+          
+          cat "$reportTemplate"
       - name: Compress
         run: tar -zcvf scan2html.tar.gz scan2html report_template.html LICENSE results.json
       - name: Release
