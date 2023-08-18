@@ -337,7 +337,7 @@ function initSort() {
     });
 }
 
-
+// 15 lines below are replaced with actual content of the js files and json data in the release
 var resultJson = {};
 function fetchReportDetailsJson(resultsUrl) {
     if(!resultsUrl){

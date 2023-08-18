@@ -39,6 +39,7 @@ function scan {
     timestamp=$(date +%s)
     #timeUserFriendly=`date +"%Y-%m-%d %T"`
     timeUserFriendly=$(date +%Y%m%d%H%M%S)
+    #Append time to the report name
     newReportName=${reportName/.html/($timeUserFriendly)}
     newReportName=$newReportName".html"
     echo "$reportName already exists, creating $newReportName instead!"
