@@ -36,7 +36,7 @@ function auditingEnabled() {
 
 var reportsJson = {};
 function fetchReportsJson() {
-    var auditingUrl = prependBaseUrlIfNeeded("auditing/auditing.json");
+    var auditingUrl = prependBaseUrlIfNeeded("auditing.json");
 
     //fetch(auditingUrl + "?sha=1123")
     fetch(auditingUrl + "?" + Date.now())
