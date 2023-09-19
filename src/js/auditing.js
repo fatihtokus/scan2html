@@ -22,15 +22,22 @@ function initAuditingFilter() {
 
 }
 
+function auditingBaseUrl() {
+    return getURLParameter("auditingBaseUrl");
+}
+
+function prependBaseUrlIfNeeded(url) {
+    return auditingBaseUrl() ? auditingBaseUrl() + url : url;
+}
+
 function auditingEnabled() {
-    fetchReportsJson(getURLParameter("auditingUrl"));
+    fetchReportsJson();
 }
 
 var reportsJson = {};
-function fetchReportsJson(auditingUrl) {
-    if(!auditingUrl){
-        auditingUrl = "/auditing.json";
-    }
+function fetchReportsJson() {
+    var auditingUrl = prependBaseUrlIfNeeded("auditing/auditing.json");
+
     //fetch(auditingUrl + "?sha=1123")
     fetch(auditingUrl + "?" + Date.now())
         .then(response => response.json())
@@ -41,6 +48,6 @@ function fetchReportsJson(auditingUrl) {
 }
 
 function aScanSelected() {
-    const resultsUrl = auditingFilter().selectedOptions[0].value.trim();
+    const resultsUrl = prependBaseUrlIfNeeded(auditingFilter().selectedOptions[0].value.trim());
     fetchReportDetailsJson(resultsUrl);
 }
