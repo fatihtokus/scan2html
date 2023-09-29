@@ -10,9 +10,9 @@
 ## Testing the app locally
 1. go to project root folder (scan2html) in the commandline
 2. http-server . -p 8000
-3. For Scan2HtmlWithDefaultData open the following url from the browser: localhost:8000/src/auditing.html?auditingEnabled=0&resultsUrl=http://localhost:8000/test/data/default/results.json
-4. For Scan2HtmlWithK8sData open the following url from the browser: localhost:8000/src/auditing.html?auditingEnabled=0&resultsUrl=http://localhost:8000/test/data/k8s/results.json
-5. For Scan2HtmlAuditingWithDefaultData open the following url from the browser: localhost:8000/src/auditing.html?auditingEnabled=1&auditingUrl=http://localhost:8000/test/data/auditing/auditing.json
+3. For Scan2HtmlWithDefaultData open the following url from the browser: http://localhost:8000/src/auditing.html?auditingEnabled=0&resultsUrl=/test/data/default/results.json
+4. For Scan2HtmlWithK8sData open the following url from the browser: http://localhost:8000/src/auditing.html?auditingEnabled=0&resultsUrl=/test/data/k8s/results.json
+5. For Scan2HtmlAuditingWithDefaultData open the following url from the browser: http://localhost:8000/src/auditing.html?auditingBaseUrl=/test/data/auditing/
 
 
 ## Installing and starting a http-server

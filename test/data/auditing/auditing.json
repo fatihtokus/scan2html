@@ -2,21 +2,21 @@
   "Pushes" : [
     {
       "Id": "1691435994",
-      "Url": "/auditing/scan-results/result-1691435994.json",
+      "Url": "/scan-results/result-1691435994.json",
       "Sha": "56d9d3ab24d8a9e17db13adc2a0346d8ecca3f65",
       "Initiator": "fatihtokus",
       "Ref": "refs/heads/main",
       "Event_Name": "push",
-      "Event_Path": "/auditing/events/event-1691435994.json"
+      "Event_Path": "/events/event-1691435994.json"
     },
 
     {
       "Id": "1691436595",
-      "Url": "/auditing/scan-results/result-1691436595.json",
+      "Url": "/scan-results/result-1691436595.json",
       "Sha": "722b8383287a632d2c9eca58b8f60342c4ab115e",
       "Initiator": "fatihtokus",
       "Ref": "refs/heads/main",
       "Event_Name": "push",
-      "Event_Path": "/auditing/events/event-1691436595.json"
+      "Event_Path": "/sevents/event-1691436595.json"
     }
   ]}

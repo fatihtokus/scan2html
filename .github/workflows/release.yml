@@ -20,8 +20,8 @@ jobs:
           # copy js files
           cat
           {
-          # copy report file except the last 9 lines
-          head -n -18 'src/auditing.html'
+          # copy report file except the last 19 lines
+          head -n -19 'src/auditing.html'
           echo ''
           echo '<script>'
           cat 'src/js/utils.js'

@@ -179,7 +179,7 @@ th:hover {
         <div class="row mt-5 mb-3">
             <div class="col-md-12">
                 <div class="page-header">
-                    <h1>Trivy Report Auditing</h1>
+                    <h1>Trivy Scan Auditing</h1>
                 </div>
             </div>
         </div>
@@ -356,7 +356,7 @@ th:hover {
         </div>
     </footer>
 </div>
-<!--18 lines below are replaced with actual content of the js files and json data in the release-->
+<!--19 lines below are replaced with actual content of the js files and json data in the release-->
 <script src="js/utils.js?"+Date.now()"></script>
 <script src="js/common.js?"+Date.now()"></script>
 <script src="js/report.js?"+Date.now()"></script>
@@ -366,6 +366,7 @@ let scanner = "fs";
 let createdAt = "1682417268";
 var resultJson = {};
 let auditingEnabledUrlParameter = getURLParameter("auditingEnabled") ;
+auditingEnabledUrlParameter = auditingEnabledUrlParameter ? auditingEnabledUrlParameter : '1' ; //Default value for auditing is On '1'
 resetVisibilityOfAuditingSection(auditingEnabledUrlParameter);
 if(auditingEnabledUrlParameter=== '1'){
     auditingEnabled();
