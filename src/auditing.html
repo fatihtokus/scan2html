@@ -173,10 +173,26 @@ th:hover {
 </head>
 <body>
 <div class="container-fluid">
+
+    <!--Auditing section start-->
+    <div class="_auditingSection">
+        <div class="row mt-5 mb-3">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <h1>Trivy Scan Auditing</h1>
+                </div>
+            </div>
+        </div>
+        <select class="_auditingFilter custom-select custom-select-sm" onchange="aScanSelected()">
+            <option></option>
+        </select>
+    </div>
+    <!--Auditing filter finish-->
+
     <div class="row mt-5 mb-3">
         <div class="col-md-12">
             <div class="page-header">
-                <h1>Trivy Report <span class="_scanner"></span> <span class='_reportTime'></span></h1>
+                <h2>Trivy Report <span class="_scanner"></span> <span class='_reportTime'></span></h2>
             </div>
         </div>
     </div>
@@ -340,13 +356,23 @@ th:hover {
         </div>
     </footer>
 </div>
-<!--9 lines below are replaced with actual content of the js files and json data in the release-->
+<!--19 lines below are replaced with actual content of the js files and json data in the release-->
 <script src="js/utils.js?"+Date.now()"></script>
+<script src="js/common.js?"+Date.now()"></script>
 <script src="js/report.js?"+Date.now()"></script>
+<script src="js/auditing.js?"+Date.now()"></script>
 <script>
-  let scanner = "fs";
+let scanner = "fs";
 let createdAt = "1682417268";
-fetchReportDetailsJson();
+var resultJson = {};
+let auditingEnabledUrlParameter = getURLParameter("auditingEnabled") ;
+auditingEnabledUrlParameter = auditingEnabledUrlParameter ? auditingEnabledUrlParameter : '1' ; //Default value for auditing is On '1'
+resetVisibilityOfAuditingSection(auditingEnabledUrlParameter);
+if(auditingEnabledUrlParameter=== '1'){
+    auditingEnabled();
+} else {
+    auditingNotEnabled();
+}
   </script>
 </body>
 </html>

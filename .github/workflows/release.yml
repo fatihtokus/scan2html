@@ -14,20 +14,23 @@ jobs:
       reportTemplate: 'report_template.html'
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Preparing report_template.html
         run: |
-          # copy util js file
+          # copy js files
           cat
           {
-          # copy report file except the last 9 lines
-          head -n -9 'src/report.html'
+          # copy report file except the last 19 lines
+          head -n -19 'src/auditing.html'
           echo ''
           echo '<script>'
           cat 'src/js/utils.js'
           echo ''
-          # copy js file except the last 15 lines
-          head -n -15 'src/js/report.js'
+          cat 'src/js/common.js'
+          echo ''
+          cat 'src/js/report.js'
+          echo ''
+          cat 'src/js/auditing.js'
           echo ''
           echo '</script>'
           } >"$reportTemplate"

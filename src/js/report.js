@@ -337,13 +337,11 @@ function initSort() {
     });
 }
 
-// 15 lines below are replaced with actual content of the js files and json data in the release
-var resultJson = {};
-function fetchReportDetailsJson(resultsUrl) {
-    if(!resultsUrl){
-        resultsUrl = "http://localhost:8000/test/examples/k8s/results.json";
-    }
+function auditingNotEnabled() {
+    fetchReportDetailsJson(getURLParameter("resultsUrl"));
+}
 
+function fetchReportDetailsJson(resultsUrl) {
     //fetch("resultsUrl?sha=1123")
     fetch(resultsUrl + "?" + Date.now())
         .then(response => response.json())
