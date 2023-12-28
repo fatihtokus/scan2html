@@ -1,3 +1,4 @@
+/src/frontend-app/node_modules
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
@@ -23,3 +24,4 @@
 /dist/
 /nbdist/
 /.nb-gradle/
+/src/frontend-app/.gitignore
