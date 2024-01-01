@@ -10,8 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "antd": "^5.12.6",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-highlight-words": "^0.20.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
