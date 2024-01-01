@@ -3,7 +3,7 @@
 # help
 function help() {
   cat << EOS >&2
-scan2html v0.0.1
+scan2html v0.2.2
 
 Usage: trivy scan2html [-h,--help] command target filename
  A Trivy plugin that scans and output the results to a html file.
@@ -20,20 +20,34 @@ EOS
 }
 
 
-tmp_result="result.json"
+tmp_result="results.json"
 
 function scan {
   BASEDIR=$(dirname "$0")
   args=("${@:2:$#-2}")
-  last_arg="${!#}"
+  reportName="${!#}"
+  echo "reportName: $reportName"
   scanner="$1"
-  set -- "$1" "${args[@]}" "$last_arg"
-  echo "$BASEDIR"
-  echo "$args"
-  echo "$last_arg"
+  echo "scanner: scanner"
+  set -- "$1" "${args[@]}" "$reportName"
+  echo "BASEDIR: $BASEDIR"
+  echo "all_params: $@"
+  echo "args: $args"
+  echo "reportName: $reportName"
   trivy "$scanner" --format json -o "$BASEDIR"/$tmp_result "${args[@]}"
-  cat "$BASEDIR"/report_template.html >>$last_arg
+  if [ -f $reportName ]; then
+    timestamp=$(date +%s)
+    #timeUserFriendly=`date +"%Y-%m-%d %T"`
+    timeUserFriendly=$(date +%Y%m%d%H%M%S)
+    #Append time to the report name
+    newReportName=${reportName/.html/($timeUserFriendly)}
+    newReportName=$newReportName".html"
+    echo "$reportName already exists, creating $newReportName instead!"
+    reportName=$newReportName
+  fi
+  cat "$BASEDIR"/report_template.html >>"$reportName"
   {
+    echo ""
     echo "<script>"
     echo "const resultJson = "
     cat  "$BASEDIR"/$tmp_result
@@ -41,12 +55,13 @@ function scan {
     echo "<script>"
     echo "const scanner = '$scanner';"
     echo "const createdAt = $(date +%s);"
-    echo "init();"
+    echo "initTheReportDetails();"
     echo "</script>"
     echo "</body>"
     echo "</html>"
-  } >>$last_arg
+  } >>"$reportName"
 
+  echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT
 }
 

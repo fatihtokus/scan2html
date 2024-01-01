@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+            integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+            crossorigin="anonymous"
+    />
+    <link
+            href="https://fonts.googleapis.com/css?family=Roboto:400,500,700&display=swap"
+            rel="stylesheet"
+    />
+    <link
+            href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+            rel="stylesheet"
+            integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
+            crossorigin="anonymous"
+    />
+    <style>
+	html {
+  /*
+    * This propery keeps the scroll on the page at all times.
+    * Although it sounds inefficient, we keep this to have a better user interface while filtering.
+  */
+  overflow-y: scroll;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+/* General focus reset */
+textarea:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="datetime"]:focus,
+input[type="datetime-local"]:focus,
+input[type="date"]:focus,
+input[type="month"]:focus,
+input[type="time"]:focus,
+input[type="week"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="color"]:focus {
+  border-color: transparent;
+  box-shadow: 0 1px 1px transparent inset, 0 0 8px transparent;
+  outline: 0 none;
+  border-radius: 0;
+}
+
+/* Component level style */
+input[type="text"],
+input[type="text"]:focus {
+  border: none;
+  border-bottom: 3px solid #ddd;
+  border-radius: 0;
+  height: 70px;
+  font-size: 32px;
+  padding: 5px;
+}
+
+::placeholder {
+  /* Firefox, Chrome, Opera */
+  color: #ddd !important;
+}
+
+:-ms-input-placeholder {
+  /* Internet Explorer 10-11 */
+  color: #ddd !important;
+}
+
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: #ddd !important;
+}
+
+h1 {
+  font-size: 56px;
+  font-weight: 700;
+}
+
+th {
+  width: 20%;
+  cursor: pointer;
+}
+
+th:hover {
+  background-color: #fdf893;
+}
+
+.order:hover {
+  background-color: #fdf893 !important;
+}
+
+.err {
+  display: none;
+  font-size: 18px;
+  padding: 15px;
+  border-bottom: 5px solid black;
+  background-color: #fcf113;
+  border-radius: 10px;
+}
+
+.thead-flash-once {
+  -webkit-animation: thead-flash-once 0.4s ease-in-out 2; /* Safari 4+ */
+  -moz-animation: thead-flash-once 0.4s ease-in-out 2; /* Fx 5+ */
+  -o-animation: thead-flash-once 0.4s ease-in-out 2; /* Opera 12+ */
+  animation: thead-flash-once 0.4s ease-in-out 2; /* IE 10+, Fx 29+ */
+}
+
+@keyframes thead-flash-once {
+  0% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: #fdf893;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.dev-signature ul {
+  margin: 0;
+  font-size: 15px;
+}
+
+.dev-signature .item-linkedin a {
+  color: #2867b2;
+}
+
+.dev-signature .item-website a {
+  color: #212529;
+}
+
+/* Very basic media queries */
+@media (max-width: 1200px) {
+  .speech-bubble-left,
+  .speech-bubble-right {
+    display: none !important;
+  }
+
+  table {
+    font-size: 12px;
+    overflow: hidden;
+  }
+
+  h1 {
+    font-size: 36px;
+  }
+}
+
+@media (max-width: 600px) {
+  table {
+    font-size: 8px;
+  }
+  .dev-signature {
+    justify-content: flex-start !important;
+  }
+}
+	</style>
+
+    <title>
+        Trivy Report
+    </title>
+</head>
+<body>
+<div class="container-fluid">
+
+    <!--Auditing section start-->
+    <div class="_auditingSection">
+        <div class="row mt-5 mb-3">
+            <div class="col-md-12">
+                <div class="page-header">
+                    <h1>Trivy Scan Auditing</h1>
+                </div>
+            </div>
+        </div>
+        <select class="_auditingFilter custom-select custom-select-sm" onchange="aScanSelected()">
+            <option></option>
+        </select>
+    </div>
+    <!--Auditing filter finish-->
+
+    <div class="row mt-5 mb-3">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h2>Trivy Report <span class="_scanner"></span> <span class='_reportTime'></span></h2>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <input
+                    class="form-control form-control-lg filter-input"
+                    type="text"
+                    placeholder="Filter results..."
+                    autofocus="autofocus"
+                    value=""
+            />
+        </div>
+    </div>
+    <input type="radio" name="selectedTable" onchange="selectedTableChanged('._vulnerabilityTable')" checked> <label id="vulnerabilityTableRadio">Vulnerabilities</label>
+    <input type="radio" name="selectedTable" onchange="selectedTableChanged('._misconfigTable')" > <label id="misconfigTableRadio" >Misconfigurations</label>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-sm mt-5 _vulnerabilityTable" style="display:none">
+                <thead>
+                <tr class="_filters">
+                    <th scope="col">
+                        <select class="_targetFilter custom-select custom-select-sm"  onchange="filterResults()">
+                            <option></option>
+                        </select>
+                    </th>
+                    <th scope="col">
+                        <select class="_libraryFilter custom-select custom-select-sm"  onchange="filterResults()">
+                            <option></option>
+                        </select>
+                    </th>
+                    <th scope="col">
+                        <select class="_vulnerabilityFilter custom-select custom-select-sm"  onchange="filterResults()">
+                            <option></option>
+                        </select>
+
+                    </th>
+                    <th scope="col">
+                        <select class="_severityFilter custom-select custom-select-sm"  onchange="filterResults()">
+                            <option></option>
+                        </select>
+
+                    </th>
+                    <th scope="col">
+
+                    </th>
+                    <th scope="col">
+
+                    </th>
+                    <th scope="col">
+
+                    </th>
+                </tr>
+                <tr class="_sorters">
+                    <th scope="col">
+                        Target &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        Library/Package &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        Vulnerability &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        Severity &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        Installed Version &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        Fixed Version &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        Title &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <table class="table table-sm mt-5 _misconfigTable" style="display:none">
+                <thead>
+                <tr class="_filters">
+                    <th scope="col">
+                        <select class="_targetFilter custom-select custom-select-sm"  onchange="filterResults()">
+                            <option></option>
+                        </select>
+                    </th>
+                    <th scope="col">
+                        <select class="_idFilter custom-select custom-select-sm"  onchange="filterResults()">
+                            <option></option>
+                        </select>
+                    </th>
+                    <th scope="col">
+
+                    </th>
+                    <th scope="col">
+                        <select class="_severityFilter custom-select custom-select-sm"  onchange="filterResults()">
+                            <option></option>
+                        </select>
+                    </th>
+                    <th scope="col">
+
+                    </th>
+                    <th scope="col">
+
+                    </th>
+
+                </tr>
+                <tr class="_sorters">
+                    <th scope="col">
+                        Target &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        ID &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        Title &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        Severity &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        Type &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                    <th scope="col">
+                        Message &nbsp;
+                        <i class="fa fa-sort" aria-hidden="true"></i>
+                    </th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+    <footer>
+        <div class="row">
+            <div class="col-md-12 mt-5 mb-5 dev-signature d-flex flex-wrap justify-content-end align-content-center">
+                <ul class="list-inline">
+                    <li class="list-inline-item">
+                        - Generated by <b>Scan2html</b>&nbsp;
+                    </li>
+                    <li class="list-inline-item item-github">
+                        <a href="https://github.com/fatihtokus/scan2html" target="_blank" >
+                            <i class="fa fa-github"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+</div>
+<!--19 lines below are replaced with actual content of the js files and json data in the release-->
+<script src="js/utils.js?"+Date.now()"></script>
+<script src="js/common.js?"+Date.now()"></script>
+<script src="js/report.js?"+Date.now()"></script>
+<script src="js/auditing.js?"+Date.now()"></script>
+<script>
+let scanner = "fs";
+let createdAt = "1682417268";
+var resultJson = {};
+let auditingEnabledUrlParameter = getURLParameter("auditingEnabled") ;
+auditingEnabledUrlParameter = auditingEnabledUrlParameter ? auditingEnabledUrlParameter : '1' ; //Default value for auditing is On '1'
+resetVisibilityOfAuditingSection(auditingEnabledUrlParameter);
+if(auditingEnabledUrlParameter=== '1'){
+    auditingEnabled();
+} else {
+    auditingNotEnabled();
+}
+  </script>
+</body>
+</html>
