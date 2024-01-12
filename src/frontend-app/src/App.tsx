@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import TrivyReport from "./components/trivy-report/TrivyReport";
 import { Spin } from "antd";
+import { mapVulnerabilityResults } from "./utils/ındex";
 
 function App() {
   const [result, setResult] = useState([]);
@@ -17,6 +18,7 @@ function App() {
         const data = await response.json();
 
         console.log("Fetched Data:", data);
+        // setResult(mapVulnerabilityResults(data.Results));
         setResult(data.Results);
       } catch (error) {
         console.error("Error fetching data:", error);
