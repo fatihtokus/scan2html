@@ -17,32 +17,10 @@
 //     }
 //   });
 
+import { FormattedResult, VulnerabilityResult } from "../types";
+
 //   return formattedResultJson;
 // }
-
-interface VulnerabilityResult {
-  Target: string;
-  Vulnerabilities: Vulnerability[];
-}
-
-interface Vulnerability {
-  PkgName: string;
-  VulnerabilityID: string;
-  Severity: string;
-  InstalledVersion: string;
-  FixedVersion: string;
-  Title: string;
-}
-
-interface FormattedResult {
-  Target: string;
-  Library: string;
-  Vulnerability: string;
-  Severity: string;
-  InstalledVersion: string;
-  FixedVersion: string;
-  Title: string;
-}
 
 export function mapVulnerabilityResults(
   results: VulnerabilityResult[]

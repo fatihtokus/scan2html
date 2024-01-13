@@ -6,9 +6,9 @@ import { Button, Input, Space, Table, Tag } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { Divider, Radio } from "antd";
-
-import { data } from "../../constants/data";
 import Title from "antd/es/typography/Title";
+
+import { FormattedResult } from "../../types";
 
 interface Vulnerability {
   VulnerabilityID: string;
@@ -96,43 +96,15 @@ interface DataType {
   ];
 }
 
-// interface DataType {
-//   key: string;
-//   name: string;
-//   age: number;
-//   address: string;
-// }
+type DataIndex = keyof FormattedResult;
 
-type DataIndex = keyof DataType;
+interface TrivyReportProps {
+  result: FormattedResult[];
+}
 
-// const data: DataType[] = [
-//   {
-//     key: "1",
-//     name: "John Brown",
-//     age: 32,
-//     address: "New York No. 1 Lake Park",
-//   },
-//   {
-//     key: "2",
-//     name: "Joe Black",
-//     age: 42,
-//     address: "London No. 1 Lake Park",
-//   },
-//   {
-//     key: "3",
-//     name: "Jim Green",
-//     age: 32,
-//     address: "Sydney No. 1 Lake Park",
-//   },
-//   {
-//     key: "4",
-//     name: "Jim Red",
-//     age: 32,
-//     address: "London No. 2 Lake Park",
-//   },
-// ];
+const TrivyReport: React.FC<TrivyReportProps> = ({ result }) => {
+  console.log("TrivyReport-result:", result);
 
-const TrivyReport = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -154,7 +126,7 @@ const TrivyReport = () => {
 
   const getColumnSearchProps = (
     dataIndex: DataIndex
-  ): ColumnType<DataType> => ({
+  ): ColumnType<FormattedResult> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -243,7 +215,7 @@ const TrivyReport = () => {
       ),
   });
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<FormattedResult> = [
     // {
     //   title: "Name",
     //   dataIndex: "name",
@@ -277,10 +249,10 @@ const TrivyReport = () => {
     },
     {
       title: "Library/Package",
-      dataIndex: "PkgName",
-      key: "PkgName",
+      dataIndex: "Library",
+      key: "Library",
       width: "10%",
-      ...getColumnSearchProps("PkgName"),
+      ...getColumnSearchProps("Library"),
       sorter: (a, b) => a.Target.length - b.Target.length,
       sortDirections: ["descend", "ascend"],
     },
@@ -316,24 +288,24 @@ const TrivyReport = () => {
       //       })}
       //     </>
       //   ),
-      render: (_, { Misconfigurations }) => (
-        <>
-          {Misconfigurations.map(tag => {
-            return (
-              <Tag color="volcano" key={tag.ID}>
-                {tag.Severity}
-              </Tag>
-            );
-          })}
-        </>
-      ),
+      // render: (_, { Misconfigurations }) => (
+      //   <>
+      //     {Misconfigurations.map(tag => {
+      //       return (
+      //         <Tag color="volcano" key={tag.ID}>
+      //           {tag.Severity}
+      //         </Tag>
+      //       );
+      //     })}
+      //   </>
+      // ),
     },
     {
       title: "Installed Version",
       dataIndex: "InstalledVersion",
       key: "InstalledVersion",
       width: "10%",
-      //   ...getColumnSearchProps("InstalledVersion"),
+      ...getColumnSearchProps("InstalledVersion"),
       sorter: (a, b) => a.InstalledVersion.length - b.InstalledVersion.length,
       sortDirections: ["descend", "ascend"],
     },
@@ -342,7 +314,7 @@ const TrivyReport = () => {
       dataIndex: "FixedVersion",
       key: "FixedVersion",
       width: "10%",
-      //   ...getColumnSearchProps("FixedVersion"),
+      ...getColumnSearchProps("FixedVersion"),
       sorter: (a, b) => a.FixedVersion.length - b.FixedVersion.length,
       sortDirections: ["descend", "ascend"],
     },
@@ -351,7 +323,7 @@ const TrivyReport = () => {
       dataIndex: "Title",
       key: "Title",
       width: "10%",
-      //   ...getColumnSearchProps("Title"),
+      ...getColumnSearchProps("Title"),
       sorter: (a, b) => a.Title.length - b.Title.length,
       sortDirections: ["descend", "ascend"],
     },
@@ -372,7 +344,7 @@ const TrivyReport = () => {
 
       <Divider />
 
-      <Table columns={columns} dataSource={data} />
+      <Table columns={columns} dataSource={result} />
     </>
   );
 };

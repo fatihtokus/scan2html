@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import TrivyReport from "./components/trivy-report/TrivyReport";
 import { Spin } from "antd";
+
+import TrivyReport from "./components/trivy-report/TrivyReport";
 import { mapVulnerabilityResults } from "./utils/ındex";
+import { FormattedResult } from "./types";
 
 function App() {
-  const [result, setResult] = useState([]);
+  const [result, setResult] = useState<FormattedResult[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -14,12 +16,8 @@ function App() {
         if (!response.ok) {
           throw new Error(`HTTP error! Status: ${response.status}`);
         }
-
         const data = await response.json();
-
-        console.log("Fetched Data:", data);
-        // setResult(mapVulnerabilityResults(data.Results));
-        setResult(data.Results);
+        setResult(mapVulnerabilityResults(data.Results));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -31,7 +29,7 @@ function App() {
   return (
     <>
       {result.length > 0 ? (
-        <TrivyReport />
+        <TrivyReport result={result} />
       ) : (
         <div
           style={{
