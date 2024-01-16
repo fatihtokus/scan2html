@@ -1,8 +1,3 @@
-export type Car = {
-  brand: string;
-  model: string;
-};
-
 export type VulnerabilityResult = {
   Target: string;
   Vulnerabilities: Vulnerability[];
