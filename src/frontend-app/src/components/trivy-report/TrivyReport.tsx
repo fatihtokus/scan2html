@@ -2,13 +2,14 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import type { InputRef } from "antd";
-import { Button, Input, Space, Table, Tag } from "antd";
+import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { Divider, Radio } from "antd";
 import Title from "antd/es/typography/Title";
 
 import { FormattedResult } from "../../types";
+import SeverityTag from "./components/SeverityTag";
 
 type DataIndex = keyof FormattedResult;
 
@@ -187,32 +188,8 @@ const TrivyReport: React.FC<TrivyReportProps> = ({ result }) => {
       ...getColumnSearchProps("Severity"),
       sorter: (a, b) => a.Target.length - b.Target.length,
       sortDirections: ["descend", "ascend"],
-      //   render: (_, { tags }) => (
-      //     <>
-      //       {tags.map(tag => {
-      //         let color = tag.length > 5 ? "geekblue" : "green";
-      //         if (tag === "loser") {
-      //           color = "volcano";
-      //         }
-      //         return (
-      //           <Tag color={color} key={tag}>
-      //             {tag.toUpperCase()}
-      //           </Tag>
-      //         );
-      //       })}
-      //     </>
-      //   ),
-      // render: (_, { Misconfigurations }) => (
-      //   <>
-      //     {Misconfigurations.map(tag => {
-      //       return (
-      //         <Tag color="volcano" key={tag.ID}>
-      //           {tag.Severity}
-      //         </Tag>
-      //       );
-      //     })}
-      //   </>
-      // ),
+
+      render: (_, { Severity }) => <SeverityTag severity={Severity} />,
     },
     {
       title: "Installed Version",
