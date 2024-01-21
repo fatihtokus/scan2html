@@ -8,13 +8,13 @@ const SeverityTag = ({ severity }: { severity: string }) => {
       color = "#f50";
       break;
     case "high":
-      color = "#2db7f5";
+      color = "#108ee9";
       break;
     case "medium":
-      color = "#87d068";
+      color = "#2db7f5";
       break;
     case "low":
-      color = "#108ee9";
+      color = "#87d068";
       break;
     default:
       color = "#ccc";
