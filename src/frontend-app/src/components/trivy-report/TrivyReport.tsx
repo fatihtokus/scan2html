@@ -10,6 +10,7 @@ import Title from "antd/es/typography/Title";
 
 import { FormattedResult } from "../../types";
 import SeverityTag from "./components/SeverityTag";
+import { severityFilters } from "../../constants/data";
 
 type DataIndex = keyof FormattedResult;
 
@@ -163,10 +164,8 @@ const TrivyReport: React.FC<TrivyReportProps> = ({ result }) => {
       dataIndex: "Severity",
       key: "Severity",
       width: "5%",
-      ...getColumnSearchProps("Severity"),
-      sorter: (a, b) => a.Target.length - b.Target.length,
-      sortDirections: ["descend", "ascend"],
-
+      filters: severityFilters,
+      onFilter: (value, record) => record.Severity === value,
       render: (_, { Severity }) => <SeverityTag severity={Severity} />,
     },
     {
