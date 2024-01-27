@@ -131,28 +131,6 @@ const TrivyReport: React.FC<TrivyReportProps> = ({ result }) => {
   });
 
   const columns: ColumnsType<FormattedResult> = [
-    // {
-    //   title: "Name",
-    //   dataIndex: "name",
-    //   key: "name",
-    //   width: "30%",
-    //   ...getColumnSearchProps("name"),
-    // },
-    // {
-    //   title: "Age",
-    //   dataIndex: "age",
-    //   key: "age",
-    //   width: "20%",
-    //   ...getColumnSearchProps("age"),
-    // },
-    // {
-    //   title: "Address",
-    //   dataIndex: "address",
-    //   key: "address",
-    //   ...getColumnSearchProps("address"),
-    //   sorter: (a, b) => a.address.length - b.address.length,
-    //   sortDirections: ["descend", "ascend"],
-    // },
     {
       title: "Target",
       dataIndex: "Target",
@@ -184,7 +162,7 @@ const TrivyReport: React.FC<TrivyReportProps> = ({ result }) => {
       title: "Severity",
       dataIndex: "Severity",
       key: "Severity",
-      width: "10%",
+      width: "5%",
       ...getColumnSearchProps("Severity"),
       sorter: (a, b) => a.Target.length - b.Target.length,
       sortDirections: ["descend", "ascend"],
@@ -213,7 +191,7 @@ const TrivyReport: React.FC<TrivyReportProps> = ({ result }) => {
       title: "Title",
       dataIndex: "Title",
       key: "Title",
-      width: "10%",
+      width: "15%",
       ...getColumnSearchProps("Title"),
       sorter: (a, b) => a.Title.length - b.Title.length,
       sortDirections: ["descend", "ascend"],
