@@ -5,7 +5,7 @@ import TrivyReport from "./components/trivy-report/TrivyReport";
 import defaultData from "./data/default/data.json";
 import k8sData from "./data/k8s/data.json";
 import { NormalizedResultForDataTable } from "./types";
-import { getMisconfigurations, getVulnerabilities } from "./utils/ındex";
+import { getMisconfigurations, getVulnerabilities } from "./utils/index";
 
 function App() {
   const [vulnerabilities, setVulnerabilities] = useState<NormalizedResultForDataTable[]>([]);
