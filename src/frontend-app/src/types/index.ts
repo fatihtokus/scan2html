@@ -1,23 +1,13 @@
-export type VulnerabilityResult = {
+export type NormalizedResultForDataTable = {
   Target: string;
-  Vulnerabilities: Vulnerability[];
-};
-
-export type Vulnerability = {
-  PkgName: string;
-  VulnerabilityID: string;
-  Severity: string;
-  InstalledVersion: string;
-  FixedVersion: string;
-  Title: string;
-};
-
-export type FormattedResult = {
-  Target: string;
+  ID: string;
   Library: string;
   Vulnerability: string;
   Severity: string;
   InstalledVersion: string;
   FixedVersion: string;
   Title: string;
+  Type: string;
+  Message: string;
+  IsVulnerability: boolean;
 };
