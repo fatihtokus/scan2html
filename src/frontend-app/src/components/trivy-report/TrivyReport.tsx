@@ -2,13 +2,15 @@ import { SearchOutlined } from "@ant-design/icons";
 import { useRef, useState } from "react";
 import Highlighter from "react-highlight-words";
 import type { InputRef } from "antd";
-import { Button, Input, Space, Table, Tag } from "antd";
+import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { Divider, Radio } from "antd";
 import Title from "antd/es/typography/Title";
 
 import { FormattedResult } from "../../types";
+import SeverityTag from "./components/SeverityTag";
+import { severityFilters } from "../../constants/data";
 
 type DataIndex = keyof FormattedResult;
 
@@ -130,28 +132,6 @@ const TrivyReport: React.FC<TrivyReportProps> = ({ result }) => {
   });
 
   const columns: ColumnsType<FormattedResult> = [
-    // {
-    //   title: "Name",
-    //   dataIndex: "name",
-    //   key: "name",
-    //   width: "30%",
-    //   ...getColumnSearchProps("name"),
-    // },
-    // {
-    //   title: "Age",
-    //   dataIndex: "age",
-    //   key: "age",
-    //   width: "20%",
-    //   ...getColumnSearchProps("age"),
-    // },
-    // {
-    //   title: "Address",
-    //   dataIndex: "address",
-    //   key: "address",
-    //   ...getColumnSearchProps("address"),
-    //   sorter: (a, b) => a.address.length - b.address.length,
-    //   sortDirections: ["descend", "ascend"],
-    // },
     {
       title: "Target",
       dataIndex: "Target",
@@ -183,36 +163,10 @@ const TrivyReport: React.FC<TrivyReportProps> = ({ result }) => {
       title: "Severity",
       dataIndex: "Severity",
       key: "Severity",
-      width: "10%",
-      ...getColumnSearchProps("Severity"),
-      sorter: (a, b) => a.Target.length - b.Target.length,
-      sortDirections: ["descend", "ascend"],
-      //   render: (_, { tags }) => (
-      //     <>
-      //       {tags.map(tag => {
-      //         let color = tag.length > 5 ? "geekblue" : "green";
-      //         if (tag === "loser") {
-      //           color = "volcano";
-      //         }
-      //         return (
-      //           <Tag color={color} key={tag}>
-      //             {tag.toUpperCase()}
-      //           </Tag>
-      //         );
-      //       })}
-      //     </>
-      //   ),
-      // render: (_, { Misconfigurations }) => (
-      //   <>
-      //     {Misconfigurations.map(tag => {
-      //       return (
-      //         <Tag color="volcano" key={tag.ID}>
-      //           {tag.Severity}
-      //         </Tag>
-      //       );
-      //     })}
-      //   </>
-      // ),
+      width: "5%",
+      filters: severityFilters,
+      onFilter: (value, record) => record.Severity === value,
+      render: (_, { Severity }) => <SeverityTag severity={Severity} />,
     },
     {
       title: "Installed Version",
@@ -236,7 +190,7 @@ const TrivyReport: React.FC<TrivyReportProps> = ({ result }) => {
       title: "Title",
       dataIndex: "Title",
       key: "Title",
-      width: "10%",
+      width: "15%",
       ...getColumnSearchProps("Title"),
       sorter: (a, b) => a.Title.length - b.Title.length,
       sortDirections: ["descend", "ascend"],
