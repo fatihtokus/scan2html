@@ -1,34 +1,34 @@
 import { useEffect, useState } from "react";
-import { Spin } from "antd";
 
 import TrivyReport from "./components/trivy-report/TrivyReport";
-import { mapVulnerabilityResults } from "./utils/ındex";
-import { FormattedResult } from "./types";
-import data from './data/default/data.json'
+//import defaultData1 from "./data/default/data.json";
+import defaultData from "./data/default/data.json";
+import k8sData from "./data/k8s/data.json";
+import { NormalizedResultForDataTable } from "./types";
+import { getMisconfigurations, getVulnerabilities } from "./utils/ındex";
 
 function App() {
-  const [result, setResult] = useState<FormattedResult[]>([]);
+  const [vulnerabilities, setVulnerabilities] = useState<NormalizedResultForDataTable[]>([]);
+  const [misconfigurations, setMisconfigurations] = useState<NormalizedResultForDataTable[]>([]);
+  const [vulnerabilitiesOrMisconfigurations, setVulnerabilitiesOrMisconfigurations] = useState("vulnerabilities");
+  const queryParameters = new URLSearchParams(window.location.search)
+
 
   useEffect(() => {
-    setResult(mapVulnerabilityResults(data.Results));
+    const dataSource = queryParameters.get("dataSource")
+    const data = dataSource ? k8sData : defaultData; 
+    setVulnerabilities(getVulnerabilities(data));
+    setMisconfigurations(getMisconfigurations(data));
   }, []);
 
   return (
     <>
-      {result.length > 0 ? (
-        <TrivyReport result={result} />
-      ) : (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "100vh",
-          }}
-        >
-          <Spin size="large" />
-        </div>
-      )}
+      <TrivyReport 
+          vulnerabilities={vulnerabilities}
+          misconfigurations={misconfigurations}
+          vulnerabilitiesOrMisconfigurations={vulnerabilitiesOrMisconfigurations} 
+          setVulnerabilitiesOrMisconfigurations={setVulnerabilitiesOrMisconfigurations}
+        />
     </>
   );
 }
