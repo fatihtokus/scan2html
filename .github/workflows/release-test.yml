@@ -64,7 +64,7 @@ jobs:
           # copy report file except the last 4 lines
           head -n -4 'src/frontend-app/dist/src/assets/app-template.html'
           echo ''
-          cat 'scan2html/src/frontend-app/dist/app.js'
+          cat 'src/frontend-app/dist/app.js'
           echo ''
           echo '</script>'
           echo '</body>'
