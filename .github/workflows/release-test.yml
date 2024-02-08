@@ -47,9 +47,9 @@ jobs:
           name: production-files
           path: ./dist
 
-      - name: qqq1
+      - name: Logging
         run: |
-          echo "----auditing branch------------------------------------------------------"
+          echo "----Logging------------------------------------------------------"
           pwd
           ls
           ls src
