@@ -18,7 +18,9 @@ jobs:
 
       - name: Checkout repo1
         run: |
-          cd .\src\frontend-app\
+          pwd
+          ls
+          cd scan2html\src\frontend-app\
 
       - name: Setup Node
         uses: actions/setup-node@v3
