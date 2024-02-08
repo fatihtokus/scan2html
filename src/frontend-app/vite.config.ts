@@ -18,14 +18,21 @@ export default defineConfig({
     rollupOptions: {
       input: {
         app: './src/main.tsx',
+        app_template: './src/assets/app-template.html',
       },
       output: {
         assetFileNames: (assetInfo) => {
+          console.log("assetFileNames: " + assetInfo.name);
           return `assets/[name].css`;
         },
         entryFileNames: (assetInfo) => {
+          console.log("entryFileNames: " + assetInfo.name);
           if (assetInfo.name == 'app') {
             return `[name].js`;
+          }
+
+          if (assetInfo.name == 'app_template') {
+            return `[name].html`;
           }
 
           let path = assetInfo.facadeModuleId;
