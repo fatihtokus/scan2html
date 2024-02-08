@@ -52,9 +52,9 @@ jobs:
           echo "----auditing branch------------------------------------------------------"
           pwd
           ls
-          ls scan2html
-          ls scan2html/src
-          ls scan2html/dist
+          ls src
+          ls src/frontend-app
+          ls src/frontend-app/dist
 
       - name: Preparing report_template.html
         run: |
@@ -62,7 +62,7 @@ jobs:
           cat
           {
           # copy report file except the last 4 lines
-          head -n -4 'scan2html/src/frontend-app/dist/src/assets/app-template.html'
+          head -n -4 'src/frontend-app/dist/src/assets/app-template.html'
           echo ''
           cat 'scan2html/src/frontend-app/dist/app.js'
           echo ''
