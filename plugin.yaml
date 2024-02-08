@@ -12,4 +12,4 @@ platforms:
     bin: ./scan2html.sh
   -
     uri: https://github.com/fatihtokus/scan2html/releases/download/v0.2.2/scan2html.tar.gz
-    bin: ./scan2htmlPlugin
+    bin: ./scan2htmlBash
