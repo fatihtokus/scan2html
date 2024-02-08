@@ -1,0 +1,73 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - SH-21
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      reportTemplate: 'report_template.html'
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          ref: SH-21
+
+      - name: Checkout repo1
+        run: |
+          pwd
+          ls
+          cd scan2html\src\frontend-app\
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
+
+      - name: Build project
+        run: npm run build
+
+      - name: Upload production-ready build files
+        uses: actions/upload-artifact@v3
+        with:
+          name: production-files
+          path: ./dist
+
+      - name: qqq1
+        run: |
+          echo "----auditing branch------------------------------------------------------"
+          pwd
+          ls
+          ls scan2html
+          ls scan2html/src
+          ls scan2html/dist
+
+      - name: Preparing report_template.html
+        run: |
+          # copy js files
+          cat
+          {
+          # copy report file except the last 4 lines
+          head -n -4 'scan2html/src/frontend-app/dist/assets/app-template.html'
+          echo ''
+          cat 'scan2html/src/frontend-app/dist/app.js'
+          echo ''
+          echo '</script>'
+          echo '</body>'
+          echo '</html>'
+          } >"$reportTemplate"
+          
+          cat "$reportTemplate"
+      - name: Compress
+        run: tar -zcvf scan2html.tar.gz scan2html "$reportTemplate" LICENSE results.json
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            scan2html.tar.gz
