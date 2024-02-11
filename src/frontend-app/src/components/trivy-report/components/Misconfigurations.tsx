@@ -4,18 +4,18 @@ import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
-import { NormalizedResultForDataTable } from "../../types";
-import SeverityTag from "../shared/SeverityTag";
-import { severityFilters } from "../../constants";
+import SeverityTag from "../../shared/SeverityTag";
+import { severityFilters } from "../../../constants";
+import { NormalizedResultForDataTable } from "../../../types";
 import Highlighter from "react-highlight-words";
 
 type DataIndex = keyof NormalizedResultForDataTable;
 
-interface VulnerabilitiesProps {
+interface MisconfigurationsProps {
   result: NormalizedResultForDataTable[];
 }
 
-const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
+const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
   console.log("Vulnerabilities:", result);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -127,32 +127,41 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       ),
   });
 
-  const columns: ColumnsType<NormalizedResultForDataTable>= [
+  const columns: ColumnsType<NormalizedResultForDataTable> = [
     {
       title: "Target",
       dataIndex: "Target",
       key: "Target",
-      width: "10%",
+      width: "8%",
       ...getColumnSearchProps("Target"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Target.length - b.Target.length,
+      sorter: (
+        a: NormalizedResultForDataTable,
+        b: NormalizedResultForDataTable
+      ) => a.Target.length - b.Target.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Library/Package",
-      dataIndex: "Library",
-      key: "Library",
-      width: "10%",
-      ...getColumnSearchProps("Library"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Library.length - b.Library.length,
+      title: "ID",
+      dataIndex: "ID",
+      key: "ID",
+      width: "7%",
+      ...getColumnSearchProps("ID"),
+      sorter: (
+        a: NormalizedResultForDataTable,
+        b: NormalizedResultForDataTable
+      ) => a.ID.length - b.ID.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Vulnerability",
-      dataIndex: "Vulnerability",
-      key: "Vulnerability",
-      width: "10%",
-      ...getColumnSearchProps("Vulnerability"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Vulnerability.length - b.Vulnerability.length,
+      title: "Title",
+      dataIndex: "Title",
+      key: "Title",
+      width: "15%",
+      ...getColumnSearchProps("Title"),
+      sorter: (
+        a: NormalizedResultForDataTable,
+        b: NormalizedResultForDataTable
+      ) => a.Title.length - b.Title.length,
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -162,45 +171,45 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       width: "5%",
       filters: severityFilters,
       onFilter: (value, record) => record.Severity === value,
-      render: (_, {Severity}) => <SeverityTag severity={Severity} />,
-      defaultSortOrder: 'descend',
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Severity.length - b.Severity.length,
+      render: (_, { Severity }) => <SeverityTag severity={Severity} />,
+      defaultSortOrder: "descend",
+      sorter: (
+        a: NormalizedResultForDataTable,
+        b: NormalizedResultForDataTable
+      ) => a.Severity.length - b.Severity.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Installed Version",
-      dataIndex: "InstalledVersion",
-      key: "InstalledVersion",
+      title: "Type",
+      dataIndex: "Type",
+      key: "Type",
       width: "10%",
-      ...getColumnSearchProps("InstalledVersion"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.InstalledVersion.length - b.InstalledVersion.length,
+      ...getColumnSearchProps("Type"),
+      sorter: (
+        a: NormalizedResultForDataTable,
+        b: NormalizedResultForDataTable
+      ) => a.Type.length - b.Type.length,
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Fixed Version",
-      dataIndex: "FixedVersion",
-      key: "FixedVersion",
-      width: "10%",
-      ...getColumnSearchProps("FixedVersion"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.FixedVersion.length - b.FixedVersion.length,
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Title",
-      dataIndex: "Title",
-      key: "Title",
+      title: "Message",
+      dataIndex: "Message",
+      key: "Message",
       width: "15%",
-      ...getColumnSearchProps("Title"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Title.localeCompare(b.Title),
+      ...getColumnSearchProps("Message"),
+      sorter: (
+        a: NormalizedResultForDataTable,
+        b: NormalizedResultForDataTable
+      ) => a.Message.length - b.Message.length,
       sortDirections: ["descend", "ascend"],
     },
   ];
 
   return (
     <>
-      <Table columns={columns} dataSource={result} size="small"/>
+      <Table columns={columns} dataSource={result} size="small" />
     </>
   );
 };
 
-export default Vulnerabilities;
+export default Misconfigurations;
