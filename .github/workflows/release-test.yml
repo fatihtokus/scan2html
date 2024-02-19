@@ -74,6 +74,11 @@ jobs:
           cat "$reportTemplate"
       - name: Compress
         run: tar -zcvf scan2html.tar.gz scan2htmlBash "$reportTemplate" LICENSE results.json
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: output/scan2html.tar.gz
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
