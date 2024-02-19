@@ -18,13 +18,6 @@ jobs:
         with:
           ref: SH-21
 
-      - name: Checkout repo1
-        run: |
-          pwd
-          ls
-          ls src
-          cd src/frontend-app/
-
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
@@ -40,21 +33,6 @@ jobs:
           pwd
           cd src/frontend-app/
           npm run build
-
-      - name: Upload production-ready build files
-        uses: actions/upload-artifact@v3
-        with:
-          name: production-files
-          path: ./dist
-
-      - name: Logging
-        run: |
-          echo "----Logging------------------------------------------------------"
-          pwd
-          ls
-          ls src
-          ls src/frontend-app
-          ls src/frontend-app/dist
 
       - name: Preparing report_template.html
         run: |
@@ -74,8 +52,9 @@ jobs:
           cat "$reportTemplate"
       - name: Compress
         run: tar -zcvf scan2html.tar.gz scan2html "$reportTemplate" LICENSE results.json
-      - name: Archive code coverage results
+
+      - name: Archive plugin
         uses: actions/upload-artifact@v4
         with:
-          name: code-coverage-report
+          name: plugin
           path: scan2html.tar.gz
