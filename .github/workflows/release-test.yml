@@ -73,7 +73,7 @@ jobs:
           
           cat "$reportTemplate"
       - name: Compress
-        run: tar -zcvf scan2html.tar.gz scan2htmlBash "$reportTemplate" LICENSE results.json
+        run: tar -zcvf scan2html.tar.gz scan2html "$reportTemplate" LICENSE results.json
       - name: Archive code coverage results
         uses: actions/upload-artifact@v4
         with:
