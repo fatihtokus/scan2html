@@ -78,9 +78,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report
-          path: output/scan2html.tar.gz
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            scan2html.tar.gz
+          path: scan2html.tar.gz
