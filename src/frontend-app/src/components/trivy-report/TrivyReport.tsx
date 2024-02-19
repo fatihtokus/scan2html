@@ -1,5 +1,4 @@
 import { Divider, Radio } from "antd";
-import Title from "antd/es/typography/Title";
 import { NormalizedResultForDataTable } from "../../types";
 import Misconfigurations from "./Misconfigurations";
 import Vulnerabilities from "./Vulnerabilities";
@@ -14,10 +13,8 @@ interface TrivyReportProps {
 const TrivyReport: React.FC<TrivyReportProps> = ({ vulnerabilities, misconfigurations, vulnerabilitiesOrMisconfigurations, setVulnerabilitiesOrMisconfigurations }) => {
   console.log("TrivyReport-vulnerabilities:", vulnerabilities);
   console.log("TrivyReport-misconfigurations:", misconfigurations);
-
   return (
     <>
-      <Title level={3}>Trivy Report</Title>
       <Radio.Group
       onChange={({ target: { value } }) => {
         setVulnerabilitiesOrMisconfigurations(value);

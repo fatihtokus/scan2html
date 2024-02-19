@@ -3,7 +3,7 @@
 # help
 function help() {
   cat << EOS >&2
-scan2html v0.2.2
+scan2html v0.2.3
 
 Usage: trivy scan2html [-h,--help] command target filename
  A Trivy plugin that scans and output the results to a html file.
@@ -19,10 +19,72 @@ EOS
   exit
 }
 
+function replace_text() {
+    local input_file="$1"
+    local search_text="$2"
+    local replace_file="$3"
 
-tmp_result="results.json"
+    # Check if the input file exists
+    if [ ! -f "$input_file" ]; then
+        echo "Error: Input file '$input_file' not found!"
+        return 1
+    fi
+
+    # Check if the replace file exists
+    if [ ! -f "$replace_file" ]; then
+        echo "Error: Replace file '$replace_file' not found!"
+        return 1
+    fi
+
+    # Temporary file for storing modified content
+    local temp_file=$(mktemp)
+
+    # Read the content of the replace file
+    local replace_content="$(<"$replace_file")"
+
+    # Loop through each line in the input file
+    while IFS= read -r line || [[ -n "$line" ]]; do
+        # regex didn't work
+        # Check if the search_text pattern is found in the line
+        # if [[ $line == *"$search_text"* ]]; then
+        #     # Replace the search_text pattern with the replace_content
+        #     echo "Replacing. Text matching '$search_text' replaced with the content of '$input_file'."
+        #     #echo "${BASH_REMATCH}${replace_content}"
+        #     replaced_line="${line//$BASH_REMATCH/$replace_content}"
+        # else
+        #     # If search_text pattern is not found, use the original line
+        #     replaced_line="$line"
+        # fi
+
+        replaced_line="${line//$search_text/$replace_content}"
+
+        echo "$replaced_line" >> "$temp_file"
+    done < "$input_file"
+
+    # Overwrite the input file with the modified content
+    mv "$temp_file" "$input_file"
+
+    # echo "Replacement complete. Text matching '$search_text' replaced with the content of '$replace_file' in '$input_file'."
+}
+
+function generateReportName() {
+    local reportName="$1"
+    if [ -f $reportName ]; then
+      timestamp=$(date +%s)
+      timeUserFriendly=$(date +%Y%m%d%H%M%S)
+      #Append time to the report name by replacing '.html' with '(<timeStamp>)'
+      newReportName=${reportName/.html/($timeUserFriendly)}
+      newReportName=$newReportName".html"
+      # log as error(>&2) to not affect return value of function!
+      echo "$reportName already exists, creating $newReportName instead!" >&2
+      reportName="$newReportName"
+    fi
+
+    echo "$reportName"
+}
 
 function scan {
+  tmp_result="results.json"
   BASEDIR=$(dirname "$0")
   args=("${@:2:$#-2}")
   reportName="${!#}"
@@ -35,32 +97,32 @@ function scan {
   echo "args: $args"
   echo "reportName: $reportName"
   trivy "$scanner" --format json -o "$BASEDIR"/$tmp_result "${args[@]}"
-  if [ -f $reportName ]; then
-    timestamp=$(date +%s)
-    #timeUserFriendly=`date +"%Y-%m-%d %T"`
-    timeUserFriendly=$(date +%Y%m%d%H%M%S)
-    #Append time to the report name
-    newReportName=${reportName/.html/($timeUserFriendly)}
-    newReportName=$newReportName".html"
-    echo "$reportName already exists, creating $newReportName instead!"
-    reportName=$newReportName
-  fi
-  cat "$BASEDIR"/report_template.html >>"$reportName"
-  {
-    echo ""
-    echo "<script>"
-    echo "const resultJson = "
-    cat  "$BASEDIR"/$tmp_result
-    echo "</script>"
-    echo "<script>"
-    echo "const scanner = '$scanner';"
-    echo "const createdAt = $(date +%s);"
-    echo "initTheReportDetails();"
-    echo "</script>"
-    echo "</body>"
-    echo "</html>"
-  } >>"$reportName"
+ 
+  reportName=$(generateReportName "$reportName")
 
+  cat "$BASEDIR"/report_template.html >> file_contents
+  echo "$file_contents file_contents!"
+  echo "${file_contents//TEMP_DATA/TEMP_DATA99}" >>"$reportName"
+  
+  cat "$BASEDIR"/report_template.html >>"$reportName"
+     
+   # Check if the replace file exists
+    if [ ! -f "$reportName" ]; then
+        echo "Error: reportName: '$reportName' not found!"
+        return 1
+    fi
+
+   result_json="$BASEDIR"/$tmp_result
+  
+   # Check if the replace file exists
+    if [ ! -f "$result_json" ]; then
+        echo "Error: result_json: '$result_json' not found!"
+        return 1
+    fi
+    
+    # Using replace_text function
+   replace_text "$reportName" "{TEMP_DATA:_7}" "$result_json"
+  
   echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT
 }
@@ -69,4 +131,16 @@ if [[ ($# -eq 0) || ($1 == "--help") || ($1 == "-h") ]]; then
   help
 fi
 
-scan "$@"
+# comment out following line for testing
+ scan "$@"
+
+# uncomment following lines for testing
+#report_template="$1"
+#result_json="$2"
+#report_name=$(generateReportName "$3")
+#echo "Generating Report: $report_name"
+#cat "$report_template" >>"$report_name"
+#replace_text "$report_name" "{TEMP_DATA:_7}" "$result_json"
+## regex didn't work
+## replace_text "$report_name" "\{TEMP_DATA:(.)++\}" "$result_json"
+#echo "Generated Report: $report_name"
