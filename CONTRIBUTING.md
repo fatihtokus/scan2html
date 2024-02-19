@@ -6,7 +6,6 @@
 1. Execute `git update-index --chmod=+x scan2html`
 2. Then commit and push this change.
 
-
 ## Testing the app locally
 1. go to project root folder (scan2html) in the commandline
 2. http-server . -p 8000
