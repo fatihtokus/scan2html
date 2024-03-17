@@ -1,5 +1,7 @@
+import { useEffect, useState } from "react";
 import { Divider, Input, Radio } from "antd";
 import Title from "antd/es/typography/Title";
+
 import { NormalizedResultForDataTable } from "../../types";
 import Misconfigurations from "./components/Misconfigurations";
 import Vulnerabilities from "./components/Vulnerabilities";
@@ -20,9 +22,58 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
   console.log("TrivyReport-vulnerabilities:", vulnerabilities);
   console.log("TrivyReport-misconfigurations:", misconfigurations);
 
+  const [searchTerm, setSearchTerm] = useState("");
+
   const { Search } = Input;
 
-  const onSearch = (value: string) => console.log(value);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const searchParam = params.get("search");
+    if (searchParam) {
+      setSearchTerm(searchParam);
+    }
+  }, []);
+
+  const onSearch = (value: string) => {
+    setSearchTerm(value);
+    addToURLSearchParams(value);
+  };
+
+  const addToURLSearchParams = (value: string) => {
+    const params = new URLSearchParams(window.location.search);
+    if (value) {
+      params.set("search", value);
+    } else {
+      params.delete("search");
+    }
+    const newUrl = `${window.location.pathname}${
+      params.toString() ? "?" + params.toString() : ""
+    }`;
+    window.history.pushState({ search: value }, "", newUrl);
+  };
+
+  const resultTable = () => {
+    const data =
+      vulnerabilitiesOrMisconfigurations === "vulnerabilities"
+        ? vulnerabilities
+        : misconfigurations;
+
+    const filteredData = data.filter(row => {
+      return Object.values(row).some(
+        value =>
+          typeof value === "string" &&
+          value.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
+
+    if (vulnerabilitiesOrMisconfigurations === "vulnerabilities") {
+      return <Vulnerabilities result={filteredData} />;
+    }
+
+    if (vulnerabilitiesOrMisconfigurations === "misconfigurations") {
+      return <Misconfigurations result={filteredData} />;
+    }
+  };
 
   return (
     <>
@@ -33,10 +84,10 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
           allowClear
           enterButton="Search"
           size="large"
-          onSearch={onSearch}
+          value={searchTerm}
+          onChange={e => onSearch(e.target.value)}
         />
       </div>
-
       <Radio.Group
         onChange={({ target: { value } }) => {
           setVulnerabilitiesOrMisconfigurations(value);
@@ -50,15 +101,8 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
           Misconfigurations ({misconfigurations.length})
         </Radio>
       </Radio.Group>
-
       <Divider />
-
-      {vulnerabilitiesOrMisconfigurations === "vulnerabilities" && (
-        <Vulnerabilities result={vulnerabilities} />
-      )}
-      {vulnerabilitiesOrMisconfigurations === "misconfigurations" && (
-        <Misconfigurations result={misconfigurations} />
-      )}
+      {resultTable()}
     </>
   );
 };
