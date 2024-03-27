@@ -1,6 +1,6 @@
 
 import { NormalizedResultForDataTable } from "../types";
-import { CommonResult, CommonScanResult } from "../types/external/defaultResult";
+import { CommonResult, Holder } from "../types/external/defaultResult";
 
 export function getVulnerabilities(
   results: any //CommonScanResult
