@@ -10,11 +10,14 @@ Usage: trivy scan2html [-h,--help] command target filename
 Options:
   -h, --help    Show usage.
 Examples:
-  # Scan `alpine:latest` image
-  trivy scan2html image alpine:latest result.html
+# Scan an image
+  trivy scan2html image alpine:latest interactive_result.html
 
-  # Scan local folder
-  trivy scan2html fs . result.html
+  # Scan a local folder
+  trivy scan2html fs --scanners vuln,secret,misconfig . interactive_result.html
+
+  # Scan a k8s cluster
+  trivy scan2html trivy k8s cluster interactive_result.html
 EOS
   exit
 }

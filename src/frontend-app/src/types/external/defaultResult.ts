@@ -7,8 +7,13 @@ export type CommonScanResult = {
 
   // K8s scan result
   ClusterName: string;
+  // default
   Vulnerabilities: Holder[];
   Misconfigurations: Holder[];
+  // K8s scan result for cluster
+  // command trivy k8s --format json -o results.json cluster
+  ClusterName: string;
+  Resources: Holder[];
 };
 
 export type Holder = {
