@@ -9,8 +9,12 @@ export function getVulnerabilities(
       return mapVulnerabilityResults(results.Results);
   }
 
-  // k8s format
-  return vulnerabilitiesForK8s(results);
+  if (results.Vulnerabilities) {
+     // k8s format
+    return vulnerabilitiesForK8s(results);
+  }
+
+  return []; 
 }
 
 export function vulnerabilitiesForK8s(
@@ -62,8 +66,12 @@ export function getMisconfigurations(
       return mapMisconfigurationResults(results.Results);
   }
 
-  // k8s format
-  return misconfigurationsForK8s(results);
+  if (results.Vulnerabilities) {
+    // k8s format
+   return misconfigurationsForK8s(results);
+  }
+
+  return [];
 }
 
 function misconfigurationsForK8s(

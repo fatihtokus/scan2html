@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug scan2htmlBash",
+            "type": "bashdb",
+            "request": "launch",
+            "program": "${workspaceFolder}/scan2htmlBash",
+            "args": ["test/assets/app-template-test.html", "test/data/default/results.json", "test-report.html"]
+        }
+    ]
+}
