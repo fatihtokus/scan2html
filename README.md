@@ -17,15 +17,23 @@ $ trivy plugin install github.com/fatihtokus/scan2html
 
 ## Usage
 ```sh
-$ trivy scan2html config . interactive_result.html
+trivy scan2html fs --scanners vuln,secret,misconfig . interactive_result.html
 ```
 <details>
 <summary>Result</summary>
-  
+
 ![result](result-1.png)
-![result](result-2.png)
-  
 </details>
+
+```sh
+trivy scan2html trivy k8s cluster interactive_result.html
+```
+<details>
+<summary>Result</summary>
+
+![result](result-2.png)
+</details>
+
 
 ## Help
 ```sh
@@ -36,9 +44,12 @@ Usage: trivy scan2html [-h,--help] command target filename
 Options:
   -h, --help    Show usage.
 Examples:
-  # Scan  image
+  # Scan an image
   trivy scan2html image alpine:latest interactive_result.html
 
   # Scan a local folder
-  trivy scan2html config . interactive_result.html
+  trivy scan2html fs --scanners vuln,secret,misconfig . interactive_result.html
+  
+  # Scan a k8s cluster
+  trivy scan2html trivy k8s cluster interactive_result.html
 ```
