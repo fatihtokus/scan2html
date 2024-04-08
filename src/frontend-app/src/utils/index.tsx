@@ -1,6 +1,6 @@
 
 import { NormalizedResultForDataTable } from "../types";
-import { CommonResult, CommonScanResult } from "../types/external/defaultResult";
+import { CommonResult, Holder } from "../types/external/defaultResult";
 
 export function getVulnerabilities(
   results: any //CommonScanResult
@@ -9,15 +9,24 @@ export function getVulnerabilities(
       return mapVulnerabilityResults(results.Results);
   }
 
-  // k8s format
-  return vulnerabilitiesForK8s(results);
+  if (results.Vulnerabilities) {
+     // k8s default format
+    return vulnerabilitiesForK8s(results.Vulnerabilities);
+  }
+
+  if (results.Resources) {
+     // k8s cluster format
+    return vulnerabilitiesForK8s(results.Resources);
+  }
+
+  return []; 
 }
 
 export function vulnerabilitiesForK8s(
-    results: CommonScanResult
+    vulnerabilityHolders: Holder[]
   ): NormalizedResultForDataTable[] {
     let formattedResultJson: NormalizedResultForDataTable[] = [];
-    results.Vulnerabilities.forEach((vulnerabilityHolder) => {
+    vulnerabilityHolders.forEach((vulnerabilityHolder) => {
     formattedResultJson = formattedResultJson.concat(mapVulnerabilityResults(vulnerabilityHolder.Results));
   });
 
@@ -62,16 +71,25 @@ export function getMisconfigurations(
       return mapMisconfigurationResults(results.Results);
   }
 
-  // k8s format
-  return misconfigurationsForK8s(results);
+  if (results.Misconfigurations) {
+    // k8s default format
+   return misconfigurationsForK8s(results.Misconfigurations);
+  }
+
+  if (results.Resources) {
+     // k8s cluster format
+    return misconfigurationsForK8s(results.Resources);
+  }
+
+  return [];
 }
 
 function misconfigurationsForK8s(
-  results: CommonScanResult
+  misconfigurationHolders: Holder[]
 ): NormalizedResultForDataTable[] {
   
   let formattedResultJson: NormalizedResultForDataTable[] = [];
-  results.Misconfigurations.forEach((holder) => {
+  misconfigurationHolders.forEach((holder) => {
     formattedResultJson = formattedResultJson.concat(mapMisconfigurationResults(holder.Results));
   });
   

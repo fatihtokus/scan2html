@@ -1,0 +1,92 @@
+{
+  "ClusterName": "minikube",
+  "Resources": [
+    {
+      "Namespace": "default",
+      "Kind": "ServiceAccount",
+      "Name": "default",
+      "Metadata": {
+        "ImageConfig": {
+          "architecture": "",
+          "created": "0001-01-01T00:00:00Z",
+          "os": "",
+          "rootfs": {
+            "type": "",
+            "diff_ids": null
+          },
+          "config": {}
+        }
+      },
+      "Results": [
+        {
+          "Target": "ServiceAccount/default",
+          "Class": "config",
+          "Type": "kubernetes",
+          "MisconfSummary": {
+            "Successes": 102,
+            "Failures": 0,
+            "Exceptions": 0
+          }
+        }
+      ]
+    },
+    {
+      "Namespace": "default",
+      "Kind": "Service",
+      "Name": "kubernetes",
+      "Metadata": {
+        "ImageConfig": {
+          "architecture": "",
+          "created": "0001-01-01T00:00:00Z",
+          "os": "",
+          "rootfs": {
+            "type": "",
+            "diff_ids": null
+          },
+          "config": {}
+        }
+      },
+      "Results": [
+        {
+          "Target": "Service/kubernetes",
+          "Class": "config",
+          "Type": "kubernetes",
+          "MisconfSummary": {
+            "Successes": 103,
+            "Failures": 0,
+            "Exceptions": 0
+          }
+        }
+      ]
+    },
+    {
+      "Namespace": "default",
+      "Kind": "ConfigMap",
+      "Name": "kube-root-ca.crt",
+      "Metadata": {
+        "ImageConfig": {
+          "architecture": "",
+          "created": "0001-01-01T00:00:00Z",
+          "os": "",
+          "rootfs": {
+            "type": "",
+            "diff_ids": null
+          },
+          "config": {}
+        }
+      },
+      "Results": [
+        {
+          "Target": "ConfigMap/kube-root-ca.crt",
+          "Class": "config",
+          "Type": "kubernetes",
+          "MisconfSummary": {
+            "Successes": 104,
+            "Failures": 0,
+            "Exceptions": 0
+          }
+        }
+      ]
+    }
+  ]
+}
