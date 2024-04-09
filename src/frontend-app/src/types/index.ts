@@ -10,4 +10,10 @@ export type NormalizedResultForDataTable = {
   Type: string;
   Message: string;
   IsVulnerability: boolean;
+
+  // K8s Misconfiguration Summary
+  Successes: number;
+  Failures: number;
+  Exceptions: number;
+  Class: string;
 };

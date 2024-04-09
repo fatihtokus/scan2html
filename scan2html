@@ -3,21 +3,24 @@
 # help
 function help() {
   cat << EOS >&2
-scan2html v0.2.3
+scan2html v0.2.4
 
 Usage: trivy scan2html [-h,--help] command target filename
  A Trivy plugin that scans and output the results to a html file.
 Options:
   -h, --help    Show usage.
 Examples:
-# Scan an image
+  # Scan an image
   trivy scan2html image alpine:latest interactive_result.html
 
   # Scan a local folder
   trivy scan2html fs --scanners vuln,secret,misconfig . interactive_result.html
 
   # Scan a k8s cluster
-  trivy scan2html trivy k8s cluster interactive_result.html
+  trivy scan2html k8s cluster interactive_result.html
+
+  # Scan a k8s cluster for summary
+  trivy scan2html k8s --report=all all interactive_result.html
 EOS
   exit
 }
@@ -60,7 +63,6 @@ function replace_text() {
         # fi
 
         replaced_line="${line//$search_text/$replace_content}"
-
         echo "$replaced_line" >> "$temp_file"
     done < "$input_file"
 
