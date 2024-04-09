@@ -60,7 +60,10 @@ Examples:
 
   # Scan a local folder
   trivy scan2html fs --scanners vuln,secret,misconfig . interactive_result.html
-  
+
   # Scan a k8s cluster
-  trivy scan2html trivy k8s cluster interactive_result.html
+  trivy scan2html k8s cluster interactive_result.html
+
+  # Scan a k8s cluster for summary
+  trivy scan2html k8s --report=all all interactive_result.html
 ```
