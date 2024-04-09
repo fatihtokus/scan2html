@@ -63,7 +63,6 @@ function replace_text() {
         # fi
 
         replaced_line="${line//$search_text/$replace_content}"
-
         echo "$replaced_line" >> "$temp_file"
     done < "$input_file"
 
