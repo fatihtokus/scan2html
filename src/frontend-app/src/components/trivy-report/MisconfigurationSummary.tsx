@@ -5,8 +5,6 @@ import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
 import { NormalizedResultForDataTable } from "../../types";
-import SeverityTag from "../shared/SeverityTag";
-import { severityFilters } from "../../constants";
 import Highlighter from "react-highlight-words";
 
 type DataIndex = keyof NormalizedResultForDataTable;
