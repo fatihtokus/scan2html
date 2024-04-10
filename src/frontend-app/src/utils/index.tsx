@@ -55,13 +55,28 @@ export function mapVulnerabilityResults(
           Title: vulnerability.Title,
           Type: "",
           Message: "",
-          IsVulnerability: true
+          IsVulnerability: true,
+          Class: "",
+          Successes: 0,
+          Failures: 0,
+          Exceptions: 0
         });
       });
     }
   });
 
   return formattedResultJson;
+}
+
+export function getMisconfigurationSummary(
+  results: any //CommonScanResult
+): NormalizedResultForDataTable[] {
+  if (results.Resources) {
+     // k8s cluster format
+    return misconfigurationSummaryForK8s(results.Resources);
+  }
+
+  return [];
 }
 
 export function getMisconfigurations(
@@ -82,6 +97,18 @@ export function getMisconfigurations(
   }
 
   return [];
+}
+
+function misconfigurationSummaryForK8s(
+  misconfigurationHolders: Holder[]
+): NormalizedResultForDataTable[] {
+  
+  let formattedResultJson: NormalizedResultForDataTable[] = [];
+  misconfigurationHolders.forEach((holder) => {
+    formattedResultJson = formattedResultJson.concat(mapMisconfigurationSummaryResults(holder.Results));
+  });
+  
+  return formattedResultJson;
 }
 
 function misconfigurationsForK8s(
@@ -116,9 +143,46 @@ function mapMisconfigurationResults(
                   Title: misconfiguration.Title,
                   Type: misconfiguration.Type,
                   Message: misconfiguration.Message,
-                  IsVulnerability: false
+                  IsVulnerability: false,
+                  Class: "",
+                  Successes: 0,
+                  Failures: 0,
+                  Exceptions: 0
                 });
               });
+          }
+      });
+  }
+
+  return formattedResultJson;
+
+}
+
+function mapMisconfigurationSummaryResults(
+  results: CommonResult[]
+): NormalizedResultForDataTable[] {
+  const formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results) {
+      results.forEach((result) => {
+          if (result.MisconfSummary) {
+            formattedResultJson.push({
+              Target: result.Target,
+              ID: "",
+              Library: "",
+              Vulnerability: "",
+              Severity: "",
+              InstalledVersion: "",
+              FixedVersion: "",
+              Title: "",
+              Type: result.Type,
+              Message: "",
+              IsVulnerability: false,
+              Class: result.Class,
+              Successes: result.MisconfSummary.Successes,
+              Failures: result.MisconfSummary.Failures,
+              Exceptions: result.MisconfSummary.Exceptions
+            });
+          
           }
       });
   }
