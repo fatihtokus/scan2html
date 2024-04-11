@@ -1,34 +1,118 @@
 import { useEffect, useState } from "react";
+import { Divider, Upload, Button, notification } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 
 import TrivyReport from "./components/trivy-report/TrivyReport";
-//import defaultData1 from "./data/default/data.json";
-import defaultData from "./data/default/data.json";
-import k8sData from "./data/k8s/data.json";
+import defaultData from "./data/data.json";
 import { NormalizedResultForDataTable } from "./types";
-import { getMisconfigurations, getVulnerabilities } from "./utils/index";
+import {
+  getMisconfigurationSummary,
+  getMisconfigurations,
+  getVulnerabilities,
+} from "./utils/index";
+import "./App.css";
+import TableTitle from "./components/shared/TableTitle";
+
+interface UploadInfo {
+  file: UploadFile | File;
+  fileList: UploadFile[];
+  event?: {
+    percent: number;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+interface UploadFile {
+  uid: string;
+  name: string;
+  status?: string;
+  response?: string | object;
+  url?: string;
+  originFileObj?: File;
+  [key: string]: any;
+}
 
 function App() {
-  const [vulnerabilities, setVulnerabilities] = useState<NormalizedResultForDataTable[]>([]);
-  const [misconfigurations, setMisconfigurations] = useState<NormalizedResultForDataTable[]>([]);
-  const [vulnerabilitiesOrMisconfigurations, setVulnerabilitiesOrMisconfigurations] = useState("vulnerabilities");
-  const queryParameters = new URLSearchParams(window.location.search)
+  const [vulnerabilities, setVulnerabilities] = useState<
+    NormalizedResultForDataTable[]
+  >([]);
+  const [misconfigurations, setMisconfigurations] = useState<
+    NormalizedResultForDataTable[]
+  >([]);
+  const [misconfigurationSummary, setMisconfigurationSummary] = useState<
+    NormalizedResultForDataTable[]
+  >([]);
+  const [
+    vulnerabilitiesOrMisconfigurations,
+    setVulnerabilitiesOrMisconfigurations,
+  ] = useState("vulnerabilities");
+  const [loadedFile, setLoadedFile] = useState("");
 
+  const handleUpload = (info: UploadInfo) => {
+    console.log(info);
+    const file = info.file as Blob;
+
+    if (!(file instanceof Blob)) {
+      console.error("Uploaded file is not a Blob.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = event => {
+      if (event.target && event.target.result) {
+        const content = event.target.result as string;
+        try {
+          const jsonObject = JSON.parse(content);
+          console.log("Parsed JSON object:", jsonObject);
+          setVulnerabilities(getVulnerabilities(jsonObject));
+          setMisconfigurations(getMisconfigurations(jsonObject));
+          setMisconfigurationSummary(getMisconfigurationSummary(jsonObject));
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
+
+        console.log(info.file);
+        setLoadedFile(info.file.name);
+        notification.success({
+          message: "File Uploaded",
+          description: `${loadedFile} uploaded successfully.`,
+        });
+      }
+    };
+    reader.readAsText(file);
+  };
 
   useEffect(() => {
-    const dataSource = queryParameters.get("dataSource")
-    const data = dataSource ? k8sData : defaultData; 
-    setVulnerabilities(getVulnerabilities(data));
-    setMisconfigurations(getMisconfigurations(data));
+    setVulnerabilities(getVulnerabilities(defaultData));
+    setMisconfigurations(getMisconfigurations(defaultData));
+    setMisconfigurationSummary(getMisconfigurationSummary(defaultData));
   }, []);
 
   return (
     <>
-      <TrivyReport 
-          vulnerabilities={vulnerabilities}
-          misconfigurations={misconfigurations}
-          vulnerabilitiesOrMisconfigurations={vulnerabilitiesOrMisconfigurations} 
-          setVulnerabilitiesOrMisconfigurations={setVulnerabilitiesOrMisconfigurations}
-        />
+      <TableTitle />
+      <Upload
+        onChange={handleUpload}
+        accept=".json"
+        showUploadList={false}
+        beforeUpload={() => false}
+      >
+        <Button icon={<UploadOutlined />}>
+          Select a Trivy JSON Report from your local file system
+        </Button>{" "}
+        {loadedFile}
+      </Upload>
+      <Divider />
+      <TrivyReport
+        vulnerabilities={vulnerabilities}
+        misconfigurations={misconfigurations}
+        misconfigurationSummary={misconfigurationSummary}
+        vulnerabilitiesOrMisconfigurations={vulnerabilitiesOrMisconfigurations}
+        setVulnerabilitiesOrMisconfigurations={
+          setVulnerabilitiesOrMisconfigurations
+        }
+      />
     </>
   );
 }
