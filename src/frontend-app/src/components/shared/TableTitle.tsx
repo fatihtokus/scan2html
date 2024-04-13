@@ -16,7 +16,7 @@ const TableTitle = () => {
           via scan2html
         </Link>
         <Link href={href} target="_blank">
-          <GithubOutlined style={{ fontSize: "24px", marginLeft: "8px" }} />
+          <GithubOutlined style={{ fontSize: "1.5em", marginLeft: "0.5em" }} />
         </Link>
       </div>
     </div>

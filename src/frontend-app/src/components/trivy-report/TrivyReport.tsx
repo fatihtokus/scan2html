@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Divider, Input, Radio } from "antd";
 import Icon from "@ant-design/icons";
 
@@ -30,33 +30,31 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
 
   const { Search } = Input;
 
-  // There is no need to add search to the URL for now, JSON is already removed when refreshed.
-  // useEffect(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   const searchParam = params.get("search");
-  //   if (searchParam) {
-  //     setSearchTerm(searchParam);
-  //   }
-  // }, []);
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const searchParam = params.get("search");
+    if (searchParam) {
+      setSearchTerm(searchParam);
+    }
+  }, []);
 
   const onSearch = (value: string) => {
     setSearchTerm(value);
-    // addToURLSearchParams(value);
+    addToURLSearchParams(value);
   };
 
-  // There is no need to add search to the URL for now, JSON is already removed when refreshed.
-  // const addToURLSearchParams = (value: string) => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   if (value) {
-  //     params.set("search", value);
-  //   } else {
-  //     params.delete("search");
-  //   }
-  //   const newUrl = `${window.location.pathname}${
-  //     params.toString() ? "?" + params.toString() : ""
-  //   }`;
-  //   window.history.pushState({ search: value }, "", newUrl);
-  // };
+  const addToURLSearchParams = (value: string) => {
+    const params = new URLSearchParams(window.location.search);
+    if (value) {
+      params.set("search", value);
+    } else {
+      params.delete("search");
+    }
+    const newUrl = `${window.location.pathname}${
+      params.toString() ? "?" + params.toString() : ""
+    }`;
+    window.history.pushState({ search: value }, "", newUrl);
+  };
 
   const resultTable = () => {
     let data;
@@ -98,7 +96,7 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
       <Icon type="search" />
       <div
         style={{
-          paddingBottom: "10px",
+          paddingBottom: "1em",
           marginTop: "-0.625em",
         }}
       >
