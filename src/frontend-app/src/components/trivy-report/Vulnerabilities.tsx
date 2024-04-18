@@ -5,6 +5,8 @@ import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
 import { NormalizedResultForDataTable } from "../../types";
+import { localeCompare } from "../../utils";
+
 import SeverityTag from "../shared/SeverityTag";
 import { severityFilters } from "../../constants";
 import Highlighter from "react-highlight-words";
@@ -36,9 +38,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): ColumnType<NormalizedResultForDataTable> => ({
+  const getColumnSearchProps = ( dataIndex: DataIndex): ColumnType<NormalizedResultForDataTable> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -105,7 +105,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
     onFilter: (value, record) =>
-      record[dataIndex]
+      record
         .toString()
         .toLowerCase()
         .includes((value as string).toLowerCase()),
@@ -134,7 +134,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       key: "Target",
       width: "10%",
       ...getColumnSearchProps("Target"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Target.length - b.Target.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Target, b.Target),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -143,7 +143,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       key: "Library",
       width: "10%",
       ...getColumnSearchProps("Library"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Library.length - b.Library.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Library, b.Library),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -152,19 +152,19 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       key: "Vulnerability",
       width: "10%",
       ...getColumnSearchProps("Vulnerability"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Vulnerability.length - b.Vulnerability.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Vulnerability, b.Vulnerability),
       sortDirections: ["descend", "ascend"],
     },
-    {
+    { 
       title: "Severity",
       dataIndex: "Severity",
       key: "Severity",
       width: "5%",
       filters: severityFilters,
       onFilter: (value, record) => record.Severity === value,
-      render: (_, {Severity}) => <SeverityTag severity={Severity} />,
+      render: (_, {Severity}) => <SeverityTag severity={Severity ? Severity : ""} />,
       defaultSortOrder: 'descend',
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Severity.length - b.Severity.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Severity && b.Severity ? a.Severity.length - b.Severity.length : 0, //This is wrong
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -173,7 +173,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       key: "InstalledVersion",
       width: "10%",
       ...getColumnSearchProps("InstalledVersion"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.InstalledVersion.length - b.InstalledVersion.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.InstalledVersion, b.InstalledVersion),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -182,7 +182,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       key: "FixedVersion",
       width: "10%",
       ...getColumnSearchProps("FixedVersion"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.FixedVersion.length - b.FixedVersion.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.FixedVersion, b.FixedVersion),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -191,7 +191,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       key: "Title",
       width: "15%",
       ...getColumnSearchProps("Title"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Title.localeCompare(b.Title),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Title, b.Title),
       sortDirections: ["descend", "ascend"],
     },
   ];

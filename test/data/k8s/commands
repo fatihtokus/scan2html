@@ -1,6 +1,10 @@
 Supported result formats
 trivy k8s --format json -o results_k8s_cluster.json cluster
 
+trivy k8s --report summary cluster --format json -o results_k8s_cluster_summary.json
+
+trivy k8s --report=all all -n default --format json -o results_k8s_all.json
+
 
 Upsupported result formats
-trivy k8s --format json -o results_k8s_all.json --report=all all -n default --this returns a summary
+- non known

@@ -36,7 +36,7 @@ trivy scan2html k8s cluster interactive_result.html
 ![result](docs/result-2.png)
 </details>
 
-### Scan a k8s cluster for summary
+### Scan a k8s cluster all
 ```sh
 trivy scan2html k8s --report=all all interactive_result.html
 ```
@@ -44,6 +44,16 @@ trivy scan2html k8s --report=all all interactive_result.html
 <summary>Result</summary>
 
 ![result](docs/result-3.png)
+</details>
+
+### Scan a k8s cluster summary
+```sh
+trivy scan2html k8s --report summary cluster interactive_result.html
+```
+<details>
+<summary>Result</summary>
+
+![result](docs/result-4.png)
 </details>
 
 ## Help

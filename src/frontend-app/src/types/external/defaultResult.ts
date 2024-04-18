@@ -13,6 +13,10 @@ export type CommonScanResult = {
   // K8s scan result for cluster
   // command trivy k8s --format json -o results.json cluster
   Resources: Holder[];
+
+  // K8s scan result for cluster
+  // command: trivy k8s --report=all all -n default --format json -o results_k8s_all.json
+  Findings: Holder[];
 };
 
 export type Holder = {
