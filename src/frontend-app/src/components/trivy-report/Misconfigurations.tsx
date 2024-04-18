@@ -105,7 +105,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
     onFilter: (value, record) =>
-      record[dataIndex]
+      record
         .toString()
         .toLowerCase()
         .includes((value as string).toLowerCase()),
@@ -134,7 +134,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       key: "Target",
       width: "8%",
       ...getColumnSearchProps("Target"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Target.length - b.Target.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Target.localeCompare(b.Target),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -143,7 +143,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       key: "ID",
       width: "7%",
       ...getColumnSearchProps("ID"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.ID.length - b.ID.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.ID && b.ID ? a.ID.localeCompare(b.ID) : 0,
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -152,7 +152,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       key: "Title",
       width: "15%",
       ...getColumnSearchProps("Title"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Title.length - b.Title.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Title && b.Title ? a.Title.localeCompare(b.Title) : 0,
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -162,9 +162,9 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       width: "5%",
       filters: severityFilters,
       onFilter: (value, record) => record.Severity === value,
-      render: (_, { Severity }) => <SeverityTag severity={Severity} />,
+      render: (_, { Severity }) => <SeverityTag severity={Severity ? Severity : ""} />,
       defaultSortOrder: 'descend',
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Severity.length - b.Severity.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Severity && b.Severity ? a.Severity.length - b.Severity.length : 0,//this is wrong
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -173,7 +173,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       key: "Type",
       width: "10%",
       ...getColumnSearchProps("Type"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Type.length - b.Type.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Type.localeCompare(b.Type),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -182,7 +182,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       key: "Message",
       width: "15%",
       ...getColumnSearchProps("Message"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Message.length - b.Message.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Message && b.Message ? a.Message.localeCompare(b.Message) : 0,
       sortDirections: ["descend", "ascend"],
     }
   ];
