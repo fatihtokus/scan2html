@@ -117,7 +117,7 @@ function scan {
     jsonScanner=${allParamnsExceptTrivy/--format spdx/--format spdx-json}
   fi
 
-  jsonScanner="$jsonScanner -o $BASEDIR/$tmp_result"
+  jsonScanner="$scanner $jsonScanner -o $BASEDIR/$tmp_result"
   
   echo "jsonScanner: $jsonScanner"
   trivy "$jsonScanner"
