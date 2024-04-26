@@ -110,14 +110,13 @@ function scan {
   allParamnsExceptTrivy="${args[@]}"
   echo "allParamnsExceptTrivy: $allParamnsExceptTrivy"
 
-
-  jsonScanner="$allParamnsExceptTrivy --format json"
+  jsonScanner="$allParamnsExceptTrivy" --format json
   if [[ $allParamnsExceptTrivy == *"--format spdx"* ]]; then
     echo "It's an SBOM report!"
     jsonScanner=${allParamnsExceptTrivy/--format spdx/--format spdx-json}
   fi
 
-  jsonScanner="$scanner $jsonScanner -o $BASEDIR/$tmp_result"
+  jsonScanner="$scanner" "$jsonScanner" -o "$BASEDIR"/$tmp_result
   
   echo "jsonScanner: $jsonScanner"
   trivy "$jsonScanner"
