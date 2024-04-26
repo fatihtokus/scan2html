@@ -24,6 +24,9 @@ Examples:
   # Scan a k8s cluster summary
   trivy scan2html k8s --report summary cluster interactive_result.html
 
+  # Scan and generate SBOM(spdx) report
+  trivy scan2html image --format spdx alpine:3.15 interactive_result.html
+
 EOS
   exit
 }
@@ -98,13 +101,26 @@ function scan {
   reportName="${!#}"
   echo "reportName: $reportName"
   scanner="$1"
-  echo "scanner: scanner"
+  echo "scanner: $scanner"
   set -- "$1" "${args[@]}" "$reportName"
   echo "BASEDIR: $BASEDIR"
   echo "all_params: $@"
   echo "args: $args"
   echo "reportName: $reportName"
-  trivy "$scanner" --format json -o "$BASEDIR"/$tmp_result "${args[@]}"
+  allParamnsExceptTrivy="${args[@]}"
+  echo "allParamnsExceptTrivy: $allParamnsExceptTrivy"
+
+
+  jsonScanner="$allParamnsExceptTrivy --format json"
+  if [[ $allParamnsExceptTrivy == *"--format spdx"* ]]; then
+    echo "It's an SBOM report!"
+    jsonScanner=${allParamnsExceptTrivy/--format spdx/--format spdx-json}
+  fi
+
+  jsonScanner="$jsonScanner -o $BASEDIR/$tmp_result"
+  
+  echo "jsonScanner: $jsonScanner"
+  trivy "$jsonScanner"
  
   reportName=$(generateReportName "$reportName")
 

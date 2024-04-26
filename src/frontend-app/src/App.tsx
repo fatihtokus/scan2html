@@ -5,7 +5,7 @@ import Title from "antd/es/typography/Title";
 import TrivyReport from "./components/trivy-report/TrivyReport";
 import defaultData from "./data/data.json";
 import { NormalizedResultForDataTable } from "./types";
-import { getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities } from "./utils/index";
+import { getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
 import { UploadOutlined } from '@ant-design/icons';
 import "./App.css";
 
@@ -35,6 +35,7 @@ function App() {
   const [misconfigurationSummary, setMisconfigurationSummary] = useState<NormalizedResultForDataTable[]>([]);
   const [k8sClusterSummaryInfraAssessment, setK8sClusterSummaryInfraAssessment] = useState<NormalizedResultForDataTable[]>([]);
   const [k8sClusterSummaryRBACAssessment, setK8sClusterSummaryRBACAssessment] = useState<NormalizedResultForDataTable[]>([]);
+  const [supplyChainSBOM, setSupplyChainSBOM] = useState<NormalizedResultForDataTable[]>([]);
   const [vulnerabilitiesOrMisconfigurations, setVulnerabilitiesOrMisconfigurations] = useState("k8sClusterSummary");
   const [loadedFile, setLoadedFile] = useState("");
 
@@ -59,6 +60,7 @@ function App() {
           setMisconfigurationSummary(getMisconfigurationSummary(jsonObject));
           setK8sClusterSummaryInfraAssessment(getK8sClusterSummaryForInfraAssessment(jsonObject));
           setK8sClusterSummaryRBACAssessment(getK8sClusterSummaryForRBACAssessment(jsonObject));
+          setSupplyChainSBOM(getSupplyChainSBOM(jsonObject));
         } catch (error) {
           console.error('Error parsing JSON:', error);
         }
@@ -80,11 +82,12 @@ function App() {
     setMisconfigurationSummary(getMisconfigurationSummary(defaultData));
     setK8sClusterSummaryInfraAssessment(getK8sClusterSummaryForInfraAssessment(defaultData));
     setK8sClusterSummaryRBACAssessment(getK8sClusterSummaryForRBACAssessment(defaultData));
+    setSupplyChainSBOM(getSupplyChainSBOM(defaultData));
   }, []);
 
   return (
     <>
-      <Title level={3}>Trivy Report via scan2html(v0.2.6)</Title>
+      <Title level={3}>Trivy Report via scan2html(v0.2.7)</Title>
       <Upload
         onChange={handleUpload}
         accept='.json'
@@ -101,6 +104,7 @@ function App() {
           k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment}
           k8sClusterSummaryRBACAssessment={k8sClusterSummaryRBACAssessment}
           vulnerabilitiesOrMisconfigurations={vulnerabilitiesOrMisconfigurations} 
+          supplyChainSBOM={supplyChainSBOM}
           setVulnerabilitiesOrMisconfigurations={setVulnerabilitiesOrMisconfigurations}
         />
     </>

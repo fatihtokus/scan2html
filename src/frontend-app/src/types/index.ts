@@ -24,6 +24,23 @@ export class NormalizedResultForDataTable {
   MisconfigurationsSummary?: SummaryByCriticalities;
   SecretsSummary?: SummaryByCriticalities;
 
+  // SBOM
+  // Master
+  DocSPDXID?: string;
+  DataLicense?: string;
+  DocumentNamespace?: string;
+  DocName?: string;
+  Created?: string;
+  SpdxVersion?: string
+  Creators?: string[];
+  //Rows
+  SPDXID?: string;
+  FilesAnalyzed?: string;
+  LicenseConcluded?: string;
+  LicenseDeclared?: string;
+  Name?: string;
+  VersionInfo?: string;
+
   constructor(Target: string, Type: string, Kind: string, Namespace: string) {
     this.Target = Target;
     this.Type = Type;
