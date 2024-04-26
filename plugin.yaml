@@ -11,5 +11,5 @@ platforms:
     uri: https://github.com/fatihtokus/scan2html/releases/download/v0.2.7/scan2html.tar.gz
     bin: ./scan2html.sh
   -
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.2.7/scan2html.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.2.7-alpha/scan2html.tar.gz
     bin: ./scan2html
