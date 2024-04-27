@@ -107,20 +107,26 @@ function scan {
   echo "all_params: $@"
   echo "args: $args"
   echo "reportName: $reportName"
-  allParamnsExceptTrivy="${args[@]}"
-  echo "allParamnsExceptTrivy: $allParamnsExceptTrivy"
+  allParamsExceptTrivy="${args[@]}"
+  echo "allParamsExceptTrivy: $allParamsExceptTrivy"
 
-  jsonScanner="$allParamnsExceptTrivy" --format json
-  if [[ $allParamnsExceptTrivy == *"--format spdx"* ]]; then
-    echo "It's an SBOM report!"
-    jsonScanner=${allParamnsExceptTrivy/--format spdx/--format spdx-json}
+  output="-o $BASEDIR/$tmp_result"
+  echo "output: $output"
+
+  outputFormat="--format json"
+  echo "outputFormat: $outputFormat"
+
+  if [[ $allParamsExceptTrivy == *"--format spdx"* ]]; then
+      echo "It's an SBOM report!"
+      # Removing --format spdx from the params
+      allParamsExceptTrivy=${allParamsExceptTrivy/--format spdx/}
+      echo "allParamsExceptTrivy: $allParamsExceptTrivy"
+      outputFormat="--format spdx-json"
   fi
 
-  jsonScanner="$scanner" "$jsonScanner" -o "$BASEDIR"/$tmp_result
-  
-  echo "jsonScanner: $jsonScanner"
-  trivy "$jsonScanner"
- 
+  echo "Executing following command"
+  echo "trivy $scanner $allParamsExceptTrivy $outputFormat $output"
+  trivy $scanner $allParamsExceptTrivy $outputFormat $output
   reportName=$(generateReportName "$reportName")
 
   cat "$BASEDIR"/report_template.html >> file_contents
