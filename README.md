@@ -56,6 +56,16 @@ trivy scan2html k8s --report summary cluster interactive_result.html
 ![result](docs/result-4.png)
 </details>
 
+### Scan and generate SBOM(spdx) report
+```sh
+trivy scan2html image --format spdx alpine:3.15 interactive_result.html
+```
+<details>
+<summary>Result</summary>
+
+![result](docs/sbom-alpin.png)
+</details>
+
 ## Help
 ```sh
 $ trivy scan2html -h
@@ -65,7 +75,7 @@ Usage: trivy scan2html [-h,--help] command target filename
 Options:
   -h, --help    Show usage.
 Examples:
-  # Scan an image
+   # Scan an image
   trivy scan2html image alpine:latest interactive_result.html
 
   # Scan a local folder
@@ -74,6 +84,12 @@ Examples:
   # Scan a k8s cluster
   trivy scan2html k8s cluster interactive_result.html
 
-  # Scan a k8s cluster for summary
+  # Scan a k8s cluster all
   trivy scan2html k8s --report=all all interactive_result.html
+
+  # Scan a k8s cluster summary
+  trivy scan2html k8s --report summary cluster interactive_result.html
+
+  # Scan and generate SBOM(spdx) report
+  trivy scan2html image --format spdx alpine:3.15 interactive_result.html
 ```

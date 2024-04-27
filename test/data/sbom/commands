@@ -1,0 +1,6 @@
+Supported result formats
+trivy image --format spdx-json -o zalando-spdx.json ghcr.io/zalando/spilo-15:3.0-p1
+trivy image --format spdx-json -o alpin-spdx.json alpine:3.15
+
+Upsupported result formats
+- non known

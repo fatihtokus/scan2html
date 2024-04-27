@@ -1,6 +1,6 @@
 
 import { NormalizedResultForDataTable } from "../types";
-import { CommonResult, Holder } from "../types/external/defaultResult";
+import { CommonScanResult, CommonResult, Holder } from "../types/external/defaultResult";
 
 export function getVulnerabilities(
   results: any //CommonScanResult
@@ -65,6 +65,43 @@ export function mapVulnerabilityResults(
       });
     }
   });
+
+  return formattedResultJson;
+}
+
+export function getSupplyChainSBOM(
+  results: any //CommonScanResult
+): NormalizedResultForDataTable[] {
+  if (results.packages) {
+    return mapSBOMResults(results);
+  }
+
+  return [];
+}
+
+function mapSBOMResults(
+  results: CommonScanResult
+): NormalizedResultForDataTable[] {
+  const formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results.packages) {
+      results.packages.forEach((result) => {
+            formattedResultJson.push({
+              DocSPDXID: results.SPDXID,
+              DataLicense: results.dataLicense,
+              DocumentNamespace: results.documentNamespace,
+              DocName: results.name,
+              Created: results.creationInfo.created,
+              Creators: results.creationInfo.creators,
+              SpdxVersion: results.spdxVersion,
+              SPDXID: result.SPDXID,
+              FilesAnalyzed: result.filesAnalyzed ? "true" : "false",
+              LicenseConcluded: result.licenseConcluded,
+              LicenseDeclared: result.licenseDeclared,
+              Name: result.name,
+              VersionInfo: result.versionInfo
+            } as NormalizedResultForDataTable);
+      });
+  }
 
   return formattedResultJson;
 }

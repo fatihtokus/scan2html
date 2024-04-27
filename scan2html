@@ -24,6 +24,9 @@ Examples:
   # Scan a k8s cluster summary
   trivy scan2html k8s --report summary cluster interactive_result.html
 
+  # Scan and generate SBOM(spdx) report
+  trivy scan2html image --format spdx alpine:3.15 interactive_result.html
+
 EOS
   exit
 }
@@ -98,14 +101,32 @@ function scan {
   reportName="${!#}"
   echo "reportName: $reportName"
   scanner="$1"
-  echo "scanner: scanner"
+  echo "scanner: $scanner"
   set -- "$1" "${args[@]}" "$reportName"
   echo "BASEDIR: $BASEDIR"
   echo "all_params: $@"
   echo "args: $args"
   echo "reportName: $reportName"
-  trivy "$scanner" --format json -o "$BASEDIR"/$tmp_result "${args[@]}"
- 
+  allParamsExceptTrivy="${args[@]}"
+  echo "allParamsExceptTrivy: $allParamsExceptTrivy"
+
+  output="-o $BASEDIR/$tmp_result"
+  echo "output: $output"
+
+  outputFormat="--format json"
+  echo "outputFormat: $outputFormat"
+
+  if [[ $allParamsExceptTrivy == *"--format spdx"* ]]; then
+      echo "It's an SBOM report!"
+      # Removing --format spdx from the params
+      allParamsExceptTrivy=${allParamsExceptTrivy/--format spdx/}
+      echo "allParamsExceptTrivy: $allParamsExceptTrivy"
+      outputFormat="--format spdx-json"
+  fi
+
+  echo "Executing following command"
+  echo "trivy $scanner $allParamsExceptTrivy $outputFormat $output"
+  trivy $scanner $allParamsExceptTrivy $outputFormat $output
   reportName=$(generateReportName "$reportName")
 
   cat "$BASEDIR"/report_template.html >> file_contents
@@ -129,7 +150,7 @@ function scan {
     fi
     
     # Using replace_text function
-   replace_text "$reportName" "{TEMP_DATA:n9}" "$result_json"
+   replace_text "$reportName" "{TEMP_DATA:i9}" "$result_json"
   
   echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT

@@ -189,7 +189,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
 
   return (
     <>
-      <Table columns={columns} dataSource={result} size="small"/>
+      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small"/>
     </>
   );
 };
