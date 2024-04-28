@@ -124,17 +124,22 @@ function scan {
       outputFormat="--format spdx-json"
   fi
 
+  trivy="trivy"
+  if  command -v ./trivy &> /dev/null; then
+      echo "'./trivy' command is found so it will be used instead of 'trivy'"
+      trivy="./trivy"
+  fi
   echo "Executing following command"
-  echo "trivy $scanner $allParamsExceptTrivy $outputFormat $output"
-  trivy $scanner $allParamsExceptTrivy $outputFormat $output
+  echo "$trivy $scanner $allParamsExceptTrivy $outputFormat $output"
+  $trivy $scanner $allParamsExceptTrivy $outputFormat $output
   reportName=$(generateReportName "$reportName")
 
   cat "$BASEDIR"/report_template.html >> file_contents
   echo "$file_contents file_contents!"
   echo "${file_contents//TEMP_DATA/TEMP_DATA99}" >>"$reportName"
-  
+
   cat "$BASEDIR"/report_template.html >>"$reportName"
-     
+
    # Check if the replace file exists
     if [ ! -f "$reportName" ]; then
         echo "Error: reportName: '$reportName' not found!"
@@ -142,16 +147,16 @@ function scan {
     fi
 
    result_json="$BASEDIR"/$tmp_result
-  
+
    # Check if the replace file exists
     if [ ! -f "$result_json" ]; then
         echo "Error: result_json: '$result_json' not found!"
         return 1
     fi
-    
+
     # Using replace_text function
    replace_text "$reportName" "{TEMP_DATA:i9}" "$result_json"
-  
+
   echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT
 }
