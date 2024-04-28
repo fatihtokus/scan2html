@@ -124,9 +124,16 @@ function scan {
       outputFormat="--format spdx-json"
   fi
 
+  trivy="trivy"
+  if  command -v ./trivy &> /dev/null
+  then
+      echo "'./trivy' command is found so it will be used instead of 'trivy'"
+      trivy="./trivy"
+      exit 1
+  fi
   echo "Executing following command"
-  echo "trivy $scanner $allParamsExceptTrivy $outputFormat $output"
-  trivy $scanner $allParamsExceptTrivy $outputFormat $output
+  echo "$trivy $scanner $allParamsExceptTrivy $outputFormat $output"
+  $trivy $scanner $allParamsExceptTrivy $outputFormat $output
   reportName=$(generateReportName "$reportName")
 
   cat "$BASEDIR"/report_template.html >> file_contents
