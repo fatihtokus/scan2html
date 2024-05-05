@@ -13,7 +13,7 @@ const K8sClusterSummary: React.FC<K8sClusterSummaryProps> = ({ k8sClusterSummary
 
   return (
     <>
-      <Table dataSource={k8sClusterSummaryInfraAssessment} size="small" bordered title={() => 'Infra Assessment'} footer={() => 'CRITICAL=C HIGH= H, MEDIUM=M LOW=L UNDEFINED=U'}>
+      <Table dataSource={k8sClusterSummaryInfraAssessment} size="small" bordered title={() => 'Infra Assessment'} footer={() => 'CRITICAL=C HIGH= H, MEDIUM=M LOW=L UNDEFINED=U'} sticky>
         <Column title="Namespace" dataIndex="Namespace" key="Namespace"  
         />
         <Column title="Resource" dataIndex="Target" key="Resource" defaultSortOrder="descend"
@@ -73,7 +73,7 @@ const K8sClusterSummary: React.FC<K8sClusterSummaryProps> = ({ k8sClusterSummary
         </ColumnGroup>    
       </Table>
 
-      <Table dataSource={k8sClusterSummaryRBACAssessment} size="small" title={() => 'RBAC Assessment'} bordered>
+      <Table dataSource={k8sClusterSummaryRBACAssessment} size="small" title={() => 'RBAC Assessment'} bordered sticky>
         <Column title="Namespace" dataIndex="Namespace" key="Namespace" />
         <Column title="Resource" dataIndex="Target" key="Resource" defaultSortOrder="descend"
         sorter={(a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Target.localeCompare(b.Target)

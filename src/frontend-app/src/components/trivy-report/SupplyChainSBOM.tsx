@@ -189,7 +189,7 @@ const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
 
   return (
     <>
-      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small" bordered title={() => generateTableHeader(result)}/>
+      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small" bordered title={() => generateTableHeader(result)} sticky/>
     </>
   );
 };

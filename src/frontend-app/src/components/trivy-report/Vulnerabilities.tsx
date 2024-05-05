@@ -198,7 +198,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
 
   return (
     <>
-      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small"/>
+      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small" sticky/>
     </>
   );
 };

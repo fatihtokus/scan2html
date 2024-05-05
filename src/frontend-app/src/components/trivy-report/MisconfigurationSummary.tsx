@@ -186,7 +186,7 @@ const MisconfigurationSummary: React.FC<MisconfigurationSummaryProps> = ({ resul
 
   return (
     <>
-      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small"/>
+      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small" sticky/>
     </>
   );
 };
