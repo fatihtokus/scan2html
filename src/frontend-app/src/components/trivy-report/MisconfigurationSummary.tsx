@@ -103,7 +103,7 @@ const MisconfigurationSummary: React.FC<MisconfigurationSummaryProps> = ({ resul
       <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
     ),
     onFilter: (value, record) =>
-      record[dataIndex]
+      record
         .toString()
         .toLowerCase()
         .includes((value as string).toLowerCase()),
@@ -150,7 +150,7 @@ const MisconfigurationSummary: React.FC<MisconfigurationSummaryProps> = ({ resul
       key: "Class",
       width: "15%",
       ...getColumnSearchProps("Class"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Class.length - b.Class.length,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Class && b.Class ? a.Class.length - b.Class.length : 0, 
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -159,7 +159,7 @@ const MisconfigurationSummary: React.FC<MisconfigurationSummaryProps> = ({ resul
       key: "Successes",
       width: "5%",
       ...getColumnSearchProps("Successes"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Successes- b.Successes,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Successes && b.Successes ? a.Successes- b.Successes : 0,
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -169,7 +169,7 @@ const MisconfigurationSummary: React.FC<MisconfigurationSummaryProps> = ({ resul
       width: "5%",
       ...getColumnSearchProps("Failures"),
       defaultSortOrder: 'descend',
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Failures-b.Failures,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Failures && b.Failures ? a.Failures-b.Failures : 0,
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -179,14 +179,14 @@ const MisconfigurationSummary: React.FC<MisconfigurationSummaryProps> = ({ resul
       width: "5%",
       ...getColumnSearchProps("Exceptions"),
       defaultSortOrder: 'descend',
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Exceptions-b.Exceptions,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Exceptions && b.Exceptions ? a.Exceptions-b.Exceptions : 0,
       sortDirections: ["descend", "ascend"],
     }
   ];
 
   return (
     <>
-      <Table columns={columns} dataSource={result} size="small"/>
+      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small"/>
     </>
   );
 };

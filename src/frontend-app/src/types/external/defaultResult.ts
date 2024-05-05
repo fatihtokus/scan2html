@@ -13,6 +13,19 @@ export type CommonScanResult = {
   // K8s scan result for cluster
   // command trivy k8s --format json -o results.json cluster
   Resources: Holder[];
+
+  // K8s scan result for cluster
+  // command: trivy k8s --report=all all -n default --format json -o results_k8s_all.json
+  Findings: Holder[];
+
+  // SBOM
+  packages: SBOM[];
+  SPDXID: string;
+  dataLicense: string;
+  documentNamespace: string;
+  name: string;
+  spdxVersion: string;
+  creationInfo: CreationInfo   
 };
 
 export type Holder = {
@@ -33,6 +46,20 @@ export type CommonResult = {
 
   // specific to default scan result
   Secrets: Secret[];
+};
+
+export type CreationInfo = {
+  created: string;
+  creators: string[];
+};
+
+export type SBOM = {
+  SPDXID: string;
+  filesAnalyzed: boolean;
+  licenseConcluded: string;
+  licenseDeclared: string;
+  name: string;
+  versionInfo: string;
 };
 
 export type MisconfSummary = {

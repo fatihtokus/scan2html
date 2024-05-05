@@ -5,19 +5,16 @@ import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
 import { NormalizedResultForDataTable } from "../../types";
-import { localeCompare } from "../../utils";
-
-import SeverityTag from "../shared/SeverityTag";
-import { severityFilters } from "../../constants";
 import Highlighter from "react-highlight-words";
+import { localeCompare } from "../../utils";
 
 type DataIndex = keyof NormalizedResultForDataTable;
 
-interface VulnerabilitiesProps {
+interface SupplyChainSBOMProps {
   result: NormalizedResultForDataTable[];
 }
 
-const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
+const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
   console.log("Vulnerabilities:", result);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -38,7 +35,13 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = ( dataIndex: DataIndex): ColumnType<NormalizedResultForDataTable> => ({
+  const generateTableHeader = (result : NormalizedResultForDataTable[]) => {
+    return result.length == 0 ? "" : (result[0].SpdxVersion + '  |  ' + result[0].DataLicense + '  |  ' + result[0].DocSPDXID + '  |  ' + result[0].DocName + '  |  ' + result[0].DocumentNamespace + '  |  ' + result[0].Creators + '  |  ' + result[0].Created);
+  };
+
+  const getColumnSearchProps = (
+    dataIndex: DataIndex
+  ): ColumnType<NormalizedResultForDataTable> => ({
     filterDropdown: ({
       setSelectedKeys,
       selectedKeys,
@@ -127,80 +130,68 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       ),
   });
 
-  const columns: ColumnsType<NormalizedResultForDataTable>= [
+  const columns: ColumnsType<NormalizedResultForDataTable> = [
     {
-      title: "Target",
-      dataIndex: "Target",
-      key: "Target",
-      width: "10%",
-      ...getColumnSearchProps("Target"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Target, b.Target),
+      title: "Package Name",
+      dataIndex: "Name",
+      key: "Name",
+      width: "7%",
+      ...getColumnSearchProps("Name"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Name, b.Name),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Library/Package",
-      dataIndex: "Library",
-      key: "Library",
-      width: "10%",
-      ...getColumnSearchProps("Library"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Library, b.Library),
+      title: "SPDXID",
+      dataIndex: "SPDXID",
+      key: "SPDXID",
+      width: "13%",
+      ...getColumnSearchProps("SPDXID"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.SPDXID, b.SPDXID),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Vulnerability",
-      dataIndex: "Vulnerability",
-      key: "Vulnerability",
-      width: "10%",
-      ...getColumnSearchProps("Vulnerability"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Vulnerability, b.Vulnerability),
-      sortDirections: ["descend", "ascend"],
-    },
-    { 
-      title: "Severity",
-      dataIndex: "Severity",
-      key: "Severity",
+      title: "Package Version",
+      dataIndex: "VersionInfo",
+      key: "VersionInfo",
       width: "5%",
-      filters: severityFilters,
-      onFilter: (value, record) => record.Severity === value,
-      render: (_, {Severity}) => <SeverityTag severity={Severity ? Severity : ""} />,
-      defaultSortOrder: 'descend',
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Severity && b.Severity ? a.Severity.length - b.Severity.length : 0, //This is wrong
+      ...getColumnSearchProps("VersionInfo"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.VersionInfo, b.VersionInfo),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Installed Version",
-      dataIndex: "InstalledVersion",
-      key: "InstalledVersion",
-      width: "10%",
-      ...getColumnSearchProps("InstalledVersion"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.InstalledVersion, b.InstalledVersion),
+      title: "Files Analyzed",
+      dataIndex: "FilesAnalyzed",
+      key: "FilesAnalyzed",
+      width: "4%",
+      ...getColumnSearchProps("FilesAnalyzed"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.FilesAnalyzed, b.FilesAnalyzed),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Fixed Version",
-      dataIndex: "FixedVersion",
-      key: "FixedVersion",
-      width: "10%",
-      ...getColumnSearchProps("FixedVersion"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.FixedVersion, b.FixedVersion),
+      title: "Package License Concluded",
+      dataIndex: "LicenseConcluded",
+      key: "LicenseConcluded",
+      width: "12%",
+      ...getColumnSearchProps("LicenseConcluded"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.LicenseConcluded, b.LicenseConcluded),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Title",
-      dataIndex: "Title",
-      key: "Title",
-      width: "15%",
-      ...getColumnSearchProps("Title"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Title, b.Title),
+      title: "Package License Declared",
+      dataIndex: "LicenseDeclared",
+      key: "LicenseDeclared",
+      width: "12%",
+      ...getColumnSearchProps("LicenseDeclared"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.LicenseDeclared, b.LicenseDeclared),
       sortDirections: ["descend", "ascend"],
-    },
+    }
   ];
 
   return (
     <>
-      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small"/>
+      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small" bordered title={() => generateTableHeader(result)}/>
     </>
   );
 };
 
-export default Vulnerabilities;
+export default SupplyChainSBOM;
