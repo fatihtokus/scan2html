@@ -13,6 +13,8 @@
 4. For Scan2HtmlWithK8sData open the following url from the browser: http://localhost:8000/src/auditing.html?auditingEnabled=0&resultsUrl=/test/data/k8s/results.json
 5. For Scan2HtmlAuditingWithDefaultData open the following url from the browser: http://localhost:8000/src/auditing.html?auditingBaseUrl=/test/data/auditing/
 
+## Code fromatting
+1. npx prettier . --write
 
 ## Installing and starting a http-server
 Node.js has a http-server package that can be used to run a simple local web server. If you’ve got node installed open a command line at the directory your content is in.
