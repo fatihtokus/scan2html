@@ -27,7 +27,5 @@ This will install the http-server package globally. Now we can start the server 
 http-server . -p 8000
 
 We’re executing the http-server Node.js application, giving it a dot to indicate it is to serve files from the current directory (this could be replaced with a path) and using -p 8000 to tell the server to run on port 8000
-
 You should then be able to access it using localhost:8000 in your web browser.
-
 To stop the server when finished you can just press Ctrl+c in the terminal.
