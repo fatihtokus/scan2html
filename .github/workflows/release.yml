@@ -49,7 +49,7 @@ jobs:
           
           cat "$reportTemplate"
       - name: Compress
-        run: tar -zcvf scan2html.tar.gz scan2html "$reportTemplate" LICENSE results.json
+        run: tar -zcvf scan2html.tar.gz scan2html "$reportTemplate" LICENSE results.json plugin.yaml
 
       - name: Release
         uses: softprops/action-gh-release@v1
