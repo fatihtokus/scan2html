@@ -68,6 +68,8 @@ export class NormalizedResultForDataTable {
   }
 }
 
+export type DataIndexForNormalizedResultForDataTable = keyof NormalizedResultForDataTable;
+
 export class SummaryByCriticalities {
   Critical: number;
   High: number;

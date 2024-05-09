@@ -15,9 +15,7 @@ const K8sClusterSummary: React.FC<K8sClusterSummaryProps> = ({ k8sClusterSummary
   return (
     <>
       <Table dataSource={k8sClusterSummaryInfraAssessment} size="small" bordered title={() => "Infra Assessment"} footer={() => "CRITICAL=C HIGH= H, MEDIUM=M LOW=L UNDEFINED=U"}>
-        <Column title="Namespace" dataIndex="Namespace" key="Namespace" 
-            sorter={(a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Namespace, b.Namespace)}
-        />
+        <Column title="Namespace" dataIndex="Namespace" key="Namespace" sorter={(a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Namespace, b.Namespace)} />
         <Column
           title="Resource"
           dataIndex="Target"
@@ -56,9 +54,7 @@ const K8sClusterSummary: React.FC<K8sClusterSummaryProps> = ({ k8sClusterSummary
       </Table>
 
       <Table dataSource={k8sClusterSummaryRBACAssessment} size="small" title={() => "RBAC Assessment"} bordered>
-        <Column title="Namespace" dataIndex="Namespace" key="Namespace" 
-            sorter={(a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Namespace, b.Namespace)}
-        />
+        <Column title="Namespace" dataIndex="Namespace" key="Namespace" sorter={(a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Namespace, b.Namespace)} />
         <Column
           title="Resource"
           dataIndex="Target"

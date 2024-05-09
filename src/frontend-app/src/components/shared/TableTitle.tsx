@@ -1,6 +1,5 @@
 import { Typography } from "antd";
 import { GithubOutlined } from "@ant-design/icons";
-import { Divider, Upload, Button, notification } from "antd";
 
 const { Title, Link } = Typography;
 

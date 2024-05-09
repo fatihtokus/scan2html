@@ -6,11 +6,9 @@ import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
 import SeverityTag from "../shared/SeverityTag";
 import { severityFilters } from "../../constants";
-import { NormalizedResultForDataTable } from "../../types";
+import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import Highlighter from "react-highlight-words";
-import { localeCompare, severityCompare } from "../../utils";
-
-type DataIndex = keyof NormalizedResultForDataTable;
+import { filterDropdown, localeCompare, severityCompare } from "../../utils";
 
 interface MisconfigurationsProps {
   result: NormalizedResultForDataTable[];
@@ -22,7 +20,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
 
-  const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndex) => {
+  const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndexForNormalizedResultForDataTable) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -33,7 +31,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<NormalizedResultForDataTable> => ({
+  const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
@@ -75,11 +73,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       </div>
     ),
     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
-    onFilter: (value, record) =>
-      record
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
+    onFilter: (searchValue, record) => filterDropdown(record[dataIndex], searchValue),
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);

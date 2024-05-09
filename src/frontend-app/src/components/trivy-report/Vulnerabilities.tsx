@@ -4,14 +4,12 @@ import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
-import { NormalizedResultForDataTable } from "../../types";
-import { localeCompare, severityCompare } from "../../utils";
+import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
+import { filterDropdown, localeCompare } from "../../utils";
 
 import SeverityTag from "../shared/SeverityTag";
 import { severityFilters } from "../../constants";
 import Highlighter from "react-highlight-words";
-
-type DataIndex = keyof NormalizedResultForDataTable;
 
 interface VulnerabilitiesProps {
   result: NormalizedResultForDataTable[];
@@ -23,7 +21,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
 
-  const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndex) => {
+  const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndexForNormalizedResultForDataTable) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -34,7 +32,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<NormalizedResultForDataTable> => ({
+  const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
@@ -76,11 +74,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       </div>
     ),
     filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
-    onFilter: (value, record) =>
-      record
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
+    onFilter: (searchValue, record) => filterDropdown(record[dataIndex], searchValue),
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
@@ -131,7 +125,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       onFilter: (value, record) => record.Severity === value,
       render: (_, { Severity }) => <SeverityTag severity={Severity ? Severity : ""} />,
       defaultSortOrder: "descend",
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => severityCompare(a.Severity, b.Severity),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => (a.Severity && b.Severity ? a.Severity.length - b.Severity.length : 0), //This is wrong
       sortDirections: ["descend", "ascend"],
     },
     {

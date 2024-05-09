@@ -26,6 +26,17 @@ export function getVulnerabilities(
   return [];
 }
 
+export function filterDropdown(rowValue: any, searchValue: any) {
+  if (rowValue === undefined) {
+    return false;
+  }
+
+  return rowValue
+    .toString()
+    .toLowerCase()
+    .includes((searchValue as string).toLowerCase());
+}
+
 export function localeCompare(argument1: any, argument2: any) {
   return argument1 && argument2 ? argument1.localeCompare(argument2) : 0;
 }

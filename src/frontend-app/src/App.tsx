@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Divider, Upload, Button, notification } from "antd";
-import Title from "antd/es/typography/Title";
 
 import TrivyReport from "./components/trivy-report/TrivyReport";
 import TableTitle from "./components/shared/TableTitle";
@@ -88,11 +87,11 @@ function App() {
 
   return (
     <>
-      <TableTitle/>
+      <TableTitle />
       <Upload onChange={handleUpload} accept=".json" showUploadList={false} beforeUpload={() => false}>
         <Button icon={<UploadOutlined />}>Select a Trivy JSON Report from your local file system</Button> {loadedFile}
       </Upload>
-      
+
       <Divider />
       <TrivyReport
         vulnerabilities={vulnerabilities}
