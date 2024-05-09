@@ -1,5 +1,6 @@
 /src/frontend-app/node_modules
 /src/frontend-app/.vite
+/src/frontend-app/dist
 /target/
 !.mvn/wrapper/maven-wrapper.jar
 
