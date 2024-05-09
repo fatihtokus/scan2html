@@ -4,7 +4,11 @@
 ![GitHub All Releases](https://img.shields.io/github/downloads/fatihtokus/scan2html/total?logo=github)
 ![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
 
-A Trivy plugin that scans and outputs the results to an interactive html file.
+Before moving on, please consider giving us a GitHub star ⭐️. Thank you!
+
+## About scan2html
+A [Trivy](https://github.com/aquasecurity/trivy) plugin that scans and outputs the results (vulnerabilities, misconfigurations, secrets, SBOM in containers, Kubernetes, code repositories, clouds and more) to an interactive html file.
+
 ## Install
 ```sh
 trivy plugin install github.com/fatihtokus/scan2html
