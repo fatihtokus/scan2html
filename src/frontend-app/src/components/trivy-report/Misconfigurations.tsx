@@ -4,17 +4,19 @@ import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
+import SeverityTag from "../shared/SeverityTag";
+import { severityFilters } from "../../constants";
 import { NormalizedResultForDataTable } from "../../types";
 import Highlighter from "react-highlight-words";
-import { localeCompare } from "../../utils";
+import { localeCompare, severityCompare } from "../../utils";
 
 type DataIndex = keyof NormalizedResultForDataTable;
 
-interface SupplyChainSBOMProps {
+interface MisconfigurationsProps {
   result: NormalizedResultForDataTable[];
 }
 
-const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
+const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
   console.log("Vulnerabilities:", result);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
@@ -29,24 +31,6 @@ const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText("");
-  };
-
-  const generateTableHeader = (result: NormalizedResultForDataTable[]) => {
-    return result.length == 0
-      ? ""
-      : result[0].SpdxVersion +
-          "  |  " +
-          result[0].DataLicense +
-          "  |  " +
-          result[0].DocSPDXID +
-          "  |  " +
-          result[0].DocName +
-          "  |  " +
-          result[0].DocumentNamespace +
-          "  |  " +
-          result[0].Creators +
-          "  |  " +
-          result[0].Created;
   };
 
   const getColumnSearchProps = (dataIndex: DataIndex): ColumnType<NormalizedResultForDataTable> => ({
@@ -111,66 +95,69 @@ const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
 
   const columns: ColumnsType<NormalizedResultForDataTable> = [
     {
-      title: "Package Name",
-      dataIndex: "Name",
-      key: "Name",
+      title: "Target",
+      dataIndex: "Target",
+      key: "Target",
+      width: "8%",
+      ...getColumnSearchProps("Target"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Target, b.Target),
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "ID",
+      dataIndex: "ID",
+      key: "ID",
       width: "7%",
-      ...getColumnSearchProps("Name"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Name, b.Name),
+      ...getColumnSearchProps("ID"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.ID, b.ID),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "SPDXID",
-      dataIndex: "SPDXID",
-      key: "SPDXID",
-      width: "13%",
-      ...getColumnSearchProps("SPDXID"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.SPDXID, b.SPDXID),
+      title: "Title",
+      dataIndex: "Title",
+      key: "Title",
+      width: "15%",
+      ...getColumnSearchProps("Title"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Title, b.Title),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Package Version",
-      dataIndex: "VersionInfo",
-      key: "VersionInfo",
+      title: "Severity",
+      dataIndex: "Severity",
+      key: "Severity",
       width: "5%",
-      ...getColumnSearchProps("VersionInfo"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.VersionInfo, b.VersionInfo),
+      filters: severityFilters,
+      onFilter: (value, record) => record.Severity === value,
+      render: (_, { Severity }) => <SeverityTag severity={Severity ? Severity : ""} />,
+      defaultSortOrder: "descend",
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => severityCompare(a.Severity, b.Severity),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Files Analyzed",
-      dataIndex: "FilesAnalyzed",
-      key: "FilesAnalyzed",
-      width: "4%",
-      ...getColumnSearchProps("FilesAnalyzed"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.FilesAnalyzed, b.FilesAnalyzed),
+      title: "Type",
+      dataIndex: "Type",
+      key: "Type",
+      width: "10%",
+      ...getColumnSearchProps("Type"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Type, b.Type),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Package License Concluded",
-      dataIndex: "LicenseConcluded",
-      key: "LicenseConcluded",
-      width: "12%",
-      ...getColumnSearchProps("LicenseConcluded"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.LicenseConcluded, b.LicenseConcluded),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Package License Declared",
-      dataIndex: "LicenseDeclared",
-      key: "LicenseDeclared",
-      width: "12%",
-      ...getColumnSearchProps("LicenseDeclared"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.LicenseDeclared, b.LicenseDeclared),
+      title: "Message",
+      dataIndex: "Message",
+      key: "Message",
+      width: "15%",
+      ...getColumnSearchProps("Message"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Message, b.Message),
       sortDirections: ["descend", "ascend"],
     },
   ];
 
   return (
     <>
-      <Table columns={columns} dataSource={result} pagination={{ defaultPageSize: 20 }} size="small" bordered title={() => generateTableHeader(result)} sticky />
+      <Table columns={columns} dataSource={result} pagination={{ defaultPageSize: 20 }} size="small" sticky />
     </>
   );
 };
 
-export default SupplyChainSBOM;
+export default Misconfigurations;
