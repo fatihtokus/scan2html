@@ -31,7 +31,7 @@ export class NormalizedResultForDataTable {
   DocumentNamespace?: string;
   DocName?: string;
   Created?: string;
-  SpdxVersion?: string
+  SpdxVersion?: string;
   Creators?: string[];
   //Rows
   SPDXID?: string;
@@ -48,7 +48,7 @@ export class NormalizedResultForDataTable {
     this.Namespace = Namespace;
     this.VulnerabilitiesSummary = new SummaryByCriticalities();
     this.MisconfigurationsSummary = new SummaryByCriticalities();
-    this.SecretsSummary = new SummaryByCriticalities(); 
+    this.SecretsSummary = new SummaryByCriticalities();
   }
 
   isNotEmptyForK8sSummary() {
@@ -57,20 +57,18 @@ export class NormalizedResultForDataTable {
 
   isEmptyForK8sSummary() {
     return this.VulnerabilitiesSummary?.isEmpty() && this.MisconfigurationsSummary?.isEmpty() && this.SecretsSummary?.isEmpty();
-  }  
+  }
 
   isRBACAssessment() {
-    return this.Kind === 'Role' || 
-    this.Kind === 'RoleBinding' || 
-    this.Kind === 'ClusterRole' || 
-    this.Kind === 'ClusterRoleBinding' || 
-    this.Kind === 'ServiceAccount';   
+    return this.Kind === "Role" || this.Kind === "RoleBinding" || this.Kind === "ClusterRole" || this.Kind === "ClusterRoleBinding" || this.Kind === "ServiceAccount";
   }
 
   isNotRBACAssessment() {
-    return !this.isRBACAssessment();   
+    return !this.isRBACAssessment();
   }
-};
+}
+
+export type DataIndexForNormalizedResultForDataTable = keyof NormalizedResultForDataTable;
 
 export class SummaryByCriticalities {
   Critical: number;
@@ -87,19 +85,19 @@ export class SummaryByCriticalities {
   }
 
   addSeverity(Severity: string) {
-    if(Severity === 'CRITICAL') {
+    if (Severity === "CRITICAL") {
       this.Critical += 1;
-     }
-    if(Severity === 'HIGH') {
+    }
+    if (Severity === "HIGH") {
       this.High += 1;
     }
-    if(Severity === 'MEDIUM') {
+    if (Severity === "MEDIUM") {
       this.Medium += 1;
     }
-    if(Severity === 'LOW') {
+    if (Severity === "LOW") {
       this.Low += 1;
     }
-    if(Severity === 'UNDEFINED') {
+    if (Severity === "UNDEFINED") {
       this.Undefined += 1;
     }
   }
@@ -109,7 +107,6 @@ export class SummaryByCriticalities {
   }
 
   isEmpty() {
-    return this.Critical === 0 && this.High === 0 && this.Medium === 0 && this.Low === 0 && this.Undefined === 0
-  }  
-};
-
+    return this.Critical === 0 && this.High === 0 && this.Medium === 0 && this.Low === 0 && this.Undefined === 0;
+  }
+}

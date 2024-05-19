@@ -25,7 +25,7 @@ export type CommonScanResult = {
   documentNamespace: string;
   name: string;
   spdxVersion: string;
-  creationInfo: CreationInfo   
+  creationInfo: CreationInfo;
 };
 
 export type Holder = {

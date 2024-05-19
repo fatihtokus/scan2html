@@ -6,10 +6,9 @@ import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
 import SeverityTag from "../shared/SeverityTag";
 import { severityFilters } from "../../constants";
-import { NormalizedResultForDataTable } from "../../types";
+import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import Highlighter from "react-highlight-words";
-
-type DataIndex = keyof NormalizedResultForDataTable;
+import { filterDropdown, localeCompare, severityCompare } from "../../utils";
 
 interface MisconfigurationsProps {
   result: NormalizedResultForDataTable[];
@@ -21,11 +20,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndexForNormalizedResultForDataTable) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -36,46 +31,22 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
     setSearchText("");
   };
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): ColumnType<NormalizedResultForDataTable> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div style={{ padding: 8 }} onKeyDown={e => e.stopPropagation()}>
+  const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={e =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
-          <Button
-            type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button type="primary" onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)} icon={<SearchOutlined />} size="small" style={{ width: 90 }}>
             Search
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Reset
           </Button>
           <Button
@@ -101,27 +72,16 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
-    onFilterDropdownOpenChange: visible => {
+    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
+    onFilter: (searchValue, record) => filterDropdown(record[dataIndex], searchValue),
+    onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    render: text =>
+    render: (text) =>
       searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
+        <Highlighter highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }} searchWords={[searchText]} autoEscape textToHighlight={text ? text.toString() : ""} />
       ) : (
         text
       ),
@@ -134,7 +94,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       key: "Target",
       width: "8%",
       ...getColumnSearchProps("Target"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Target.localeCompare(b.Target),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Target, b.Target),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -143,7 +103,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       key: "ID",
       width: "7%",
       ...getColumnSearchProps("ID"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.ID && b.ID ? a.ID.localeCompare(b.ID) : 0,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.ID, b.ID),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -152,7 +112,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       key: "Title",
       width: "15%",
       ...getColumnSearchProps("Title"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Title && b.Title ? a.Title.localeCompare(b.Title) : 0,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Title, b.Title),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -163,8 +123,8 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       filters: severityFilters,
       onFilter: (value, record) => record.Severity === value,
       render: (_, { Severity }) => <SeverityTag severity={Severity ? Severity : ""} />,
-      defaultSortOrder: 'descend',
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Severity && b.Severity ? a.Severity.length - b.Severity.length : 0,//this is wrong
+      defaultSortOrder: "descend",
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => severityCompare(a.Severity, b.Severity),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -173,7 +133,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       key: "Type",
       width: "10%",
       ...getColumnSearchProps("Type"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Type.localeCompare(b.Type),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Type, b.Type),
       sortDirections: ["descend", "ascend"],
     },
     {
@@ -182,14 +142,14 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       key: "Message",
       width: "15%",
       ...getColumnSearchProps("Message"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => a.Message && b.Message ? a.Message.localeCompare(b.Message) : 0,
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Message, b.Message),
       sortDirections: ["descend", "ascend"],
-    }
+    },
   ];
 
   return (
     <>
-      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small"/>
+      <Table columns={columns} dataSource={result} pagination={{ defaultPageSize: 20 }} size="small" sticky />
     </>
   );
 };

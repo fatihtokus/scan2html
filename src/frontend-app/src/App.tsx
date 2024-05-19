@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Divider, Upload, Button, notification} from "antd";
-import Title from "antd/es/typography/Title";
+import { Divider, Upload, Button, notification } from "antd";
 
 import TrivyReport from "./components/trivy-report/TrivyReport";
+import TableTitle from "./components/shared/TableTitle";
 import defaultData from "./data/data.json";
 import { NormalizedResultForDataTable } from "./types";
 import { getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined } from "@ant-design/icons";
 import "./App.css";
 
 interface UploadInfo {
@@ -36,7 +36,7 @@ function App() {
   const [k8sClusterSummaryInfraAssessment, setK8sClusterSummaryInfraAssessment] = useState<NormalizedResultForDataTable[]>([]);
   const [k8sClusterSummaryRBACAssessment, setK8sClusterSummaryRBACAssessment] = useState<NormalizedResultForDataTable[]>([]);
   const [supplyChainSBOM, setSupplyChainSBOM] = useState<NormalizedResultForDataTable[]>([]);
-  const [vulnerabilitiesOrMisconfigurations, setVulnerabilitiesOrMisconfigurations] = useState("k8sClusterSummary");
+  const [vulnerabilitiesOrMisconfigurations, setVulnerabilitiesOrMisconfigurations] = useState("vulnerabilities");
   const [loadedFile, setLoadedFile] = useState("");
 
   const handleUpload = (info: UploadInfo) => {
@@ -44,7 +44,7 @@ function App() {
     const file = info.file as Blob;
 
     if (!(file instanceof Blob)) {
-      console.error('Uploaded file is not a Blob.');
+      console.error("Uploaded file is not a Blob.");
       return;
     }
 
@@ -54,7 +54,7 @@ function App() {
         const content = event.target.result as string;
         try {
           const jsonObject = JSON.parse(content);
-          console.log('Parsed JSON object:', jsonObject);
+          console.log("Parsed JSON object:", jsonObject);
           setVulnerabilities(getVulnerabilities(jsonObject));
           setMisconfigurations(getMisconfigurations(jsonObject));
           setMisconfigurationSummary(getMisconfigurationSummary(jsonObject));
@@ -62,20 +62,20 @@ function App() {
           setK8sClusterSummaryRBACAssessment(getK8sClusterSummaryForRBACAssessment(jsonObject));
           setSupplyChainSBOM(getSupplyChainSBOM(jsonObject));
         } catch (error) {
-          console.error('Error parsing JSON:', error);
+          console.error("Error parsing JSON:", error);
         }
-        
+
         console.log(info.file);
         setLoadedFile(info.file.name);
         notification.success({
-          message: 'File Uploaded',
+          message: "File Uploaded",
           description: `${loadedFile} uploaded successfully.`,
         });
       }
     };
     reader.readAsText(file);
   };
- 
+
   useEffect(() => {
     setVulnerabilities(getVulnerabilities(defaultData));
     setMisconfigurations(getMisconfigurations(defaultData));
@@ -87,26 +87,22 @@ function App() {
 
   return (
     <>
-      <Title level={3}>Trivy Report via scan2html(v0.2.7)</Title>
-      <Upload
-        onChange={handleUpload}
-        accept='.json'
-        showUploadList={false}
-        beforeUpload={() => false}
-      >
-        <Button icon={<UploadOutlined/>}>Select a Trivy JSON Report from your local file system</Button> {loadedFile}
+      <TableTitle />
+      <Upload onChange={handleUpload} accept=".json" showUploadList={false} beforeUpload={() => false}>
+        <Button icon={<UploadOutlined />}>Select a Trivy JSON Report from your local file system</Button> {loadedFile}
       </Upload>
-      <Divider/>
-      <TrivyReport 
-          vulnerabilities={vulnerabilities}
-          misconfigurations={misconfigurations}
-          misconfigurationSummary={misconfigurationSummary}
-          k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment}
-          k8sClusterSummaryRBACAssessment={k8sClusterSummaryRBACAssessment}
-          vulnerabilitiesOrMisconfigurations={vulnerabilitiesOrMisconfigurations} 
-          supplyChainSBOM={supplyChainSBOM}
-          setVulnerabilitiesOrMisconfigurations={setVulnerabilitiesOrMisconfigurations}
-        />
+
+      <Divider />
+      <TrivyReport
+        vulnerabilities={vulnerabilities}
+        misconfigurations={misconfigurations}
+        misconfigurationSummary={misconfigurationSummary}
+        k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment}
+        k8sClusterSummaryRBACAssessment={k8sClusterSummaryRBACAssessment}
+        vulnerabilitiesOrMisconfigurations={vulnerabilitiesOrMisconfigurations}
+        supplyChainSBOM={supplyChainSBOM}
+        setVulnerabilitiesOrMisconfigurations={setVulnerabilitiesOrMisconfigurations}
+      />
     </>
   );
 }

@@ -4,11 +4,9 @@ import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
-import { NormalizedResultForDataTable } from "../../types";
+import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import Highlighter from "react-highlight-words";
-import { localeCompare } from "../../utils";
-
-type DataIndex = keyof NormalizedResultForDataTable;
+import { filterDropdown, localeCompare } from "../../utils";
 
 interface SupplyChainSBOMProps {
   result: NormalizedResultForDataTable[];
@@ -20,11 +18,7 @@ const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
 
-  const handleSearch = (
-    selectedKeys: string[],
-    confirm: (param?: FilterConfirmProps) => void,
-    dataIndex: DataIndex
-  ) => {
+  const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndexForNormalizedResultForDataTable) => {
     confirm();
     setSearchText(selectedKeys[0]);
     setSearchedColumn(dataIndex);
@@ -35,50 +29,40 @@ const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
     setSearchText("");
   };
 
-  const generateTableHeader = (result : NormalizedResultForDataTable[]) => {
-    return result.length == 0 ? "" : (result[0].SpdxVersion + '  |  ' + result[0].DataLicense + '  |  ' + result[0].DocSPDXID + '  |  ' + result[0].DocName + '  |  ' + result[0].DocumentNamespace + '  |  ' + result[0].Creators + '  |  ' + result[0].Created);
+  const generateTableHeader = (result: NormalizedResultForDataTable[]) => {
+    return result.length == 0
+      ? ""
+      : result[0].SpdxVersion +
+          "  |  " +
+          result[0].DataLicense +
+          "  |  " +
+          result[0].DocSPDXID +
+          "  |  " +
+          result[0].DocName +
+          "  |  " +
+          result[0].DocumentNamespace +
+          "  |  " +
+          result[0].Creators +
+          "  |  " +
+          result[0].Created;
   };
 
-  const getColumnSearchProps = (
-    dataIndex: DataIndex
-  ): ColumnType<NormalizedResultForDataTable> => ({
-    filterDropdown: ({
-      setSelectedKeys,
-      selectedKeys,
-      confirm,
-      clearFilters,
-      close,
-    }) => (
-      <div style={{ padding: 8 }} onKeyDown={e => e.stopPropagation()}>
+  const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
         <Input
           ref={searchInput}
           placeholder={`Search ${dataIndex}`}
           value={selectedKeys[0]}
-          onChange={e =>
-            setSelectedKeys(e.target.value ? [e.target.value] : [])
-          }
-          onPressEnter={() =>
-            handleSearch(selectedKeys as string[], confirm, dataIndex)
-          }
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys as string[], confirm, dataIndex)}
           style={{ marginBottom: 8, display: "block" }}
         />
         <Space>
-          <Button
-            type="primary"
-            onClick={() =>
-              handleSearch(selectedKeys as string[], confirm, dataIndex)
-            }
-            icon={<SearchOutlined />}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button type="primary" onClick={() => handleSearch(selectedKeys as string[], confirm, dataIndex)} icon={<SearchOutlined />} size="small" style={{ width: 90 }}>
             Search
           </Button>
-          <Button
-            onClick={() => clearFilters && handleReset(clearFilters)}
-            size="small"
-            style={{ width: 90 }}
-          >
+          <Button onClick={() => clearFilters && handleReset(clearFilters)} size="small" style={{ width: 90 }}>
             Reset
           </Button>
           <Button
@@ -104,27 +88,16 @@ const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => (
-      <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />
-    ),
-    onFilter: (value, record) =>
-      record
-        .toString()
-        .toLowerCase()
-        .includes((value as string).toLowerCase()),
-    onFilterDropdownOpenChange: visible => {
+    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? "#1677ff" : undefined }} />,
+    onFilter: (searchValue, record) => filterDropdown(record[dataIndex], searchValue),
+    onFilterDropdownOpenChange: (visible) => {
       if (visible) {
         setTimeout(() => searchInput.current?.select(), 100);
       }
     },
-    render: text =>
+    render: (text) =>
       searchedColumn === dataIndex ? (
-        <Highlighter
-          highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }}
-          searchWords={[searchText]}
-          autoEscape
-          textToHighlight={text ? text.toString() : ""}
-        />
+        <Highlighter highlightStyle={{ backgroundColor: "#ffc069", padding: 0 }} searchWords={[searchText]} autoEscape textToHighlight={text ? text.toString() : ""} />
       ) : (
         text
       ),
@@ -184,12 +157,12 @@ const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
       ...getColumnSearchProps("LicenseDeclared"),
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.LicenseDeclared, b.LicenseDeclared),
       sortDirections: ["descend", "ascend"],
-    }
+    },
   ];
 
   return (
     <>
-      <Table columns={columns} dataSource={result} pagination={{ pageSize: 20}} size="small" bordered title={() => generateTableHeader(result)}/>
+      <Table columns={columns} dataSource={result} pagination={{ defaultPageSize: 20 }} size="small" bordered title={() => generateTableHeader(result)} sticky />
     </>
   );
 };

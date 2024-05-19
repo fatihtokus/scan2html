@@ -1,0 +1,16 @@
+stages:
+  - security-check
+
+build-job:
+  image: alpine:3.19.1
+  stage: security-check
+  script:
+    - apk add bash
+    - apk add curl
+    - apk --no-cache add ca-certificates git
+    - curl -s -L -o - https://github.com/aquasecurity/trivy/releases/download/v0.51.1/trivy_0.51.1_Linux-64bit.tar.gz | tar -xz
+    - ./trivy plugin install github.com/fatihtokus/scan2html
+    - ./trivy scan2html image --scanners vuln ruby:3.1 interactive_report.html
+  artifacts:
+    paths:
+      - interactive_report.html
