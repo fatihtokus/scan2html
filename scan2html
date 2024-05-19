@@ -18,8 +18,15 @@ Examples:
   # Scan a k8s cluster
   trivy scan2html k8s cluster interactive_result.html
 
-  # Scan a k8s cluster for summary
+  # Scan a k8s cluster all
   trivy scan2html k8s --report=all all interactive_result.html
+
+  # Scan a k8s cluster summary
+  trivy scan2html k8s --report summary cluster interactive_result.html
+
+  # Scan and generate SBOM(spdx) report
+  trivy scan2html image --format spdx alpine:3.15 interactive_result.html
+
 EOS
   exit
 }
@@ -94,22 +101,45 @@ function scan {
   reportName="${!#}"
   echo "reportName: $reportName"
   scanner="$1"
-  echo "scanner: scanner"
+  echo "scanner: $scanner"
   set -- "$1" "${args[@]}" "$reportName"
   echo "BASEDIR: $BASEDIR"
   echo "all_params: $@"
   echo "args: $args"
   echo "reportName: $reportName"
-  trivy "$scanner" --format json -o "$BASEDIR"/$tmp_result "${args[@]}"
- 
+  allParamsExceptTrivy="${args[@]}"
+  echo "allParamsExceptTrivy: $allParamsExceptTrivy"
+
+  output="-o $BASEDIR/$tmp_result"
+  echo "output: $output"
+
+  outputFormat="--format json"
+  echo "outputFormat: $outputFormat"
+
+  if [[ $allParamsExceptTrivy == *"--format spdx"* ]]; then
+      echo "It's an SBOM report!"
+      # Removing --format spdx from the params
+      allParamsExceptTrivy=${allParamsExceptTrivy/--format spdx/}
+      echo "allParamsExceptTrivy: $allParamsExceptTrivy"
+      outputFormat="--format spdx-json"
+  fi
+
+  trivy="trivy"
+  if  command -v ./trivy &> /dev/null; then
+      echo "'./trivy' command is found so it will be used instead of 'trivy'"
+      trivy="./trivy"
+  fi
+  echo "Executing following command"
+  echo "$trivy $scanner $allParamsExceptTrivy $outputFormat $output"
+  $trivy $scanner $allParamsExceptTrivy $outputFormat $output
   reportName=$(generateReportName "$reportName")
 
   cat "$BASEDIR"/report_template.html >> file_contents
   echo "$file_contents file_contents!"
   echo "${file_contents//TEMP_DATA/TEMP_DATA99}" >>"$reportName"
-  
+
   cat "$BASEDIR"/report_template.html >>"$reportName"
-     
+
    # Check if the replace file exists
     if [ ! -f "$reportName" ]; then
         echo "Error: reportName: '$reportName' not found!"
@@ -117,16 +147,16 @@ function scan {
     fi
 
    result_json="$BASEDIR"/$tmp_result
-  
+
    # Check if the replace file exists
     if [ ! -f "$result_json" ]; then
         echo "Error: result_json: '$result_json' not found!"
         return 1
     fi
-    
+
     # Using replace_text function
-   replace_text "$reportName" "{TEMP_DATA:B7}" "$result_json"
-  
+   replace_text "$reportName" "{TEMP_DATA:i9}" "$result_json"
+
   echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT
 }
