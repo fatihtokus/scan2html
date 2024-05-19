@@ -4,16 +4,19 @@ import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
-import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import Highlighter from "react-highlight-words";
-import { filterDropdown, localeCompare } from "../../utils";
 
-interface SupplyChainSBOMProps {
+import { DataIndexForNormalizedResultForDataTable, NormalizedResultForDataTable } from "../../../types";
+import { filterDropdown, localeCompare } from "../../../utils";
+
+interface MisconfigurationSummaryProps {
   result: NormalizedResultForDataTable[];
 }
 
-const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
-  console.log("Vulnerabilities:", result);
+const MisconfigurationSummary: React.FC<MisconfigurationSummaryProps> = ({
+  result,
+}) => {
+  console.log("MisconfigurationSummary:", result);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -27,24 +30,6 @@ const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText("");
-  };
-
-  const generateTableHeader = (result: NormalizedResultForDataTable[]) => {
-    return result.length == 0
-      ? ""
-      : result[0].SpdxVersion +
-          "  |  " +
-          result[0].DataLicense +
-          "  |  " +
-          result[0].DocSPDXID +
-          "  |  " +
-          result[0].DocName +
-          "  |  " +
-          result[0].DocumentNamespace +
-          "  |  " +
-          result[0].Creators +
-          "  |  " +
-          result[0].Created;
   };
 
   const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
@@ -105,66 +90,68 @@ const SupplyChainSBOM: React.FC<SupplyChainSBOMProps> = ({ result }) => {
 
   const columns: ColumnsType<NormalizedResultForDataTable> = [
     {
-      title: "Package Name",
-      dataIndex: "Name",
-      key: "Name",
-      width: "7%",
-      ...getColumnSearchProps("Name"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Name, b.Name),
+      title: "Target",
+      dataIndex: "Target",
+      key: "Target",
+      width: "55%",
+      ...getColumnSearchProps("Target"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Target, b.Target),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "SPDXID",
-      dataIndex: "SPDXID",
-      key: "SPDXID",
-      width: "13%",
-      ...getColumnSearchProps("SPDXID"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.SPDXID, b.SPDXID),
+      title: "Type",
+      dataIndex: "Type",
+      key: "Type",
+      width: "15%",
+      ...getColumnSearchProps("Type"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Type, b.Type),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Package Version",
-      dataIndex: "VersionInfo",
-      key: "VersionInfo",
+      title: "Class",
+      dataIndex: "Class",
+      key: "Class",
+      width: "15%",
+      ...getColumnSearchProps("Class"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Class, b.Class),
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Successes",
+      dataIndex: "Successes",
+      key: "Successes",
       width: "5%",
-      ...getColumnSearchProps("VersionInfo"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.VersionInfo, b.VersionInfo),
+      ...getColumnSearchProps("Successes"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => (a.Successes && b.Successes ? a.Successes - b.Successes : 0),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Files Analyzed",
-      dataIndex: "FilesAnalyzed",
-      key: "FilesAnalyzed",
-      width: "4%",
-      ...getColumnSearchProps("FilesAnalyzed"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.FilesAnalyzed, b.FilesAnalyzed),
+      title: "Failures",
+      dataIndex: "Failures",
+      key: "Failures",
+      width: "5%",
+      ...getColumnSearchProps("Failures"),
+      defaultSortOrder: "descend",
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => (a.Failures && b.Failures ? a.Failures - b.Failures : 0),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Package License Concluded",
-      dataIndex: "LicenseConcluded",
-      key: "LicenseConcluded",
-      width: "12%",
-      ...getColumnSearchProps("LicenseConcluded"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.LicenseConcluded, b.LicenseConcluded),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Package License Declared",
-      dataIndex: "LicenseDeclared",
-      key: "LicenseDeclared",
-      width: "12%",
-      ...getColumnSearchProps("LicenseDeclared"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.LicenseDeclared, b.LicenseDeclared),
+      title: "Exceptions",
+      dataIndex: "Exceptions",
+      key: "Exceptions",
+      width: "5%",
+      ...getColumnSearchProps("Exceptions"),
+      defaultSortOrder: "descend",
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => (a.Exceptions && b.Exceptions ? a.Exceptions - b.Exceptions : 0),
       sortDirections: ["descend", "ascend"],
     },
   ];
 
   return (
     <>
-      <Table columns={columns} dataSource={result} pagination={{ defaultPageSize: 20 }} size="small" bordered title={() => generateTableHeader(result)} sticky />
+      <Table columns={columns} dataSource={result} pagination={{ defaultPageSize: 20 }} size="small" sticky />
     </>
   );
 };
 
-export default SupplyChainSBOM;
+export default MisconfigurationSummary;

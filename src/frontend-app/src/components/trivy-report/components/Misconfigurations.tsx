@@ -4,16 +4,19 @@ import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
-import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import Highlighter from "react-highlight-words";
-import { filterDropdown, localeCompare } from "../../utils";
 
-interface MisconfigurationSummaryProps {
+import { DataIndexForNormalizedResultForDataTable, NormalizedResultForDataTable } from "../../../types";
+import { filterDropdown, localeCompare, severityCompare } from "../../../utils";
+import { severityFilters } from "../../../constants";
+import SeverityTag from "../../shared/SeverityTag";
+
+interface MisconfigurationsProps {
   result: NormalizedResultForDataTable[];
 }
 
-const MisconfigurationSummary: React.FC<MisconfigurationSummaryProps> = ({ result }) => {
-  console.log("MisconfigurationSummary:", result);
+const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
+  console.log("Vulnerabilities:", result);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef<InputRef>(null);
@@ -90,56 +93,57 @@ const MisconfigurationSummary: React.FC<MisconfigurationSummaryProps> = ({ resul
       title: "Target",
       dataIndex: "Target",
       key: "Target",
-      width: "55%",
+      width: "8%",
       ...getColumnSearchProps("Target"),
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Target, b.Target),
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "ID",
+      dataIndex: "ID",
+      key: "ID",
+      width: "7%",
+      ...getColumnSearchProps("ID"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.ID, b.ID),
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Title",
+      dataIndex: "Title",
+      key: "Title",
+      width: "15%",
+      ...getColumnSearchProps("Title"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Title, b.Title),
+      sortDirections: ["descend", "ascend"],
+    },
+    {
+      title: "Severity",
+      dataIndex: "Severity",
+      key: "Severity",
+      width: "5%",
+      filters: severityFilters,
+      onFilter: (value, record) => record.Severity === value,
+      render: (_, { Severity }) => <SeverityTag severity={Severity ? Severity : ""} />,
+      defaultSortOrder: "descend",
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => severityCompare(a.Severity, b.Severity),
       sortDirections: ["descend", "ascend"],
     },
     {
       title: "Type",
       dataIndex: "Type",
       key: "Type",
-      width: "15%",
+      width: "10%",
       ...getColumnSearchProps("Type"),
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Type, b.Type),
       sortDirections: ["descend", "ascend"],
     },
     {
-      title: "Class",
-      dataIndex: "Class",
-      key: "Class",
+      title: "Message",
+      dataIndex: "Message",
+      key: "Message",
       width: "15%",
-      ...getColumnSearchProps("Class"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Class, b.Class),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Successes",
-      dataIndex: "Successes",
-      key: "Successes",
-      width: "5%",
-      ...getColumnSearchProps("Successes"),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => (a.Successes && b.Successes ? a.Successes - b.Successes : 0),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Failures",
-      dataIndex: "Failures",
-      key: "Failures",
-      width: "5%",
-      ...getColumnSearchProps("Failures"),
-      defaultSortOrder: "descend",
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => (a.Failures && b.Failures ? a.Failures - b.Failures : 0),
-      sortDirections: ["descend", "ascend"],
-    },
-    {
-      title: "Exceptions",
-      dataIndex: "Exceptions",
-      key: "Exceptions",
-      width: "5%",
-      ...getColumnSearchProps("Exceptions"),
-      defaultSortOrder: "descend",
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => (a.Exceptions && b.Exceptions ? a.Exceptions - b.Exceptions : 0),
+      ...getColumnSearchProps("Message"),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Message, b.Message),
       sortDirections: ["descend", "ascend"],
     },
   ];
@@ -151,4 +155,4 @@ const MisconfigurationSummary: React.FC<MisconfigurationSummaryProps> = ({ resul
   );
 };
 
-export default MisconfigurationSummary;
+export default Misconfigurations;

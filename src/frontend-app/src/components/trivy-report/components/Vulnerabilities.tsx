@@ -4,12 +4,13 @@ import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
-import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
-import { filterDropdown, localeCompare } from "../../utils";
-
-import SeverityTag from "../shared/SeverityTag";
-import { severityFilters } from "../../constants";
 import Highlighter from "react-highlight-words";
+
+
+import SeverityTag from "../../shared/SeverityTag";
+import { severityFilters } from "../../../constants";
+import { DataIndexForNormalizedResultForDataTable, NormalizedResultForDataTable } from "../../../types";
+import { filterDropdown, localeCompare } from "../../../utils";
 
 interface VulnerabilitiesProps {
   result: NormalizedResultForDataTable[];

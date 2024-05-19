@@ -3,7 +3,7 @@ import { GithubOutlined } from "@ant-design/icons";
 
 const { Title, Link } = Typography;
 
-const TableTitle = () => {
+const TableHeader = () => {
   const href = "https://github.com/fatihtokus/scan2html";
 
   return (
@@ -21,4 +21,4 @@ const TableTitle = () => {
   );
 };
 
-export default TableTitle;
+export default TableHeader;

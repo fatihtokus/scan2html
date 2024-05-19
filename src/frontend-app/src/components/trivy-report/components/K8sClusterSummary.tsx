@@ -1,7 +1,7 @@
 import { Table } from "antd";
 const { Column, ColumnGroup } = Table;
-import { NormalizedResultForDataTable } from "../../types";
-import { localeCompare } from "../../utils";
+import { NormalizedResultForDataTable } from "../../../types";
+import { localeCompare } from "../../../utils";
 
 interface K8sClusterSummaryProps {
   k8sClusterSummaryInfraAssessment: NormalizedResultForDataTable[];
