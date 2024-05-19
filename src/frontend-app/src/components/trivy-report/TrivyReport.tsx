@@ -6,8 +6,8 @@ import { NormalizedResultForDataTable } from "../../types";
 import Vulnerabilities from "./components/Vulnerabilities";
 import MisconfigurationSummary from "./components/MisconfigurationSummary";
 import Misconfigurations from "./components/Misconfigurations";
-import K8sClusterSummary from "./K8sClusterSummary";
-import SupplyChainSBOM from "./SupplyChainSBOM";
+import K8sClusterSummary from "./components/K8sClusterSummary";
+import SupplyChainSBOM from "./components/SupplyChainSBOM";
 
 interface TrivyReportProps {
   vulnerabilities: NormalizedResultForDataTable[];
