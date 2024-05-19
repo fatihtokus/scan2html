@@ -58,46 +58,17 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
     } else {
       params.delete("search");
     }
-    const newUrl = `${window.location.pathname}${
-      params.toString() ? "?" + params.toString() : ""
-    }`;
+    const newUrl = `${window.location.pathname}${params.toString() ? "?" + params.toString() : ""}`;
     window.history.pushState({ search: value }, "", newUrl);
   };
 
-  const resultTable = () => {
-    let data;
-    switch (vulnerabilitiesOrMisconfigurations) {
-      case "misconfigurationSummary":
-        data = misconfigurationSummary;
-        break;
-      case "misconfigurations":
-        data = misconfigurations;
-        break;
-      default:
-        data = vulnerabilities;
-        break;
-    }
-
-    const filteredData = data.filter(row => {
-      return Object.values(row).some(
-        value =>
-          typeof value === "string" &&
-          value.toLowerCase().includes(searchTerm.toLowerCase())
-      );
+  const filteredResult = (data: NormalizedResultForDataTable[]) => {
+    const filteredData = data.filter((row) => {
+      return Object.values(row).some((value) => typeof value === "string" && value.toLowerCase().includes(searchTerm.toLowerCase()));
     });
-
-    if (vulnerabilitiesOrMisconfigurations === "vulnerabilities") {
-      return <Vulnerabilities result={filteredData} />;
-    }
-
-    if (vulnerabilitiesOrMisconfigurations === "misconfigurationSummary") {
-      return <MisconfigurationSummary result={filteredData} />;
-    }
-
-    if (vulnerabilitiesOrMisconfigurations === "misconfigurations") {
-      return <Misconfigurations result={filteredData} />;
-    }
+    return filteredData;
   };
+
   console.log("TrivyReport-k8sClusterSummaryInfraAssessment:", k8sClusterSummaryInfraAssessment);
   console.log("TrivyReport-k8sClusterSummaryRBACAssessment:", k8sClusterSummaryRBACAssessment);
   console.log("TrivyReport-supplyChainSBOM:", supplyChainSBOM);
@@ -111,21 +82,14 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
           marginTop: "-0.625em",
         }}
       >
-        <Search
-          placeholder="input search text"
-          allowClear
-          enterButton="Search"
-          size="large"
-          value={searchTerm}
-          onChange={e => onSearch(e.target.value)}
-        />
+        <Search placeholder="input search text" allowClear enterButton="Search" size="large" value={searchTerm} onChange={(e) => onSearch(e.target.value)} />
       </div>
       <Radio.Group
         onChange={({ target: { value } }) => {
           setVulnerabilitiesOrMisconfigurations(value);
         }}
         value={vulnerabilitiesOrMisconfigurations}
-      >     
+      >
         <Radio value="vulnerabilities">Vulnerabilities ({vulnerabilities.length})</Radio>
         <Radio value="misconfigurationSummary">Misconfiguration Summary ({misconfigurationSummary.length})</Radio>
         <Radio value="misconfigurations">Misconfigurations ({misconfigurations.length})</Radio>
@@ -135,15 +99,14 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
         <Radio value="supplyChainSBOM">Supply Chain SBOM(spdx) ({supplyChainSBOM.length})</Radio>
       </Radio.Group>
       <Divider />
-      {/* {resultTable()} */}
 
-      {vulnerabilitiesOrMisconfigurations === "vulnerabilities" && <Vulnerabilities result={vulnerabilities} />}
-      {vulnerabilitiesOrMisconfigurations === "misconfigurations" && <Misconfigurations result={misconfigurations} />}
-      {vulnerabilitiesOrMisconfigurations === "misconfigurationSummary" && <MisconfigurationSummary result={misconfigurationSummary} />}
+      {vulnerabilitiesOrMisconfigurations === "vulnerabilities" && <Vulnerabilities result={filteredResult(vulnerabilities)} />}
+      {vulnerabilitiesOrMisconfigurations === "misconfigurations" && <Misconfigurations result={filteredResult(misconfigurations)} />}
+      {vulnerabilitiesOrMisconfigurations === "misconfigurationSummary" && <MisconfigurationSummary result={filteredResult(misconfigurationSummary)} />}
       {vulnerabilitiesOrMisconfigurations === "k8sClusterSummary" && (
-        <K8sClusterSummary k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment} k8sClusterSummaryRBACAssessment={k8sClusterSummaryRBACAssessment} />
+        <K8sClusterSummary k8sClusterSummaryInfraAssessment={filteredResult(k8sClusterSummaryInfraAssessment)} k8sClusterSummaryRBACAssessment={filteredResult(k8sClusterSummaryRBACAssessment)} />
       )}
-      {vulnerabilitiesOrMisconfigurations === "supplyChainSBOM" && <SupplyChainSBOM result={supplyChainSBOM} />}
+      {vulnerabilitiesOrMisconfigurations === "supplyChainSBOM" && <SupplyChainSBOM result={filteredResult(supplyChainSBOM)} />}
     </>
   );
 };
