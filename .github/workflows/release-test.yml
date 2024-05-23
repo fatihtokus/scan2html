@@ -51,7 +51,7 @@ jobs:
           
           cat "$reportTemplate"
       - name: Compress
-        run: tar -zcvf scan2html.tar.gz scan2html "$reportTemplate" LICENSE results.json
+        run: tar -zcvf scan2html.tar.gz scan2html.sh "$reportTemplate" LICENSE results.json
 
       - name: Archive plugin
         uses: actions/upload-artifact@v4

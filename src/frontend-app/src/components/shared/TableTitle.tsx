@@ -8,7 +8,7 @@ const TableTitle = () => {
 
   return (
     <div style={{ display: "flex", justifyContent: "space-between" }}>
-      <Title level={2}>Trivy Report</Title>
+      <Title level={3}>Trivy Report</Title>
       <div style={{ display: "flex", alignItems: "center", paddingTop: "1.25rem" }}>
         <Link href={href} target="_blank">
           via scan2html(v0.2.9)

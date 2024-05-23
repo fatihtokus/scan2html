@@ -3,7 +3,7 @@
 🙌 Thank you for contributing and joining our mission to help engineers use cloud infrastructure securely and efficiently 🚀.
 
 ## Making change in scan2html bash code
-1. Execute `git update-index --chmod=+x scan2html`
+1. Execute `git update-index --chmod=+x scan2html.sh`
 2. Then commit and push this change.
 
 ## Testing the app locally
