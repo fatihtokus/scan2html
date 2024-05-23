@@ -1,0 +1,4 @@
+How to build and run trivy via a docker container
+docker build -t trivy-image .
+docker run --rm -v $(pwd)/report:/usr/src/app/report trivy-image
+

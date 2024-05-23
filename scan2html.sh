@@ -53,21 +53,14 @@ function replace_text() {
 
     # Read the content of the replace file
     local replace_content="$(<"$replace_file")"
+    echo "Unescaped replace_content is : "
+    echo $replace_content
+    replace_content=$(printf '%s\n' "$replace_content" | sed 's/[&/\]/\\&/g')
+    echo "Escaped replace_content is : "
+    echo $replace_content
 
     # Loop through each line in the input file
     while IFS= read -r line || [[ -n "$line" ]]; do
-        # regex didn't work
-        # Check if the search_text pattern is found in the line
-        # if [[ $line == *"$search_text"* ]]; then
-        #     # Replace the search_text pattern with the replace_content
-        #     echo "Replacing. Text matching '$search_text' replaced with the content of '$input_file'."
-        #     #echo "${BASH_REMATCH}${replace_content}"
-        #     replaced_line="${line//$BASH_REMATCH/$replace_content}"
-        # else
-        #     # If search_text pattern is not found, use the original line
-        #     replaced_line="$line"
-        # fi
-
         replaced_line="${line//$search_text/$replace_content}"
         echo "$replaced_line" >> "$temp_file"
     done < "$input_file"
@@ -134,9 +127,9 @@ function scan {
   $trivy $scanner $allParamsExceptTrivy $outputFormat $output
   reportName=$(generateReportName "$reportName")
 
-  cat "$BASEDIR"/report_template.html >> file_contents
-  echo "$file_contents file_contents!"
-  echo "${file_contents//TEMP_DATA/TEMP_DATA99}" >>"$reportName"
+#  cat "$BASEDIR"/report_template.html >> file_contents
+#  echo "$file_contents file_contents!"
+#  echo "${file_contents//TEMP_DATA/TEMP_DATA99}" >>"$reportName"
 
   cat "$BASEDIR"/report_template.html >>"$reportName"
 
@@ -155,7 +148,7 @@ function scan {
     fi
 
     # Using replace_text function
-   replace_text "$reportName" "{TEMP_DATA:i9}" "$result_json"
+   replace_text "$reportName" "{TEMP_DATA:I9}" "$result_json"
 
   echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT
