@@ -1,0 +1,16 @@
+container_scanning:
+  image:
+    name: aquasec/trivy
+    entrypoint: [""]
+  variables:
+    TRIVY_NO_PROGRESS: "true"
+    TRIVY_CACHE_DIR: ".trivycache/"
+  before_script:
+    - apk update && apk add curl jq bash git
+    - trivy plugin install github.com/fatihtokus/scan2html
+    - trivy plugin list
+  script:
+    - trivy scan2html fs --scanners vuln,misconfig --exit-code 0 . interactive_fs_scan_report.html
+  artifacts:
+    paths:
+      - interactive_fs_scan_report.html
