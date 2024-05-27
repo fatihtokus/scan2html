@@ -55,13 +55,23 @@ function replace_text() {
     local replace_content="$(<"$replace_file")"
     echo "Unescaped replace_content is : "
     echo $replace_content
-    replace_content=$(printf '%s\n' "$replace_content" | sed 's/[&/\]/\\&/g')
+    #replace_content=$(printf '%s\n' "$replace_content" | sed 's/[&/\]/\\&/g')
     echo "Escaped replace_content is : "
-    echo $replace_content
+    #echo $replace_content
 
     # Loop through each line in the input file
     while IFS= read -r line || [[ -n "$line" ]]; do
-        replaced_line="${line//$search_text/$replace_content}"
+        # Check if the line contains the search_text
+        if [[ $line == *"$search_text"* ]]; then
+            # Extract the part before the search_text
+            before=${line%%"$search_text"*}
+            # Extract the part after the search_text
+            after=${line#*"$search_text"}
+            # Combine before, replace_content, and after
+            replaced_line="$before$replace_content$after"
+        else
+            replaced_line="$line"
+        fi
         echo "$replaced_line" >> "$temp_file"
     done < "$input_file"
 
