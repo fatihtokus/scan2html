@@ -2,8 +2,8 @@ name: Release
 
 on:
   push:
-    branches:
-      - SH-21
+    tags:
+      - "rc*"
 
 jobs:
   build:
@@ -15,8 +15,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
-        with:
-          ref: SH-21
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -51,10 +49,10 @@ jobs:
           
           cat "$reportTemplate"
       - name: Compress
-        run: tar -zcvf scan2html.tar.gz scan2html.sh "$reportTemplate" LICENSE results.json
+        run: tar -zcvf scan2html.tar.gz scan2html.sh "$reportTemplate" LICENSE results.json release-candidate/plugin.yaml
 
-      - name: Archive plugin
-        uses: actions/upload-artifact@v4
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
-          name: plugin
-          path: scan2html.tar.gz
+          files: |
+            scan2html.tar.gz

@@ -1,0 +1,15 @@
+name: "scan2html"
+repository: github.com/fatihtokus/scan2html
+version: "rc0.2.9"
+usage: scan targets into a smart html file
+description: |-
+  A Trivy plugin that scans and outputs the results to a html file.
+  trivy scan2html [-h,--help] command target filename
+platforms:
+  - selector:
+      os: windows
+    uri: https://github.com/fatihtokus/scan2html/releases/download/rc0.2.9/scan2html.tar.gz
+    bin: ./scan2html.sh
+  -
+    uri: https://github.com/fatihtokus/scan2html/releases/download/rc0.2.9/scan2html.tar.gz
+    bin: ./scan2html.sh
