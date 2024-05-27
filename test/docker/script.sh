@@ -39,6 +39,7 @@ printf "Checking directory %s with Trivy\n" .
 git clone --branch test-issue-47 "https://gitlab.com/fatih.tokus/scan2html-test.git"
 #trivy fs --scanners vuln,misconfig --exit-code 0 . --format json -o results.json
 #cat results.json
+
 trivy scan2html fs --scanners vuln,misconfig --exit-code 0 . --format json report.html
 output_dir=/usr/src/app/report
 pwd
