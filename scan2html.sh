@@ -53,11 +53,6 @@ function replace_text() {
 
     # Read the content of the replace file
     local replace_content="$(<"$replace_file")"
-    echo "Unescaped replace_content is : "
-    echo $replace_content
-    #replace_content=$(printf '%s\n' "$replace_content" | sed 's/[&/\]/\\&/g')
-    echo "Escaped replace_content is : "
-    #echo $replace_content
 
     # Loop through each line in the input file
     while IFS= read -r line || [[ -n "$line" ]]; do
