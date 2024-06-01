@@ -1,9 +1,11 @@
 name: "scan2html"
-repository: github.com/fatihtokus/scan2html
 version: "0.2.9"
-usage: scan targets into a smart html file
+maintainer: Fatih Tokus
+repository: github.com/fatihtokus/scan2html
+summary: A Trivy plugin that scans and outputs the results to a single page app.
+usage: A Trivy plugin that scans and outputs the results to a single page app.
 description: |-
-  A Trivy plugin that scans and outputs the results to a html file.
+  A Trivy plugin that scans and outputs the results (vulnerabilities, misconfigurations, secrets, SBOM in containers, Kubernetes, code repositories, clouds and more) to a single page app.
   trivy scan2html [-h,--help] command target filename
 platforms:
   - selector:
