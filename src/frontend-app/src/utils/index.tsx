@@ -26,6 +26,16 @@ export function getVulnerabilities(
   return [];
 }
 
+export function getSecrets(
+  results: any //CommonScanResult
+): NormalizedResultForDataTable[] {
+  if (results.Results) {
+    return mapSecretResults(results.Results);
+  }
+
+  return [];
+}
+
 export function filterDropdown(rowValue: any, searchValue: any) {
   if (rowValue === undefined) {
     return false;
@@ -60,7 +70,7 @@ export function severityCompare(severity1: any, severity2: any) {
   return severity1 && severity2 ? mapSeverityToNumber(severity1) - mapSeverityToNumber(severity2) : 0;
 }
 
-export function vulnerabilitiesForK8s(vulnerabilityHolders: Holder[]): NormalizedResultForDataTable[] {
+function vulnerabilitiesForK8s(vulnerabilityHolders: Holder[]): NormalizedResultForDataTable[] {
   let formattedResultJson: NormalizedResultForDataTable[] = [];
   vulnerabilityHolders.forEach((vulnerabilityHolder) => {
     formattedResultJson = formattedResultJson.concat(mapVulnerabilityResults(vulnerabilityHolder.Results));
@@ -69,7 +79,29 @@ export function vulnerabilitiesForK8s(vulnerabilityHolders: Holder[]): Normalize
   return formattedResultJson;
 }
 
-export function mapVulnerabilityResults(results: CommonResult[]): NormalizedResultForDataTable[] {
+function mapSecretResults(results: CommonResult[]): NormalizedResultForDataTable[] {
+  const formattedResultJson: NormalizedResultForDataTable[] = [];
+
+  results.forEach((result) => {
+    if (result.Secrets) {
+      result.Secrets.forEach((vulnerability) => {
+        formattedResultJson.push({
+          Target: result.Target,
+          ID: vulnerability.RuleID,
+          Title: vulnerability.Title,
+          Category: vulnerability.Category,
+          Severity: vulnerability.Severity,
+          StartLine: "" + vulnerability.StartLine,
+          EndLine: "" + vulnerability.EndLine
+        } as NormalizedResultForDataTable);
+      });
+    }
+  });
+
+  return formattedResultJson;
+}
+
+function mapVulnerabilityResults(results: CommonResult[]): NormalizedResultForDataTable[] {
   const formattedResultJson: NormalizedResultForDataTable[] = [];
 
   results.forEach((result) => {
