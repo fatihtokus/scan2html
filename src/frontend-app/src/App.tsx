@@ -29,7 +29,7 @@ function App() {
   const [selectedMenu, setSelectedMenu] = useState("vulnerabilities");
   const [loadedReport, setLoadedReport] = useState("");
   const [collapsed, setCollapsed] = useState(false);
-  const [theme, setTheme] = useState<MenuTheme>('dark');
+  const [theme, setTheme] = useState<MenuTheme>('light');
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [reportTitle, setReportTitle] = useState('Trivy Report');
 
