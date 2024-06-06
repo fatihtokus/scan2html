@@ -1,45 +1,81 @@
 import { useEffect, useState } from "react";
-import { Divider, Upload, Button, notification } from "antd";
-
+import { Button, notification, Menu, Switch, MenuTheme } from "antd";
 import TrivyReport from "./components/trivy-report/TrivyReport";
 import TableTitle from "./components/shared/TableTitle";
 import defaultData from "./data/data.json";
-import { NormalizedResultForDataTable } from "./types";
-import { getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
-import { UploadOutlined } from "@ant-design/icons";
+import { NormalizedResultForDataTable, UploadInfo } from "./types";
+import { getSecrets, getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
+import { UploadOutlined, ContainerOutlined, SettingOutlined, AlertOutlined, MenuFoldOutlined, MenuUnfoldOutlined, BugOutlined } from "@ant-design/icons";
 import "./App.css";
+import type { MenuProps } from "antd";
 
-interface UploadInfo {
-  file: UploadFile | File;
-  fileList: UploadFile[];
-  event?: {
-    percent: number;
-    [key: string]: any;
-  };
-  [key: string]: any;
-}
 
-interface UploadFile {
-  uid: string;
-  name: string;
-  status?: string;
-  response?: string | object;
-  url?: string;
-  originFileObj?: File;
-  [key: string]: any;
-}
+
+type MenuItem = {
+  key: string;
+  icon: any;
+  label: string;
+};
+
 
 function App() {
   const [vulnerabilities, setVulnerabilities] = useState<NormalizedResultForDataTable[]>([]);
+  const [secrets, setSecrets] = useState<NormalizedResultForDataTable[]>([]);
   const [misconfigurations, setMisconfigurations] = useState<NormalizedResultForDataTable[]>([]);
   const [misconfigurationSummary, setMisconfigurationSummary] = useState<NormalizedResultForDataTable[]>([]);
   const [k8sClusterSummaryInfraAssessment, setK8sClusterSummaryInfraAssessment] = useState<NormalizedResultForDataTable[]>([]);
   const [k8sClusterSummaryRBACAssessment, setK8sClusterSummaryRBACAssessment] = useState<NormalizedResultForDataTable[]>([]);
   const [supplyChainSBOM, setSupplyChainSBOM] = useState<NormalizedResultForDataTable[]>([]);
-  const [vulnerabilitiesOrMisconfigurations, setVulnerabilitiesOrMisconfigurations] = useState("vulnerabilities");
-  const [loadedFile, setLoadedFile] = useState("");
+  const [selectedMenu, setSelectedMenu] = useState("vulnerabilities");
+  const [loadedReport, setLoadedReport] = useState("");
+  const [collapsed, setCollapsed] = useState(false);
+  const [theme, setTheme] = useState<MenuTheme>('dark');
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [reportTitle, setReportTitle] = useState('Trivy Report');
 
-  const handleUpload = (info: UploadInfo) => {
+  const onThemeChanged = (value: boolean) => {
+    setTheme(value ? 'dark' : 'light');
+  };
+
+  const onToggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const onMenuSelected: MenuProps['onClick'] = (e) => {
+    setSelectedMenu(e.key);
+  };
+
+  useEffect(() => {
+    setMenuItems([
+      { key: "vulnerabilities", icon: <BugOutlined />, label: `Vulnerabilities (${vulnerabilities.length})` },
+      { key: "secrets", icon: <BugOutlined />, label: `Secrets (${secrets.length})` },
+      { key: "misconfigurationSummary", icon: <SettingOutlined />, label: `Misconfiguration Summary (${misconfigurationSummary.length})` },
+      { key: "misconfigurations", icon: <SettingOutlined />, label: `Misconfigurations (${misconfigurations.length})` },
+      { key: "k8sClusterSummary", icon: <AlertOutlined />, label: `K8s Cluster Summary (${k8sClusterSummaryInfraAssessment.length} / ${k8sClusterSummaryRBACAssessment.length})` },
+      { key: "supplyChainSBOM", icon: <ContainerOutlined />, label: `Supply Chain SBOM(spdx) (${supplyChainSBOM.length})`  },
+      { key: "loadAReport", icon: <UploadOutlined />, label: "Load a report" }
+    ]);
+  }, [vulnerabilities, misconfigurationSummary, misconfigurations, k8sClusterSummaryInfraAssessment, k8sClusterSummaryRBACAssessment, supplyChainSBOM]);
+
+  useEffect(() => {
+    setVulnerabilities(getVulnerabilities(defaultData));
+    setSecrets(getSecrets(defaultData));
+    setMisconfigurations(getMisconfigurations(defaultData));
+    setMisconfigurationSummary(getMisconfigurationSummary(defaultData));
+    setK8sClusterSummaryInfraAssessment(getK8sClusterSummaryForInfraAssessment(defaultData));
+    setK8sClusterSummaryRBACAssessment(getK8sClusterSummaryForRBACAssessment(defaultData));
+    setSupplyChainSBOM(getSupplyChainSBOM(defaultData));
+  }, []);
+
+  useEffect(() => {
+    if (menuItems.length > 0){
+      const label = menuItems.filter((item) => item?.key == selectedMenu);
+      setReportTitle(`Trivy Report - ${label[0]?.label}`);
+    }
+    
+  }, [selectedMenu]);
+
+  const onReportUpload = (info: UploadInfo) => {
     console.log(info);
     const file = info.file as Blob;
 
@@ -56,54 +92,65 @@ function App() {
           const jsonObject = JSON.parse(content);
           console.log("Parsed JSON object:", jsonObject);
           setVulnerabilities(getVulnerabilities(jsonObject));
+          setSecrets(getSecrets(defaultData));
           setMisconfigurations(getMisconfigurations(jsonObject));
           setMisconfigurationSummary(getMisconfigurationSummary(jsonObject));
           setK8sClusterSummaryInfraAssessment(getK8sClusterSummaryForInfraAssessment(jsonObject));
           setK8sClusterSummaryRBACAssessment(getK8sClusterSummaryForRBACAssessment(jsonObject));
           setSupplyChainSBOM(getSupplyChainSBOM(jsonObject));
+          
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
 
         console.log(info.file);
-        setLoadedFile(info.file.name);
+        setLoadedReport(info.file.name);
         notification.success({
           message: "File Uploaded",
-          description: `${loadedFile} uploaded successfully.`,
+          description: `${loadedReport} uploaded successfully.`,
         });
       }
     };
     reader.readAsText(file);
   };
 
-  useEffect(() => {
-    setVulnerabilities(getVulnerabilities(defaultData));
-    setMisconfigurations(getMisconfigurations(defaultData));
-    setMisconfigurationSummary(getMisconfigurationSummary(defaultData));
-    setK8sClusterSummaryInfraAssessment(getK8sClusterSummaryForInfraAssessment(defaultData));
-    setK8sClusterSummaryRBACAssessment(getK8sClusterSummaryForRBACAssessment(defaultData));
-    setSupplyChainSBOM(getSupplyChainSBOM(defaultData));
-  }, []);
-
   return (
-    <>
-      <TableTitle />
-      <Upload onChange={handleUpload} accept=".json" showUploadList={false} beforeUpload={() => false}>
-        <Button icon={<UploadOutlined />}>Select a Trivy JSON Report from your local file system</Button> {loadedFile}
-      </Upload>
-
-      <Divider />
-      <TrivyReport
-        vulnerabilities={vulnerabilities}
-        misconfigurations={misconfigurations}
-        misconfigurationSummary={misconfigurationSummary}
-        k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment}
-        k8sClusterSummaryRBACAssessment={k8sClusterSummaryRBACAssessment}
-        vulnerabilitiesOrMisconfigurations={vulnerabilitiesOrMisconfigurations}
-        supplyChainSBOM={supplyChainSBOM}
-        setVulnerabilitiesOrMisconfigurations={setVulnerabilitiesOrMisconfigurations}
-      />
-    </>
+    <div style={{ display: "flex", minHeight: "100vh" }}>
+      <div id="menu">
+        <Switch
+          checked={theme === 'dark'}
+          onChange={onThemeChanged}
+          checkedChildren="Dark"
+          unCheckedChildren="Light"
+        />
+        <Button type="primary" onClick={onToggleCollapsed} style={{ margin: 16 }}>
+          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        </Button>
+        <Menu
+          defaultSelectedKeys={[selectedMenu]}
+          mode="inline"
+          theme={theme}
+          inlineCollapsed={collapsed}
+          items={menuItems}
+          onClick={onMenuSelected}
+        />
+      </div>
+      <div id="content" style={{ flexGrow: 1, marginLeft: 20 }}>
+        <TableTitle title={reportTitle}/>  
+        <TrivyReport
+          vulnerabilities={vulnerabilities}
+          secrets={secrets}
+          misconfigurations={misconfigurations}
+          misconfigurationSummary={misconfigurationSummary}
+          k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment}
+          k8sClusterSummaryRBACAssessment={k8sClusterSummaryRBACAssessment}
+          selectedMenu={selectedMenu}
+          supplyChainSBOM={supplyChainSBOM}
+          onReportUpload={onReportUpload}
+          loadedReport={loadedReport}
+        />
+      </div>
+    </div>
   );
 }
 

@@ -1,33 +1,39 @@
-import { Divider, Radio } from "antd";
-import { NormalizedResultForDataTable } from "../../types";
+import { NormalizedResultForDataTable, UploadInfo } from "../../types";
 import Misconfigurations from "./Misconfigurations";
 import Vulnerabilities from "./Vulnerabilities";
 import MisconfigurationSummary from "./MisconfigurationSummary";
 import K8sClusterSummary from "./K8sClusterSummary";
 import SupplyChainSBOM from "./SupplyChainSBOM";
+import UploadAReport from "./UploadAReport";
+import Secrets from "./Secrets";
 
 interface TrivyReportProps {
   vulnerabilities: NormalizedResultForDataTable[];
+  secrets: NormalizedResultForDataTable[];
   misconfigurations: NormalizedResultForDataTable[];
   misconfigurationSummary: NormalizedResultForDataTable[];
   k8sClusterSummaryInfraAssessment: NormalizedResultForDataTable[];
   k8sClusterSummaryRBACAssessment: NormalizedResultForDataTable[];
   supplyChainSBOM: NormalizedResultForDataTable[];
-  vulnerabilitiesOrMisconfigurations: string;
-  setVulnerabilitiesOrMisconfigurations: (value: string) => void;
+  selectedMenu: string;
+  onReportUpload: (info: UploadInfo) => void;
+  loadedReport: string;
 }
 
 const TrivyReport: React.FC<TrivyReportProps> = ({
   vulnerabilities,
+  secrets,
   misconfigurations,
   misconfigurationSummary,
   k8sClusterSummaryInfraAssessment,
   k8sClusterSummaryRBACAssessment,
-  vulnerabilitiesOrMisconfigurations,
+  selectedMenu,
   supplyChainSBOM,
-  setVulnerabilitiesOrMisconfigurations,
+  onReportUpload,
+  loadedReport
 }) => {
   console.log("TrivyReport-vulnerabilities:", vulnerabilities);
+  console.log("TrivyReport-secrets:", secrets);
   console.log("TrivyReport-misconfigurations:", misconfigurations);
   console.log("TrivyReport-misconfigurationSummary:", misconfigurationSummary);
   console.log("TrivyReport-k8sClusterSummaryInfraAssessment:", k8sClusterSummaryInfraAssessment);
@@ -36,30 +42,15 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
 
   return (
     <>
-      <Radio.Group
-        onChange={({ target: { value } }) => {
-          setVulnerabilitiesOrMisconfigurations(value);
-        }}
-        value={vulnerabilitiesOrMisconfigurations}
-      >
-        <Radio value="vulnerabilities">Vulnerabilities ({vulnerabilities.length})</Radio>
-        <Radio value="misconfigurationSummary">Misconfiguration Summary ({misconfigurationSummary.length})</Radio>
-        <Radio value="misconfigurations">Misconfigurations ({misconfigurations.length})</Radio>
-        <Radio value="k8sClusterSummary">
-          K8s Cluster Summary ({k8sClusterSummaryInfraAssessment.length}/{k8sClusterSummaryRBACAssessment.length})
-        </Radio>
-        <Radio value="supplyChainSBOM">Supply Chain SBOM(spdx) ({supplyChainSBOM.length})</Radio>
-      </Radio.Group>
-
-      <Divider />
-
-      {vulnerabilitiesOrMisconfigurations === "vulnerabilities" && <Vulnerabilities result={vulnerabilities} />}
-      {vulnerabilitiesOrMisconfigurations === "misconfigurations" && <Misconfigurations result={misconfigurations} />}
-      {vulnerabilitiesOrMisconfigurations === "misconfigurationSummary" && <MisconfigurationSummary result={misconfigurationSummary} />}
-      {vulnerabilitiesOrMisconfigurations === "k8sClusterSummary" && (
+      {selectedMenu === "vulnerabilities" && <Vulnerabilities result={vulnerabilities} />}
+      {selectedMenu === "secrets" && <Secrets result={secrets} />}
+      {selectedMenu === "misconfigurations" && <Misconfigurations result={misconfigurations} />}
+      {selectedMenu === "misconfigurationSummary" && <MisconfigurationSummary result={misconfigurationSummary} />}
+      {selectedMenu === "k8sClusterSummary" && (
         <K8sClusterSummary k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment} k8sClusterSummaryRBACAssessment={k8sClusterSummaryRBACAssessment} />
       )}
-      {vulnerabilitiesOrMisconfigurations === "supplyChainSBOM" && <SupplyChainSBOM result={supplyChainSBOM} />}
+      {selectedMenu === "supplyChainSBOM" && <SupplyChainSBOM result={supplyChainSBOM} />}
+      {selectedMenu === "loadAReport" && <UploadAReport onReportUpload={onReportUpload} loadedReport={loadedReport}/>}
     </>
   );
 };

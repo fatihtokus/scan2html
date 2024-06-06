@@ -5,7 +5,7 @@ import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
-import { filterDropdown, localeCompare } from "../../utils";
+import { filterDropdown, localeCompare, severityCompare } from "../../utils";
 
 import SeverityTag from "../shared/SeverityTag";
 import { severityFilters } from "../../constants";
@@ -125,7 +125,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       onFilter: (value, record) => record.Severity === value,
       render: (_, { Severity }) => <SeverityTag severity={Severity ? Severity : ""} />,
       defaultSortOrder: "descend",
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => (a.Severity && b.Severity ? a.Severity.length - b.Severity.length : 0), //This is wrong
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => severityCompare(a.Severity, b.Severity),
       sortDirections: ["descend", "ascend"],
     },
     {
