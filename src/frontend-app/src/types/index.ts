@@ -11,6 +11,11 @@ export class NormalizedResultForDataTable {
   Message?: string;
   IsVulnerability?: boolean;
 
+  // Secrets
+  Category?: string;
+  StartLine?: string;
+  EndLine?: string;
+
   // K8s Misconfiguration Summary
   Successes?: number;
   Failures?: number;
@@ -109,4 +114,24 @@ export class SummaryByCriticalities {
   isEmpty() {
     return this.Critical === 0 && this.High === 0 && this.Medium === 0 && this.Low === 0 && this.Undefined === 0;
   }
+}
+
+export interface UploadInfo {
+  file: UploadFile | File;
+  fileList: UploadFile[];
+  event?: {
+    percent: number;
+    [key: string]: any;
+  };
+  [key: string]: any;
+}
+
+export interface UploadFile {
+  uid: string;
+  name: string;
+  status?: string;
+  response?: string | object;
+  url?: string;
+  originFileObj?: File;
+  [key: string]: any;
 }
