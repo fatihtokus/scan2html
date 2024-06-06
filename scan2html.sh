@@ -130,11 +130,9 @@ function scan {
   echo "Executing following command"
   echo "$trivy $scanner $allParamsExceptTrivy $outputFormat $output"
   $trivy $scanner $allParamsExceptTrivy $outputFormat $output
+  exit_code=$?
+  echo "Exit code $exit_code"
   reportName=$(generateReportName "$reportName")
-
-#  cat "$BASEDIR"/report_template.html >> file_contents
-#  echo "$file_contents file_contents!"
-#  echo "${file_contents//TEMP_DATA/TEMP_DATA99}" >>"$reportName"
 
   cat "$BASEDIR"/report_template.html >>"$reportName"
 
@@ -157,6 +155,7 @@ function scan {
 
   echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT
+  exit $exit_code
 }
 
 if [[ ($# -eq 0) || ($1 == "--help") || ($1 == "-h") ]]; then
