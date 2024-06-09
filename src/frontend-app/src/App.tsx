@@ -32,6 +32,7 @@ function App() {
   const [theme, setTheme] = useState<MenuTheme>('light');
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [reportTitle, setReportTitle] = useState('Trivy Report');
+  const [filledResultsPerCategory, setFilledResultsPerCategory] = useState<string[]>([]);
 
   const onThemeChanged = (value: boolean) => {
     setTheme(value ? 'dark' : 'light');
@@ -46,6 +47,32 @@ function App() {
   };
 
   useEffect(() => {
+    let tempResults: string[] = [];
+    if (vulnerabilities.length > 0){
+      tempResults.push("vulnerabilities");
+    }
+
+    if (secrets.length > 0){
+      tempResults.push("secrets");
+    }
+
+    if (misconfigurations.length > 0){
+      tempResults.push("misconfigurations");
+    }
+
+    if (misconfigurationSummary.length > 0){
+      tempResults.push("misconfigurationSummary");
+    }
+
+    if (k8sClusterSummaryInfraAssessment.length > 0  || k8sClusterSummaryRBACAssessment.length > 0){
+      tempResults.push("k8sClusterSummary");
+    }
+
+    if (supplyChainSBOM.length > 0){
+      tempResults.push("supplyChainSBOM");
+    }
+
+    setFilledResultsPerCategory(tempResults);
     setMenuItems([
       { key: "vulnerabilities", icon: <BugOutlined />, label: `Vulnerabilities (${vulnerabilities.length})` },
       { key: "secrets", icon: <BugOutlined />, label: `Secrets (${secrets.length})` },
@@ -74,6 +101,14 @@ function App() {
     }
     
   }, [selectedMenu]);
+
+  useEffect(() => {
+    setSelectedMenu(filledResultsPerCategory[0]);
+    if(filledResultsPerCategory.length === 1) { // Collapse the menu
+      setCollapsed(true);
+    }
+    
+  }, [filledResultsPerCategory]);
 
   const onReportUpload = (info: UploadInfo) => {
     console.log(info);
@@ -127,7 +162,8 @@ function App() {
           {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         </Button>
         <Menu
-          defaultSelectedKeys={[selectedMenu]}
+          defaultSelectedKeys={["vulnerabilities"]}
+          selectedKeys={[selectedMenu]}
           mode="inline"
           theme={theme}
           inlineCollapsed={collapsed}
