@@ -9,14 +9,11 @@ import { UploadOutlined, ContainerOutlined, SettingOutlined, AlertOutlined, Menu
 import "./App.css";
 import type { MenuProps } from "antd";
 
-
-
 type MenuItem = {
   key: string;
   icon: any;
   label: string;
 };
-
 
 function App() {
   const [vulnerabilities, setVulnerabilities] = useState<NormalizedResultForDataTable[]>([]);
@@ -27,12 +24,15 @@ function App() {
   const [k8sClusterSummaryRBACAssessment, setK8sClusterSummaryRBACAssessment] = useState<NormalizedResultForDataTable[]>([]);
   const [supplyChainSBOM, setSupplyChainSBOM] = useState<NormalizedResultForDataTable[]>([]);
   const [selectedMenu, setSelectedMenu] = useState("vulnerabilities");
-  const [loadedReport, setLoadedReport] = useState("");
+  const [loadedReportFiles, setLoadedReportFiles] = useState<string[]>([]);
+  const [manuallyLoadedReportFile, setManuallyLoadedReportFile] = useState("");
+  const [loadedData, setLoadedData] = useState([{}]);
   const [collapsed, setCollapsed] = useState(false);
   const [theme, setTheme] = useState<MenuTheme>('light');
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [reportTitle, setReportTitle] = useState('Trivy Report');
   const [filledResultsPerCategory, setFilledResultsPerCategory] = useState<string[]>([]);
+  const queryParameters = new URLSearchParams(window.location.search)
 
   const onThemeChanged = (value: boolean) => {
     setTheme(value ? 'dark' : 'light');
@@ -45,6 +45,47 @@ function App() {
   const onMenuSelected: MenuProps['onClick'] = (e) => {
     setSelectedMenu(e.key);
   };
+
+  const fetchJsonData = (jsonUrl: string) => {
+    return fetch(jsonUrl)
+        .then(response => response.json())
+        .catch(error => {
+            console.error('Error fetching JSON data:', error);
+            return { error: 'Failed to load JSON data' };
+        });
+  };
+
+  useEffect(() => {
+    const reportUrls = queryParameters.getAll("reportUrls");
+    console.log(`reportUrls ${reportUrls}`);
+    if(reportUrls.length > 0){
+      setLoadedReportFiles(reportUrls);
+    } else {
+      setLoadedData([defaultData]);
+    }
+    
+  }, []);
+
+  useEffect(() => {
+    console.log(`loadedReportFiles ${loadedReportFiles}`);
+    if(loadedReportFiles.length > 0){
+      Promise.all(loadedReportFiles.map(fetchJsonData)).then(results => {
+        const newData = results.map(data => ({ ...data }));
+        setLoadedData(newData);
+    });
+    } 
+  }, [loadedReportFiles]);
+
+  useEffect(() => {
+    console.log(`loadedData.length ${loadedData.length}`);
+    setVulnerabilities(getVulnerabilities(loadedData));
+    setSecrets(getSecrets(loadedData));
+    setMisconfigurations(getMisconfigurations(loadedData));
+    setMisconfigurationSummary(getMisconfigurationSummary(loadedData));
+    setK8sClusterSummaryInfraAssessment(getK8sClusterSummaryForInfraAssessment(loadedData));
+    setK8sClusterSummaryRBACAssessment(getK8sClusterSummaryForRBACAssessment(loadedData));
+    setSupplyChainSBOM(getSupplyChainSBOM(loadedData));
+  }, [loadedData]);
 
   useEffect(() => {
     let tempResults: string[] = [];
@@ -82,17 +123,17 @@ function App() {
       { key: "supplyChainSBOM", icon: <ContainerOutlined />, label: `Supply Chain SBOM(spdx) (${supplyChainSBOM.length})`  },
       { key: "loadAReport", icon: <UploadOutlined />, label: "Load a report" }
     ]);
-  }, [vulnerabilities, misconfigurationSummary, misconfigurations, k8sClusterSummaryInfraAssessment, k8sClusterSummaryRBACAssessment, supplyChainSBOM]);
+  }, [vulnerabilities, misconfigurationSummary, secrets, misconfigurations, k8sClusterSummaryInfraAssessment, k8sClusterSummaryRBACAssessment, supplyChainSBOM]);
 
   useEffect(() => {
-    setVulnerabilities(getVulnerabilities(defaultData));
-    setSecrets(getSecrets(defaultData));
-    setMisconfigurations(getMisconfigurations(defaultData));
-    setMisconfigurationSummary(getMisconfigurationSummary(defaultData));
-    setK8sClusterSummaryInfraAssessment(getK8sClusterSummaryForInfraAssessment(defaultData));
-    setK8sClusterSummaryRBACAssessment(getK8sClusterSummaryForRBACAssessment(defaultData));
-    setSupplyChainSBOM(getSupplyChainSBOM(defaultData));
-  }, []);
+    if(filledResultsPerCategory.length > 0) { 
+      setSelectedMenu(filledResultsPerCategory[0]);
+    }
+    if(filledResultsPerCategory.length === 1) { // Collapse the menu
+      setCollapsed(true);
+    }
+    
+  }, [filledResultsPerCategory]);
 
   useEffect(() => {
     if (menuItems.length > 0){
@@ -101,14 +142,6 @@ function App() {
     }
     
   }, [selectedMenu]);
-
-  useEffect(() => {
-    setSelectedMenu(filledResultsPerCategory[0]);
-    if(filledResultsPerCategory.length === 1) { // Collapse the menu
-      setCollapsed(true);
-    }
-    
-  }, [filledResultsPerCategory]);
 
   const onReportUpload = (info: UploadInfo) => {
     console.log(info);
@@ -126,23 +159,17 @@ function App() {
         try {
           const jsonObject = JSON.parse(content);
           console.log("Parsed JSON object:", jsonObject);
-          setVulnerabilities(getVulnerabilities(jsonObject));
-          setSecrets(getSecrets(defaultData));
-          setMisconfigurations(getMisconfigurations(jsonObject));
-          setMisconfigurationSummary(getMisconfigurationSummary(jsonObject));
-          setK8sClusterSummaryInfraAssessment(getK8sClusterSummaryForInfraAssessment(jsonObject));
-          setK8sClusterSummaryRBACAssessment(getK8sClusterSummaryForRBACAssessment(jsonObject));
-          setSupplyChainSBOM(getSupplyChainSBOM(jsonObject));
-          
+          const newData = { ...jsonObject };
+          setLoadedData([newData]);          
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
 
         console.log(info.file);
-        setLoadedReport(info.file.name);
+        setManuallyLoadedReportFile(info.file.name);
         notification.success({
           message: "File Uploaded",
-          description: `${loadedReport} uploaded successfully.`,
+          description: `${manuallyLoadedReportFile} uploaded successfully.`,
         });
       }
     };
@@ -183,7 +210,8 @@ function App() {
           selectedMenu={selectedMenu}
           supplyChainSBOM={supplyChainSBOM}
           onReportUpload={onReportUpload}
-          loadedReport={loadedReport}
+          loadedReportFiles={loadedReportFiles}
+          manuallyLoadedReportFile={manuallyLoadedReportFile}
         />
       </div>
     </div>

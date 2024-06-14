@@ -17,7 +17,8 @@ interface TrivyReportProps {
   supplyChainSBOM: NormalizedResultForDataTable[];
   selectedMenu: string;
   onReportUpload: (info: UploadInfo) => void;
-  loadedReport: string;
+  loadedReportFiles: string[];
+  manuallyLoadedReportFile: string;
 }
 
 const TrivyReport: React.FC<TrivyReportProps> = ({
@@ -30,7 +31,8 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
   selectedMenu,
   supplyChainSBOM,
   onReportUpload,
-  loadedReport
+  loadedReportFiles,
+  manuallyLoadedReportFile
 }) => {
   console.log("TrivyReport-vulnerabilities:", vulnerabilities);
   console.log("TrivyReport-secrets:", secrets);
@@ -50,7 +52,7 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
         <K8sClusterSummary k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment} k8sClusterSummaryRBACAssessment={k8sClusterSummaryRBACAssessment} />
       )}
       {selectedMenu === "supplyChainSBOM" && <SupplyChainSBOM result={supplyChainSBOM} />}
-      {selectedMenu === "loadAReport" && <UploadAReport onReportUpload={onReportUpload} loadedReport={loadedReport}/>}
+      {selectedMenu === "loadAReport" && <UploadAReport onReportUpload={onReportUpload} loadedReportFiles={loadedReportFiles} manuallyLoadedReportFile={manuallyLoadedReportFile}/>}
     </>
   );
 };

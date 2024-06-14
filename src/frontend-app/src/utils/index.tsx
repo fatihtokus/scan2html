@@ -1,7 +1,20 @@
 import { NormalizedResultForDataTable } from "../types";
 import { CommonScanResult, CommonResult, Holder } from "../types/external/defaultResult";
 
-export function getVulnerabilities(
+export function getVulnerabilities(results: any[] //CommonScanResult[]
+): NormalizedResultForDataTable[] {
+  let formattedResultJson: NormalizedResultForDataTable[] = [];
+  results.forEach((result) => {
+    let tempResult = getVulnerabilitiesFromAReport(result);
+    if (tempResult.length > 0) {
+      formattedResultJson = formattedResultJson.concat(tempResult);
+    }      
+  });
+
+  return formattedResultJson;
+}
+
+function getVulnerabilitiesFromAReport(
   results: any //CommonScanResult
 ): NormalizedResultForDataTable[] {
   if (results.Results) {
@@ -26,7 +39,20 @@ export function getVulnerabilities(
   return [];
 }
 
-export function getSecrets(
+export function getSecrets(results: any[] //CommonScanResult[]
+): NormalizedResultForDataTable[] {
+  let formattedResultJson: NormalizedResultForDataTable[] = [];
+  results.forEach((result) => {
+    let tempResult = getSecretsFromAReport(result);
+    if (tempResult.length > 0) {
+      formattedResultJson = formattedResultJson.concat(tempResult);
+    }      
+  });
+
+  return formattedResultJson;
+}
+
+function getSecretsFromAReport(
   results: any //CommonScanResult
 ): NormalizedResultForDataTable[] {
   if (results.Results) {
@@ -160,7 +186,20 @@ function mapSBOMResults(results: CommonScanResult): NormalizedResultForDataTable
   return formattedResultJson;
 }
 
-export function getMisconfigurationSummary(
+export function getMisconfigurationSummary(results: any[] //CommonScanResult[]
+): NormalizedResultForDataTable[] {
+  let formattedResultJson: NormalizedResultForDataTable[] = [];
+  results.forEach((result) => {
+    let tempResult = getMisconfigurationSummaryFromAReport(result);
+    if (tempResult.length > 0) {
+      formattedResultJson = formattedResultJson.concat(tempResult);
+    }      
+  });
+
+  return formattedResultJson;
+}
+
+function getMisconfigurationSummaryFromAReport(
   results: any //CommonScanResult
 ): NormalizedResultForDataTable[] {
   if (results.Resources) {
@@ -176,7 +215,20 @@ export function getMisconfigurationSummary(
   return [];
 }
 
-export function getMisconfigurations(
+export function getMisconfigurations(results: any[] //CommonScanResult[]
+): NormalizedResultForDataTable[] {
+  let formattedResultJson: NormalizedResultForDataTable[] = [];
+  results.forEach((result) => {
+    let tempResult = getMisconfigurationsFromAReport(result);
+    if (tempResult.length > 0) {
+      formattedResultJson = formattedResultJson.concat(tempResult);
+    }      
+  });
+
+  return formattedResultJson;
+}
+
+function getMisconfigurationsFromAReport(
   results: any //CommonScanResult
 ): NormalizedResultForDataTable[] {
   if (results.Results) {
@@ -201,7 +253,20 @@ export function getMisconfigurations(
   return [];
 }
 
-export function getK8sClusterSummaryForInfraAssessment(
+export function getK8sClusterSummaryForInfraAssessment(results: any[] //CommonScanResult[]
+): NormalizedResultForDataTable[] {
+  let formattedResultJson: NormalizedResultForDataTable[] = [];
+  results.forEach((result) => {
+    let tempResult = getK8sClusterSummaryForInfraAssessmentFromAReport(result);
+    if (tempResult.length > 0) {
+      formattedResultJson = formattedResultJson.concat(tempResult);
+    }      
+  });
+
+  return formattedResultJson;
+}
+
+function getK8sClusterSummaryForInfraAssessmentFromAReport(
   results: any //CommonScanResult
 ): NormalizedResultForDataTable[] {
   if (results.Resources) {
@@ -217,7 +282,20 @@ export function getK8sClusterSummaryForInfraAssessment(
   return [];
 }
 
-export function getK8sClusterSummaryForRBACAssessment(
+export function getK8sClusterSummaryForRBACAssessment(results: any[] //CommonScanResult[]
+): NormalizedResultForDataTable[] {
+  let formattedResultJson: NormalizedResultForDataTable[] = [];
+  results.forEach((result) => {
+    let tempResult = getK8sClusterSummaryForRBACAssessmentFromAReport(result);
+    if (tempResult.length > 0) {
+      formattedResultJson = formattedResultJson.concat(tempResult);
+    }      
+  });
+
+  return formattedResultJson;
+}
+
+function getK8sClusterSummaryForRBACAssessmentFromAReport(
   results: any //CommonScanResult
 ): NormalizedResultForDataTable[] {
   if (results.Resources) {
