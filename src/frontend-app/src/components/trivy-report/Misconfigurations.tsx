@@ -9,6 +9,7 @@ import { severityFilters } from "../../constants";
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import Highlighter from "react-highlight-words";
 import { filterDropdown, localeCompare, severityCompare } from "../../utils";
+import SeverityToolbar from '../shared/SeverityToolbar.tsx';
 
 interface MisconfigurationsProps {
   result: NormalizedResultForDataTable[];
@@ -149,6 +150,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
 
   return (
     <>
+      <SeverityToolbar result={result} />
       <Table columns={columns} dataSource={result} pagination={{ defaultPageSize: 20 }} size="small" sticky />
     </>
   );

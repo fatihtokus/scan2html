@@ -5,25 +5,29 @@ const SeverityTag = ({ severity }: { severity: string }) => {
 
   switch (severity.toLowerCase()) {
     case "critical":
-      color = "#f50";
+      color = "#FF6666";
       break;
     case "high":
-      color = "#108ee9";
+      color = "#FF9966";
       break;
     case "medium":
-      color = "#2db7f5";
+      color = "#FFCC66";
       break;
     case "low":
-      color = "#87d068";
+      color = "#FFFF99";
       break;
     default:
-      color = "#ccc";
+      color = "#CCFFFF";
       break;
   }
 
   return (
-    <Tag color={color} key={severity}>
+    <Tag color={color} key={severity} style={{
+      backgroundColor: color,
+      color: '#000', // Set text color to black
+    }}>
       {severity}
+      
     </Tag>
   );
 };

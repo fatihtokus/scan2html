@@ -6,6 +6,7 @@ import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState } from "react";
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import { filterDropdown, localeCompare, severityCompare } from "../../utils";
+import SeverityToolbar from '../shared/SeverityToolbar.tsx';
 
 import SeverityTag from "../shared/SeverityTag";
 import { severityFilters } from "../../constants";
@@ -159,6 +160,7 @@ const Secrets: React.FC<SecretsProps> = ({ result }) => {
 
   return (
     <>
+      <SeverityToolbar result={result} />
       <Table columns={columns} dataSource={result} pagination={{ defaultPageSize: 20 }} size="small" sticky />
     </>
   );
