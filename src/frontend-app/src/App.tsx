@@ -63,7 +63,7 @@ function App() {
     } else {
       setLoadedData([defaultData]);
     }
-    
+
   }, []);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ function App() {
         const newData = results.map(data => ({ ...data }));
         setLoadedData(newData);
     });
-    } 
+    }
   }, [loadedReportFiles]);
 
   useEffect(() => {
@@ -126,13 +126,13 @@ function App() {
   }, [vulnerabilities, misconfigurationSummary, secrets, misconfigurations, k8sClusterSummaryInfraAssessment, k8sClusterSummaryRBACAssessment, supplyChainSBOM]);
 
   useEffect(() => {
-    if(filledResultsPerCategory.length > 0) { 
+    if(filledResultsPerCategory.length > 0) {
       setSelectedMenu(filledResultsPerCategory[0]);
     }
     if(filledResultsPerCategory.length === 1) { // Collapse the menu
       setCollapsed(true);
     }
-    
+
   }, [filledResultsPerCategory]);
 
   useEffect(() => {
@@ -160,7 +160,7 @@ function App() {
           const jsonObject = JSON.parse(content);
           console.log("Parsed JSON object:", jsonObject);
           const newData = { ...jsonObject };
-          setLoadedData([newData]);          
+          setLoadedData([newData]);
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
