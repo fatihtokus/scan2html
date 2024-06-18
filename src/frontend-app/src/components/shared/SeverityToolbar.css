@@ -1,0 +1,9 @@
+/* SeverityToolbar.css */
+.ant-btn {
+    border: none;
+    margin-right: 8px;
+  }
+  
+  .ant-space-item:last-child .ant-btn {
+    margin-right: 0;
+  }

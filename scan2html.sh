@@ -151,7 +151,7 @@ function scan {
     fi
 
     # Using replace_text function
-   replace_text "$reportName" "{TEMP_DATA:mV}" "$result_json"
+   replace_text "$reportName" "{TEMP_DATA:pV}" "$result_json"
 
   echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT
