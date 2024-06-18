@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button, Input, Space, Table } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
@@ -9,7 +9,7 @@ import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable 
 import { filterDropdown, localeCompare, severityCompare } from '../../utils';
 import SeverityTag from '../shared/SeverityTag';
 import { severityFilters } from '../../constants';
-import SeverityToolbar from '../shared/SeverityToolbar.tsx';
+import SeverityToolbar from '../shared/SeverityToolbar';
 
 interface VulnerabilitiesProps {
   result: NormalizedResultForDataTable[];
@@ -19,7 +19,12 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
   console.log('Vulnerabilities:', result);
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
+  const [filteredData, setFilteredData] = useState<NormalizedResultForDataTable[]>([]);
   const searchInput = useRef<InputRef>(null);
+
+  useEffect(() => {
+    setFilteredData(result);
+  }, [result]);
 
   const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndexForNormalizedResultForDataTable) => {
     confirm();
@@ -30,6 +35,11 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText('');
+  };
+
+  const handleSeverityClick = (severity: string) => {
+    const filtered = result.filter(item => severity === 'all' || item.Severity?.toLowerCase() === severity); //doesn't work for negligible
+    setFilteredData(filtered);
   };
 
   const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
@@ -159,8 +169,8 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
 
   return (
     <>
-      <SeverityToolbar result={result} />
-      <Table columns={columns} dataSource={result} pagination={{ defaultPageSize: 20 }} size="small" sticky />
+      <SeverityToolbar result={result} onSeverityClick={handleSeverityClick}/>
+      <Table columns={columns} dataSource={filteredData} pagination={{ defaultPageSize: 20 }} size="small" sticky />
     </>
   );
 };

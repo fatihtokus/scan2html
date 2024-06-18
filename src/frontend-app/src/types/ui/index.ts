@@ -1,5 +1,5 @@
 export interface SeverityCount {
     severity: string;
-    count: string;
+    count: number;
     color: string;
   }

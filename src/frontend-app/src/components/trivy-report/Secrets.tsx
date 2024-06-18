@@ -3,7 +3,7 @@ import type { InputRef } from "antd";
 import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import { filterDropdown, localeCompare, severityCompare } from "../../utils";
 import SeverityToolbar from '../shared/SeverityToolbar.tsx';
@@ -20,7 +20,17 @@ const Secrets: React.FC<SecretsProps> = ({ result }) => {
   console.log("Secrets:", result);
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [filteredData, setFilteredData] = useState<NormalizedResultForDataTable[]>([]);
   const searchInput = useRef<InputRef>(null);
+
+  useEffect(() => {
+    setFilteredData(result);
+  }, [result]);
+
+  const handleSeverityClick = (severity: string) => {
+    const filtered = result.filter(item => severity === 'all' || item.Severity?.toLowerCase() === severity); //doesn't work for negligible
+    setFilteredData(filtered);
+  };
 
   const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndexForNormalizedResultForDataTable) => {
     confirm();
@@ -160,8 +170,8 @@ const Secrets: React.FC<SecretsProps> = ({ result }) => {
 
   return (
     <>
-      <SeverityToolbar result={result} />
-      <Table columns={columns} dataSource={result} pagination={{ defaultPageSize: 20 }} size="small" sticky />
+      <SeverityToolbar result={result} onSeverityClick={handleSeverityClick}/>
+      <Table columns={columns} dataSource={filteredData} pagination={{ defaultPageSize: 20 }} size="small" sticky />
     </>
   );
 };
