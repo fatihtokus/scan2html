@@ -19,7 +19,7 @@ Examples:
   trivy scan2html k8s cluster interactive_result.html
 
   # Scan a k8s cluster all
-  trivy scan2html k8s --report=all all interactive_result.html
+  trivy scan2html k8s --report=all interactive_result.html
 
   # Scan a k8s cluster summary
   trivy scan2html k8s --report summary cluster interactive_result.html
@@ -151,7 +151,7 @@ function scan {
     fi
 
     # Using replace_text function
-   replace_text "$reportName" "{TEMP_DATA:pV}" "$result_json"
+   replace_text "$reportName" "{TEMP_DATA:vV}" "$result_json"
 
   echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT

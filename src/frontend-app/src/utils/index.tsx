@@ -4,6 +4,10 @@ import { CommonScanResult, CommonResult, Holder } from "../types/external/defaul
 export function getVulnerabilities(results: any[] //CommonScanResult[]
 ): NormalizedResultForDataTable[] {
   let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results === undefined) {
+    return formattedResultJson;
+  }
+
   results.forEach((result) => {
     let tempResult = getVulnerabilitiesFromAReport(result);
     if (tempResult.length > 0) {
@@ -42,6 +46,10 @@ function getVulnerabilitiesFromAReport(
 export function getSecrets(results: any[] //CommonScanResult[]
 ): NormalizedResultForDataTable[] {
   let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results === undefined) {
+    return formattedResultJson;
+  }
+
   results.forEach((result) => {
     let tempResult = getSecretsFromAReport(result);
     if (tempResult.length > 0) {
@@ -98,6 +106,10 @@ export function severityCompare(severity1: any, severity2: any) {
 
 function vulnerabilitiesForK8s(vulnerabilityHolders: Holder[]): NormalizedResultForDataTable[] {
   let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (vulnerabilityHolders === undefined) {
+    return formattedResultJson;
+  }
+
   vulnerabilityHolders.forEach((vulnerabilityHolder) => {
     formattedResultJson = formattedResultJson.concat(mapVulnerabilityResults(vulnerabilityHolder.Results));
   });
@@ -107,6 +119,9 @@ function vulnerabilitiesForK8s(vulnerabilityHolders: Holder[]): NormalizedResult
 
 function mapSecretResults(results: CommonResult[]): NormalizedResultForDataTable[] {
   const formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results === undefined) {
+    return formattedResultJson;
+  }
 
   results.forEach((result) => {
     if (result.Secrets) {
@@ -130,6 +145,10 @@ function mapSecretResults(results: CommonResult[]): NormalizedResultForDataTable
 function mapVulnerabilityResults(results: CommonResult[]): NormalizedResultForDataTable[] {
   const formattedResultJson: NormalizedResultForDataTable[] = [];
 
+  if (results === undefined) {
+    return formattedResultJson;
+  }
+
   results.forEach((result) => {
     if (result.Vulnerabilities) {
       result.Vulnerabilities.forEach((vulnerability) => {
@@ -151,7 +170,24 @@ function mapVulnerabilityResults(results: CommonResult[]): NormalizedResultForDa
   return formattedResultJson;
 }
 
-export function getSupplyChainSBOM(
+export function getSupplyChainSBOM(results: any[] //CommonScanResult[]
+): NormalizedResultForDataTable[] {
+  let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results === undefined) {
+    return formattedResultJson;
+  }
+
+  results.forEach((result) => {
+    let tempResult = getSupplyChainSBOMForaReport(result);
+    if (tempResult.length > 0) {
+      formattedResultJson = formattedResultJson.concat(tempResult);
+    }      
+  });
+
+  return formattedResultJson;
+}
+
+function getSupplyChainSBOMForaReport(
   results: any //CommonScanResult
 ): NormalizedResultForDataTable[] {
   if (results.packages) {
@@ -189,6 +225,10 @@ function mapSBOMResults(results: CommonScanResult): NormalizedResultForDataTable
 export function getMisconfigurationSummary(results: any[] //CommonScanResult[]
 ): NormalizedResultForDataTable[] {
   let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results === undefined) {
+    return formattedResultJson;
+  }
+
   results.forEach((result) => {
     let tempResult = getMisconfigurationSummaryFromAReport(result);
     if (tempResult.length > 0) {
@@ -218,6 +258,10 @@ function getMisconfigurationSummaryFromAReport(
 export function getMisconfigurations(results: any[] //CommonScanResult[]
 ): NormalizedResultForDataTable[] {
   let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results === undefined) {
+    return formattedResultJson;
+  }
+
   results.forEach((result) => {
     let tempResult = getMisconfigurationsFromAReport(result);
     if (tempResult.length > 0) {
@@ -256,6 +300,10 @@ function getMisconfigurationsFromAReport(
 export function getK8sClusterSummaryForInfraAssessment(results: any[] //CommonScanResult[]
 ): NormalizedResultForDataTable[] {
   let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results === undefined) {
+    return formattedResultJson;
+  }
+
   results.forEach((result) => {
     let tempResult = getK8sClusterSummaryForInfraAssessmentFromAReport(result);
     if (tempResult.length > 0) {
@@ -285,6 +333,10 @@ function getK8sClusterSummaryForInfraAssessmentFromAReport(
 export function getK8sClusterSummaryForRBACAssessment(results: any[] //CommonScanResult[]
 ): NormalizedResultForDataTable[] {
   let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results === undefined) {
+    return formattedResultJson;
+  }
+
   results.forEach((result) => {
     let tempResult = getK8sClusterSummaryForRBACAssessmentFromAReport(result);
     if (tempResult.length > 0) {
@@ -363,6 +415,10 @@ function mapK8sClusterFindings(resultsHolder: Holder): NormalizedResultForDataTa
 
 function misconfigurationSummaryForK8s(misconfigurationHolders: Holder[]): NormalizedResultForDataTable[] {
   let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (misconfigurationHolders === undefined) {
+    return formattedResultJson;
+  }
+
   misconfigurationHolders.forEach((holder) => {
     formattedResultJson = formattedResultJson.concat(mapMisconfigurationSummaryResults(holder.Results));
   });
@@ -372,6 +428,10 @@ function misconfigurationSummaryForK8s(misconfigurationHolders: Holder[]): Norma
 
 function misconfigurationsForK8s(misconfigurationHolders: Holder[]): NormalizedResultForDataTable[] {
   let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (misconfigurationHolders === undefined) {
+    return formattedResultJson;
+  }
+
   misconfigurationHolders.forEach((holder) => {
     formattedResultJson = formattedResultJson.concat(mapMisconfigurationResults(holder.Results));
   });
