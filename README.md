@@ -42,7 +42,7 @@ trivy scan2html k8s cluster interactive_report.html
 
 ### Scan a k8s cluster all
 ```sh
-trivy scan2html k8s --report=all all interactive_report.html
+trivy scan2html k8s --report=all interactive_report.html
 ```
 <details>
 <summary>Result</summary>
