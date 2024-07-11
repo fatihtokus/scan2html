@@ -3,6 +3,8 @@ export class NormalizedResultForDataTable {
   ID?: string;
   Library?: string;
   Vulnerability?: string;
+  NVD_V2Score?: number;
+  NVD_V3Score?: number;
   Severity?: string;
   InstalledVersion?: string;
   FixedVersion?: string;
