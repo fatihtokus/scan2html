@@ -51,8 +51,24 @@ jobs:
       - name: Compress
         run: tar -zcvf scan2html.tar.gz scan2html.sh "$reportTemplate" LICENSE results.json release-candidate/plugin.yaml
 
+      - name: Install GPG
+        run: sudo apt-get install -y gnupg
+
+      - name: Import GPG key
+        run: |
+              echo "$GPG_PRIVATE_KEY" | gpg --import
+            env:
+              GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Sign the release file
+        run: |
+              echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --armor --detach-sign scan2html.tar.gz
+            env:
+              GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             scan2html.tar.gz
+            scan2html.tar.gz.asc
