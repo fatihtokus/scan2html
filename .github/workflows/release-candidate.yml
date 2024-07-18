@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - "rc*"
+      -
+permissions:  # added using https://github.com/step-security/secure-workflows
+  contents: read
 
 jobs:
   build:
@@ -56,15 +59,15 @@ jobs:
 
       - name: Import GPG key
         run: |
-              echo "$GPG_PRIVATE_KEY" | gpg --import
-            env:
-              GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+            echo "$GPG_PRIVATE_KEY" | gpg --import
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
       - name: Sign the release file
         run: |
-              echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --armor --detach-sign scan2html.tar.gz
-            env:
-              GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+            echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --armor --detach-sign scan2html.tar.gz
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Release
         uses: softprops/action-gh-release@v1
