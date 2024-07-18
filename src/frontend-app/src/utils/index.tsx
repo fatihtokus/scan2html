@@ -85,6 +85,13 @@ export function localeCompare(argument1: any, argument2: any) {
   return argument1 && argument2 ? argument1.localeCompare(argument2) : 0;
 }
 
+export function numberCompare(argument1: any, argument2: any) {
+  if (argument1 > argument2) {
+      return 1;
+  } 
+  return argument1 < argument2 ? -1 : 0;
+}
+
 function mapSeverityToNumber(severity: string) {
   switch (severity.toLowerCase()) {
     case "critical":
@@ -152,11 +159,23 @@ function mapVulnerabilityResults(results: CommonResult[]): NormalizedResultForDa
   results.forEach((result) => {
     if (result.Vulnerabilities) {
       result.Vulnerabilities.forEach((vulnerability) => {
+        let NVD_V2Score;
+        let NVD_V3Score;
+        if (vulnerability.CVSS) {
+          const CVSS = vulnerability.CVSS;
+          if (CVSS.nvd) {
+            NVD_V2Score = CVSS.nvd.V2Score ? CVSS.nvd.V2Score : '';
+            NVD_V3Score = CVSS.nvd.V3Score ? CVSS.nvd.V3Score : '';
+          }
+        }
+
         formattedResultJson.push({
           Target: result.Target,
           ID: vulnerability.VulnerabilityID,
           Library: vulnerability.PkgName,
           Vulnerability: vulnerability.VulnerabilityID,
+          NVD_V2Score: NVD_V2Score,
+          NVD_V3Score: NVD_V3Score,
           Severity: vulnerability.Severity,
           InstalledVersion: vulnerability.InstalledVersion,
           FixedVersion: vulnerability.FixedVersion,

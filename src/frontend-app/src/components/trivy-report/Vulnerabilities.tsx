@@ -6,7 +6,7 @@ import type { InputRef } from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from '../../types';
-import { filterDropdown, localeCompare, severityCompare } from '../../utils';
+import { filterDropdown, localeCompare, severityCompare, numberCompare } from '../../utils';
 import SeverityTag from '../shared/SeverityTag';
 import { severityFilters } from '../../constants';
 import SeverityToolbar from '../shared/SeverityToolbar';
@@ -121,9 +121,27 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       title: 'Vulnerability',
       dataIndex: 'Vulnerability',
       key: 'Vulnerability',
-      width: '10%',
+      width: '6%',
       ...getColumnSearchProps('Vulnerability'),
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Vulnerability, b.Vulnerability),
+      sortDirections: ['descend', 'ascend'],
+    },
+    {
+      title: 'NVD V2Score',
+      dataIndex: 'NVD_V2Score',
+      key: 'NVD_V2Score',
+      width: '4%',
+      ...getColumnSearchProps('NVD_V2Score'),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => numberCompare(a.NVD_V2Score, b.NVD_V2Score),
+      sortDirections: ['descend', 'ascend'],
+    },
+    {
+      title: 'NVD V3Score',
+      dataIndex: 'NVD_V3Score',
+      key: 'NVD_V3Score',
+      width: '4%',
+      ...getColumnSearchProps('NVD_V3Score'),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => numberCompare(a.NVD_V3Score, b.NVD_V3Score),
       sortDirections: ['descend', 'ascend'],
     },
     {
@@ -142,7 +160,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       title: 'Installed Version',
       dataIndex: 'InstalledVersion',
       key: 'InstalledVersion',
-      width: '10%',
+      width: '8%',
       ...getColumnSearchProps('InstalledVersion'),
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.InstalledVersion, b.InstalledVersion),
       sortDirections: ['descend', 'ascend'],
@@ -151,7 +169,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       title: 'Fixed Version',
       dataIndex: 'FixedVersion',
       key: 'FixedVersion',
-      width: '10%',
+      width: '8%',
       ...getColumnSearchProps('FixedVersion'),
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.FixedVersion, b.FixedVersion),
       sortDirections: ['descend', 'ascend'],

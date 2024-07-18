@@ -79,7 +79,15 @@ export type Vulnerability = {
   PrimaryURL: string;
   Description: string;
   References: string[];
+  CVSS: CVSS;
 };
+
+type CVSS = {
+  nvd?: {
+      V2Score?: number;
+      V3Score?: number;
+  };
+}
 
 export type Misconfiguration = {
   Type: string;
