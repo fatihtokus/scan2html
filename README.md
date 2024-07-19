@@ -97,4 +97,5 @@ Examples:
 
   # Scan and generate SBOM(spdx) report
   trivy scan2html image --format spdx alpine:3.15 interactive_report.html
+
 ```
