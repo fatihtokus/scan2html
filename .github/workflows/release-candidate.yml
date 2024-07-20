@@ -22,6 +22,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
+          node-version: '14'
           working-directory: src/frontend-app
 
       - name: Install dependencies
@@ -36,10 +37,7 @@ jobs:
 
       - name: Preparing report_template.html
         run: |
-          # copy js files
-          cat
           {
-          # copy report file except the last 4 lines
           head -n -4 'src/frontend-app/dist/src/assets/app-template.html'
           echo ''
           cat 'src/frontend-app/dist/app.js'
@@ -50,6 +48,7 @@ jobs:
           } >"$reportTemplate"
           
           cat "$reportTemplate"
+
       - name: Compress
         run: tar -zcvf scan2html.tar.gz scan2html.sh "$reportTemplate" LICENSE results.json release-candidate/plugin.yaml
 
@@ -59,17 +58,19 @@ jobs:
       - name: Configure GPG
         run: |
           mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
           echo "use-agent" > ~/.gnupg/gpg.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
 
       - name: Import GPG key
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --pinentry-mode loopback --import
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --import
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
       - name: Sign the release file
         run: |
-            echo "$GPG_PASSPHRASE" | gpg --batch --yes --passphrase-fd 0 --armor --detach-sign scan2html.tar.gz
+          gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --detach-sign scan2html.tar.gz
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
