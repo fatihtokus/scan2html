@@ -56,9 +56,14 @@ jobs:
       - name: Install GPG
         run: sudo apt-get install -y gnupg
 
+      - name: Configure GPG
+        run: |
+          mkdir -p ~/.gnupg
+          echo "use-agent" > ~/.gnupg/gpg.conf
+
       - name: Import GPG key
         run: |
-            echo "$GPG_PRIVATE_KEY" | gpg --import
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --pinentry-mode loopback --import
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
