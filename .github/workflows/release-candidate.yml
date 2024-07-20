@@ -5,7 +5,7 @@ on:
     tags:
       - "rc*"
 
-permissions:  # added using https://github.com/step-security/secure-workflows
+permissions:
   contents: read
 
 jobs:
@@ -54,24 +54,25 @@ jobs:
       - name: Install GPG
         run: sudo apt-get install -y gnupg
 
+      - name: Configure GPG
+        run: |
+          mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
+          echo "use-agent" > ~/.gnupg/gpg.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+
       - name: Import GPG key
         run: |
-            echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --import
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --import
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
       - name: Sign the release file
         run: |
-            echo "${{ secrets.GPG_PASSPHRASE }}" | gpg --batch --yes --passphrase-fd 0 --armor --detach-sign scan2html.tar.gz
+          gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --detach-sign scan2html.tar.gz
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            scan2html.tar.gz
-            scan2html.tar.gz.asc
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
