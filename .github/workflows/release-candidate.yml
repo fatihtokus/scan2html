@@ -31,7 +31,6 @@ jobs:
 
       - name: Build project
         run: |
-          pwd
           cd src/frontend-app/
           npm run build
 
