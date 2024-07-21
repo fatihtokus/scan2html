@@ -1,5 +1,5 @@
 # Use the official Trivy image as a base
-FROM aquasec/trivy:latest
+FROM aquasec/trivy:latest@sha256:53e6715d5c67e80e629f0dfa3bd6ed2bc74bdcaa4bdbe934a5a1811a249db6b9
 
 # Install bash and other required packages
 USER root
