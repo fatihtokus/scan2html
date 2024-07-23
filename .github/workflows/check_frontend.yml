@@ -1,0 +1,45 @@
+name: Check frontend
+on: [push, pull_request]
+
+permissions: read-all
+
+jobs:
+  check_frontend:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
+
+      - name: Setup Node
+        uses: actions/setup-node@1a4442cacd436585916779262731d5b162bc6ec7 # v3.8.2
+        with:
+          working-directory: src/frontend-app
+
+      - name: Install dependencies
+        uses: bahmutov/npm-install@e5c7e14408aa6089501de32bd16123b41738047e # v1.10.2
+        with:
+          working-directory: src/frontend-app
+
+      - name: Build project
+        run: |
+          pwd
+          cd src/frontend-app/
+          npm run build
+
+      - name: Prettier
+        working-directory: src/frontend-app
+        run: |
+          npx prettier -c src
+
+      - name: ESLint
+        working-directory: ./frontend
+        run: |
+          npx eslint src
+  
+      - name: End-to-end tests
+        working-directory: .
+        run: |
+           ls
+   
