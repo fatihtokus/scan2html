@@ -1,10 +1,12 @@
 
 # scan2html 
-![GitHub Latest Release](https://img.shields.io/github/v/release/fatihtokus/scan2html.svg?logo=github) 
-![GitHub All Releases](https://img.shields.io/github/downloads/fatihtokus/scan2html/total?logo=github)
 ![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)
-[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9231/badge)](https://www.bestpractices.dev/projects/9231)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/fatihtokus/scan2html/badge)](https://scorecard.dev/viewer/?uri=github.com/fatihtokus/scan2html)
+[![OpenSSF Best Practices](https://www.bestpractices.dev/projects/9231/badge)](https://www.bestpractices.dev/projects/9231)
+![GitHub All Releases](https://img.shields.io/github/downloads/fatihtokus/scan2html/total?logo=github)
+![GitHub Latest Release](https://img.shields.io/github/v/release/fatihtokus/scan2html.svg?logo=github) 
+
+
 
 Before moving on, please consider giving us a GitHub star ⭐️. Thank you!
 
