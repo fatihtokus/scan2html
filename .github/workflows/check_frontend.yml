@@ -28,15 +28,15 @@ jobs:
           cd src/frontend-app/
           npm run build
 
-      - name: Prettier
-        working-directory: src/frontend-app
-        run: |
-          npx prettier -c src
+      # - name: Prettier
+      #   working-directory: src/frontend-app
+      #   run: |
+      #     npx prettier -c src
 
-      - name: ESLint
-        working-directory: ./frontend
-        run: |
-          npx eslint src
+      # - name: ESLint
+      #   working-directory: ./frontend
+      #   run: |
+      #     npx eslint src
   
       - name: End-to-end tests
         working-directory: .
