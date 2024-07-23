@@ -17,12 +17,12 @@ jobs:
      uses: google/oss-fuzz/infra/cifuzz/actions/build_fuzzers@dd3e38d3e86c76c869ad2ffbe7cd77c38c106c06 # master
      with:
        oss-fuzz-project-name: 'scan2html'
-       language: JavaScript
+       language: javascript
    - name: Run Fuzzers
      uses: google/oss-fuzz/infra/cifuzz/actions/run_fuzzers@dd3e38d3e86c76c869ad2ffbe7cd77c38c106c06 # master
      with:
        oss-fuzz-project-name: 'scan2html'
-       language: JavaScript
+       language: javascript
        fuzz-seconds: 600
        output-sarif: true
    - name: Upload Crash
