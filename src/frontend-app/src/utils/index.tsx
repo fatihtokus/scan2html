@@ -132,15 +132,16 @@ function mapSecretResults(results: CommonResult[]): NormalizedResultForDataTable
 
   results.forEach((result) => {
     if (result.Secrets) {
-      result.Secrets.forEach((vulnerability) => {
+      result.Secrets.forEach((secret) => {
         formattedResultJson.push({
+          key: Math.random(),
           Target: result.Target,
-          ID: vulnerability.RuleID,
-          Title: vulnerability.Title,
-          Category: vulnerability.Category,
-          Severity: vulnerability.Severity,
-          StartLine: "" + vulnerability.StartLine,
-          EndLine: "" + vulnerability.EndLine
+          ID: secret.RuleID,
+          Title: secret.Title,
+          Category: secret.Category,
+          Severity: secret.Severity,
+          StartLine: "" + secret.StartLine,
+          EndLine: "" + secret.EndLine
         } as NormalizedResultForDataTable);
       });
     }
@@ -170,6 +171,7 @@ function mapVulnerabilityResults(results: CommonResult[]): NormalizedResultForDa
         }
 
         formattedResultJson.push({
+          key: Math.random(),
           Target: result.Target,
           ID: vulnerability.VulnerabilityID,
           Library: vulnerability.PkgName,
@@ -180,6 +182,7 @@ function mapVulnerabilityResults(results: CommonResult[]): NormalizedResultForDa
           InstalledVersion: vulnerability.InstalledVersion,
           FixedVersion: vulnerability.FixedVersion,
           Title: vulnerability.Title,
+          References: vulnerability.References,
           IsVulnerability: true,
         } as NormalizedResultForDataTable);
       });
@@ -221,6 +224,7 @@ function mapSBOMResults(results: CommonScanResult): NormalizedResultForDataTable
   if (results.packages) {
     results.packages.forEach((result) => {
       formattedResultJson.push({
+        key: Math.random(),
         DocSPDXID: results.SPDXID,
         DataLicense: results.dataLicense,
         DocumentNamespace: results.documentNamespace,
@@ -398,7 +402,7 @@ function mapK8sClusterFindings(resultsHolder: Holder): NormalizedResultForDataTa
     resultsHolder.Results.forEach((result) => {
       var target = targets.get(result.Target);
       if (!target) {
-        target = new NormalizedResultForDataTable(result.Target, result.Type, resultsHolder.Kind, resultsHolder.Namespace);
+        target = new NormalizedResultForDataTable(Math.random(), result.Target, result.Type, resultsHolder.Kind, resultsHolder.Namespace);
       }
 
       if (result.Vulnerabilities) {
@@ -465,12 +469,14 @@ function mapMisconfigurationResults(results: CommonResult[]): NormalizedResultFo
       if (result.Misconfigurations) {
         result.Misconfigurations.forEach((misconfiguration) => {
           formattedResultJson.push({
+            key: Math.random(),
             Target: result.Target,
             ID: misconfiguration.ID,
             Severity: misconfiguration.Severity,
             Title: misconfiguration.Title,
             Type: misconfiguration.Type,
             Message: misconfiguration.Message,
+            References: misconfiguration.References
           } as NormalizedResultForDataTable);
         });
       }
@@ -486,6 +492,7 @@ function mapMisconfigurationSummaryResults(results: CommonResult[]): NormalizedR
     results.forEach((result) => {
       if (result.MisconfSummary) {
         formattedResultJson.push({
+          key: Math.random(),
           Target: result.Target,
           Type: result.Type,
           Class: result.Class,

@@ -20,6 +20,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [filteredData, setFilteredData] = useState<NormalizedResultForDataTable[]>([]);
+  const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
   const searchInput = useRef<InputRef>(null);
 
   useEffect(() => {
@@ -185,10 +186,39 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
     },
   ];
 
+  const handleExpand = (expanded: boolean, record: NormalizedResultForDataTable) => {
+    if (expanded) {
+      setExpandedRowKeys((prevKeys) => [...prevKeys, record.key]);
+    } else {
+      setExpandedRowKeys((prevKeys) => prevKeys.filter((key) => key !== record.key));
+    }
+  };
+
   return (
     <>
-      <SeverityToolbar result={result} onSeverityClick={handleSeverityClick}/>
-      <Table columns={columns} dataSource={filteredData} pagination={{ defaultPageSize: 20 }} size="small" sticky />
+      <SeverityToolbar result={result} onSeverityClick={handleSeverityClick} />
+      <Table
+        columns={columns}
+        dataSource={filteredData}
+        pagination={{ defaultPageSize: 20 }}
+        size="small"
+        sticky
+        expandable={{
+          expandedRowRender: (vulnerability) => (
+            <div style={{ margin: 0 }}>
+              <p><strong>References:</strong></p>
+              <ul>
+                {vulnerability.References?.map((ref, index) => (
+                  <li key={index}><a href={ref} target='_blank'>{ref}</a></li>
+                ))}
+              </ul>
+            </div>
+          ),
+          expandedRowKeys: expandedRowKeys,
+          onExpand: handleExpand,
+          columnWidth: '2%', // Set this to a narrow column
+        }}
+      />
     </>
   );
 };

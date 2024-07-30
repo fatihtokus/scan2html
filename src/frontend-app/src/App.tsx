@@ -5,7 +5,7 @@ import TableTitle from "./components/shared/TableTitle";
 import defaultData from "./data/data.json";
 import { NormalizedResultForDataTable, UploadInfo } from "./types";
 import { getSecrets, getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
-import { UploadOutlined, ContainerOutlined, SettingOutlined, AlertOutlined, MenuFoldOutlined, MenuUnfoldOutlined, BugOutlined } from "@ant-design/icons";
+import { UploadOutlined, LockOutlined, ExclamationCircleOutlined, SettingOutlined, ClusterOutlined, ProfileOutlined, MenuFoldOutlined, MenuUnfoldOutlined, BugOutlined } from "@ant-design/icons";
 import "./App.css";
 import type { MenuProps } from "antd";
 
@@ -116,11 +116,11 @@ function App() {
     setFilledResultsPerCategory(tempResults);
     setMenuItems([
       { key: "vulnerabilities", icon: <BugOutlined />, label: `Vulnerabilities (${vulnerabilities.length})` },
-      { key: "secrets", icon: <BugOutlined />, label: `Secrets (${secrets.length})` },
-      { key: "misconfigurationSummary", icon: <SettingOutlined />, label: `Misconfiguration Summary (${misconfigurationSummary.length})` },
+      { key: "secrets", icon: <LockOutlined />, label: `Secrets (${secrets.length})` },
+      { key: "misconfigurationSummary", icon: <ExclamationCircleOutlined />, label: `Misconfiguration Summary (${misconfigurationSummary.length})` },
       { key: "misconfigurations", icon: <SettingOutlined />, label: `Misconfigurations (${misconfigurations.length})` },
-      { key: "k8sClusterSummary", icon: <AlertOutlined />, label: `K8s Cluster Summary (${k8sClusterSummaryInfraAssessment.length} / ${k8sClusterSummaryRBACAssessment.length})` },
-      { key: "supplyChainSBOM", icon: <ContainerOutlined />, label: `Supply Chain SBOM(spdx) (${supplyChainSBOM.length})`  },
+      { key: "k8sClusterSummary", icon: <ClusterOutlined />, label: `K8s Cluster Summary (${k8sClusterSummaryInfraAssessment.length} / ${k8sClusterSummaryRBACAssessment.length})` },
+      { key: "supplyChainSBOM", icon: <ProfileOutlined />, label: `Supply Chain SBOM(spdx) (${supplyChainSBOM.length})`  },
       { key: "loadAReport", icon: <UploadOutlined />, label: "Load a report" }
     ]);
   }, [vulnerabilities, misconfigurationSummary, secrets, misconfigurations, k8sClusterSummaryInfraAssessment, k8sClusterSummaryRBACAssessment, supplyChainSBOM]);

@@ -1,4 +1,5 @@
 export class NormalizedResultForDataTable {
+  key: React.Key;
   Target: string = "";
   ID?: string;
   Library?: string;
@@ -12,6 +13,9 @@ export class NormalizedResultForDataTable {
   Type: string = "";
   Message?: string;
   IsVulnerability?: boolean;
+
+  // Vulnerability
+  References?: string[];
 
   // Secrets
   Category?: string;
@@ -48,7 +52,8 @@ export class NormalizedResultForDataTable {
   Name?: string;
   VersionInfo?: string;
 
-  constructor(Target: string, Type: string, Kind: string, Namespace: string) {
+  constructor(key: React.Key,Target: string, Type: string, Kind: string, Namespace: string) {
+    this.key = key;
     this.Target = Target;
     this.Type = Type;
     this.Kind = Kind;
