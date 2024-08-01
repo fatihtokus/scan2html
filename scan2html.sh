@@ -12,6 +12,9 @@ Examples:
   # Scan an image
   trivy scan2html image alpine:latest interactive_result.html
 
+  # Scan an image from local tar file
+  trivy scan2html image --input ruby-3.1.tar interactive_report.html
+
   # Scan a local folder
   trivy scan2html fs --scanners vuln,secret,misconfig . interactive_result.html
 
@@ -153,7 +156,7 @@ function scan {
   fi
 
     # Using replace_text function
-   replace_text "$reportName" "{TEMP_DATA:gV}" "$result_json"
+   replace_text "$reportName" "{TEMP_DATA:OV}" "$result_json"
 
   echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT
