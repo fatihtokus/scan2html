@@ -86,6 +86,9 @@ Examples:
    # Scan an image
   trivy scan2html image alpine:latest interactive_report.html
 
+  # Scan an image from local tar file
+  trivy scan2html image --input ruby-3.1.tar interactive_report.html
+
   # Scan a local folder
   trivy scan2html fs --scanners vuln,secret,misconfig . interactive_report.html
 

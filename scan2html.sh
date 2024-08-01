@@ -12,6 +12,9 @@ Examples:
   # Scan an image
   trivy scan2html image alpine:latest interactive_result.html
 
+  # Scan an image from local tar file
+  trivy scan2html image --input ruby-3.1.tar interactive_report.html
+
   # Scan a local folder
   trivy scan2html fs --scanners vuln,secret,misconfig . interactive_result.html
 
@@ -108,8 +111,12 @@ function scan {
   allParamsExceptTrivy="${args[@]}"
   echo "allParamsExceptTrivy: $allParamsExceptTrivy"
 
-  output="-o $BASEDIR/$tmp_result"
+  result_json="$BASEDIR"/$tmp_result
+  output="-o $result_json"
   echo "output: $output"
+
+  # create an empty results.json file
+  echo -n > "$result_json"
 
   outputFormat="--format json"
   echo "outputFormat: $outputFormat"
@@ -136,22 +143,20 @@ function scan {
 
   cat "$BASEDIR"/report_template.html >>"$reportName"
 
-   # Check if the replace file exists
-    if [ ! -f "$reportName" ]; then
-        echo "Error: reportName: '$reportName' not found!"
-        return 1
-    fi
+  # Check if the replace file exists
+  if [ ! -f "$reportName" ]; then
+      echo "Error: reportName: '$reportName' not found!"
+      return 1
+  fi
 
-   result_json="$BASEDIR"/$tmp_result
-
-   # Check if the replace file exists
-    if [ ! -f "$result_json" ]; then
-        echo "Error: result_json: '$result_json' not found!"
-        return 1
-    fi
+  # Check if the replace file exists
+  if [ ! -f "$result_json" ]; then
+      echo "Error: result_json: '$result_json' not found!"
+      return 1
+  fi
 
     # Using replace_text function
-   replace_text "$reportName" "{TEMP_DATA:gV}" "$result_json"
+   replace_text "$reportName" "{TEMP_DATA:OV}" "$result_json"
 
   echo "$reportName has been created!"
   trap 'rm -f $tmp_result' EXIT

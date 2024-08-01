@@ -1,4 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { Typography } from "antd";;
+const { Link } = Typography;
 import { Button, Input, Space, Table } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import Highlighter from 'react-highlight-words';
@@ -209,7 +211,9 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
               <p><strong>References:</strong></p>
               <ul>
                 {vulnerability.References?.map((ref, index) => (
-                  <li key={index}><a href={ref} target='_blank'>{ref}</a></li>
+                <Link href={ref} target="_blank">
+                    <li key={index}>{ref}</li>
+                </Link>
                 ))}
               </ul>
             </div>

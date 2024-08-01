@@ -54,7 +54,7 @@ jobs:
           cat "$reportTemplate"
 
       - name: Compress
-        run: tar -zcvf scan2html.tar.gz scan2html.sh "$reportTemplate" LICENSE results.json release-candidate/plugin.yaml
+        run: tar -zcvf scan2html.tar.gz scan2html.sh "$reportTemplate" LICENSE release-candidate/plugin.yaml
 
       - name: Install GPG
         run: sudo apt-get install -y gnupg

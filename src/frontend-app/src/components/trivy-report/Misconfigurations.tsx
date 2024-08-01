@@ -1,5 +1,7 @@
 import { SearchOutlined } from "@ant-design/icons";
-import type { InputRef } from "antd";
+  import { Typography } from "antd";
+  import type { InputRef } from "antd";
+  const { Link } = Typography;
 import { Button, Input, Space, Table } from "antd";
 import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
@@ -177,7 +179,9 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
             <p><strong>References:</strong></p>
             <ul>
               {vulnerability.References?.map((ref, index) => (
-                <li key={index}><a href={ref} target='_blank'>{ref}</a></li>
+              <Link href={ref} target="_blank">
+                 <li key={index}>{ref}</li>
+              </Link>
               ))}
             </ul>
           </div>
