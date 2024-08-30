@@ -73,6 +73,7 @@ export type Vulnerability = {
   VulnerabilityID: string;
   Severity: string;
   InstalledVersion: string;
+  PkgPath: string;
   FixedVersion: string;
   Title: string;
   SeveritySource: string;

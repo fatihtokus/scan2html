@@ -180,6 +180,7 @@ function mapVulnerabilityResults(results: CommonResult[]): NormalizedResultForDa
           NVD_V3Score: NVD_V3Score,
           Severity: vulnerability.Severity,
           InstalledVersion: vulnerability.InstalledVersion,
+          PkgPath: vulnerability.PkgPath,
           FixedVersion: vulnerability.FixedVersion,
           Title: vulnerability.Title,
           References: vulnerability.References,

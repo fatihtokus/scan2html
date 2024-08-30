@@ -9,6 +9,7 @@ export class NormalizedResultForDataTable {
   Severity?: string;
   InstalledVersion?: string;
   FixedVersion?: string;
+  PkgPath?: string;
   Title?: string;
   Type: string = "";
   Message?: string;
