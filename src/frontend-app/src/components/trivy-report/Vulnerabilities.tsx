@@ -167,8 +167,8 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       ...getColumnSearchProps('InstalledVersion'),
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.InstalledVersion, b.InstalledVersion),
       sortDirections: ['descend', 'ascend'],
-      render:(text, record)=>(
-          <span title={'Location: '+record.PkgPath}>{text} </span>
+      render:(text, record)=> (
+          <span title={record.PkgPath ? 'Path: ' + record.PkgPath : ''}>{text} </span>
       ),
     },
     {
