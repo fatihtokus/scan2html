@@ -135,6 +135,7 @@ function mapVulnerabilityResults(results) {
                         "Vulnerability": vulnerability.VulnerabilityID,
                         "Severity": vulnerability.Severity,
                         "InstalledVersion": vulnerability.InstalledVersion,
+                        "PkgPath": vulnerability.PkgPath,
                         "FixedVersion": vulnerability.FixedVersion,
                         "Title": vulnerability.Title
                     }

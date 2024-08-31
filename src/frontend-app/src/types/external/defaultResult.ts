@@ -69,10 +69,11 @@ export type MisconfSummary = {
 };
 
 export type Vulnerability = {
-  PkgName: string;
   VulnerabilityID: string;
   Severity: string;
   InstalledVersion: string;
+  PkgName: string;
+  PkgPath: string;
   FixedVersion: string;
   Title: string;
   SeveritySource: string;
