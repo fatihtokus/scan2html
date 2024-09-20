@@ -34,10 +34,11 @@ EOS
   exit
 }
 
-function replace_text() {
+function replaceText() {
+    echo "function replaceText"
     local input_file="$1"
-    local search_text="$2"
-    local replace_file="$3"
+    local search_text="{TEMP_DATA:0}"
+    local replace_file="$2"
 
     # Check if the input file exists
     if [ ! -f "$input_file" ]; then
@@ -80,22 +81,103 @@ function replace_text() {
 }
 
 function generateReportName() {
-    local reportName="$1"
-    if [ -f $reportName ]; then
-      timestamp=$(date +%s)
-      timeUserFriendly=$(date +%Y%m%d%H%M%S)
-      #Append time to the report name by replacing '.html' with '(<timeStamp>)'
-      newReportName=${reportName/.html/($timeUserFriendly)}
-      newReportName=$newReportName".html"
-      # log as error(>&2) to not affect return value of function!
-      echo "$reportName already exists, creating $newReportName instead!" >&2
-      reportName="$newReportName"
-    fi
+  echo "function generateReportName"
+  local reportName="$1"
+  if [ -f $reportName ]; then
+    timestamp=$(date +%s)
+    timeUserFriendly=$(date +%Y%m%d%H%M%S)
+    #Append time to the report name by replacing '.html' with '(<timeStamp>)'
+    newReportName=${reportName/.html/($timeUserFriendly)}
+    newReportName=$newReportName".html"
+    # log as error(>&2) to not affect return value of function!
+    echo "$reportName already exists, creating $newReportName instead!" >&2
+    reportName="$newReportName"
+  fi
 
-    echo "$reportName"
+  echo "$reportName"
+}
+
+function combineReports {
+  echo "function combineReports"
+  combinedResultFile="$1"
+  args=("${@:2:$#0}")
+  resultsFiles="${args[@]}"
+  
+  echo "combinedResultFile: $combinedResultFile"
+  echo "args: $args"
+  echo "resultsFiles: $resultsFiles"
+  resultFileContents=""
+
+  # Empty results.json file
+  echo -n > "$combinedResultFile"
+
+  for file in $resultsFiles; do
+    if [[ -f "$file" ]]; then
+      echo "Reading contents of $file:"
+      resultFileContent=$(cat "$file")
+      if [[ -n "$resultFileContents" ]]; then
+        resultFileContents+=","
+      fi
+      resultFileContents+="$resultFileContent"
+    else
+      echo "File $file does not exist."
+      exit 1
+    fi
+  done
+
+  echo "$resultFileContents" > "$combinedResultFile"
+  echo "Content written to $combinedResultFile"
+}
+
+function generateHtmlReport {
+  echo "function generateHtmlReport"
+  echo "all_params: $@"
+  BASEDIR="$1"
+  echo "BASEDIR: $BASEDIR"
+  reportName="$2"
+  echo "reportName: $reportName"
+  tmp_result="results.json"
+  result_json="$BASEDIR"/$tmp_result
+  
+  reportName=$(generateReportName "$reportName")
+
+  cat "$BASEDIR"/report_template.html >>"$reportName"
+
+  # Check if the replace file exists
+  if [ ! -f "$reportName" ]; then
+      echo "Error: reportName: '$reportName' not found!"
+      exit 1
+  fi
+
+  # Using replace_text function
+  replaceText "$reportName" "$result_json"
+
+  echo "$reportName has been created!"
+}
+
+
+function generate {
+  echo "function generate"
+  echo "all_params: $@"
+  reportName="$2"
+  echo "reportName: $reportName"
+  BASEDIR=$(dirname "$0")
+  tmp_result="results.json"
+  result_json="$BASEDIR"/$tmp_result
+  echo "BASEDIR: $BASEDIR"
+  args=("${@:4:$#0}")
+  resultsFiles="${args[@]}"
+  echo "resultsFiles: $resultsFiles"
+
+  combineReports "$result_json" "$resultsFiles"
+
+  generateHtmlReport "$BASEDIR" "$reportName" 
+  
+  exit
 }
 
 function scan {
+  echo "function scan"
   tmp_result="results.json"
   BASEDIR=$(dirname "$0")
   args=("${@:2:$#-2}")
@@ -139,32 +221,17 @@ function scan {
   $trivy $scanner $allParamsExceptTrivy $outputFormat $output
   exit_code=$?
   echo "Exit code $exit_code"
-  reportName=$(generateReportName "$reportName")
-
-  cat "$BASEDIR"/report_template.html >>"$reportName"
-
-  # Check if the replace file exists
-  if [ ! -f "$reportName" ]; then
-      echo "Error: reportName: '$reportName' not found!"
-      return 1
-  fi
-
-  # Check if the replace file exists
-  if [ ! -f "$result_json" ]; then
-      echo "Error: result_json: '$result_json' not found!"
-      return 1
-  fi
-
-    # Using replace_text function
-   replace_text "$reportName" "{TEMP_DATA:OV}" "$result_json"
-
-  echo "$reportName has been created!"
+  generateHtmlReport "$BASEDIR" "$reportName" 
   trap 'rm -f $tmp_result' EXIT
   exit $exit_code
 }
 
 if [[ ($# -eq 0) || ($1 == "--help") || ($1 == "-h") ]]; then
   help
+fi
+
+if [[ ($1 == "generate") ]]; then
+  generate "$@"
 fi
 
 # comment out following line for testing

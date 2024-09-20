@@ -61,7 +61,7 @@ function App() {
     if(reportUrls.length > 0){
       setLoadedReportFiles(reportUrls);
     } else {
-      setLoadedData([defaultData]);
+      setLoadedData(defaultData);
     }
 
   }, []);
