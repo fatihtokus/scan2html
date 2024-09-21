@@ -4,7 +4,7 @@ version: "rc0.3.5"
 usage: scan targets into a smart html file
 description: |-
   A Trivy plugin that scans and outputs the results to a html file.
-  trivy scan2html [-h,--help] command target filename
+  trivy scan2html [-h,--help] command target filename.
 platforms:
   - selector:
       os: windows
