@@ -84,7 +84,7 @@ function replaceText() {
 }
 
 function generateReportName() {
-  echo "function generateReportName"
+  echo "function generateReportName" >&2
   local reportName="$1"
   if [ -f $reportName ]; then
     timestamp=$(date +%s)
@@ -105,7 +105,7 @@ function combineReports {
   combinedResultFile="$1"
   args=("${@:2:$#0}")
   resultsFiles="${args[@]}"
-  
+
   echo "combinedResultFile: $combinedResultFile"
   echo "args: $args"
   echo "resultsFiles: $resultsFiles"
@@ -141,7 +141,7 @@ function generateHtmlReport {
   echo "reportName: $reportName"
   tmp_result="results.json"
   result_json="$BASEDIR"/$tmp_result
-  
+
   reportName=$(generateReportName "$reportName")
 
   cat "$BASEDIR"/report_template.html >>"$reportName"
@@ -174,7 +174,7 @@ function generate {
 
   combineReports "$result_json" "$resultsFiles"
 
-  generateHtmlReport "$BASEDIR" "$reportName" 
+  generateHtmlReport "$BASEDIR" "$reportName"
   
   exit
 }
