@@ -24,6 +24,11 @@ trivy plugin uninstall scan2html
 ```
 
 ## Usage
+### Generate a report from multiple json scan results - experimental
+```sh
+trivy scan2html generate interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
+```
+
 ### Scan a local folder
 ```sh
 trivy scan2html fs --scanners vuln,secret,misconfig . interactive_report.html
@@ -104,7 +109,7 @@ Examples:
   # Scan and generate SBOM(spdx) report
   trivy scan2html image --format spdx alpine:3.15 interactive_report.html
   
-  # Generate report from multiple scan results - experimental
+  # Generate a report from multiple json scan results - experimental
   trivy scan2html generate interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
 
 ```
