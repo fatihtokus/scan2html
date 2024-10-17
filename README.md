@@ -31,7 +31,6 @@ trivy plugin uninstall scan2html
 trivy scan2html generate interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
 ```
 
-## Usage
 ### Generate report with EPSS scores from multiple scan results - experimental
 ```sh
 trivy scan2html generate --with-epss interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
