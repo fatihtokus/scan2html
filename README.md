@@ -30,11 +30,21 @@ trivy plugin uninstall scan2html
 ```sh
 trivy scan2html generate interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
 ```
+<details>
+<summary>Result</summary>
+
+![result](docs/vulnerabilities.png)
+</details>
 
 ### Generate report with EPSS scores from multiple scan results - experimental
 ```sh
 trivy scan2html generate --with-epss interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
 ```
+<details>
+<summary>Result</summary>
+
+![result](docs/vulnerabilities.png)
+</details>
 
 ### Scan a local folder
 ```sh
@@ -43,7 +53,7 @@ trivy scan2html fs --scanners vuln,secret,misconfig . interactive_report.html
 <details>
 <summary>Result</summary>
 
-![result](docs/result-1.png)
+![result](docs/vulnerabilities.png)
 </details>
 
 ### Scan a k8s cluster
@@ -53,7 +63,7 @@ trivy scan2html k8s cluster interactive_report.html
 <details>
 <summary>Result</summary>
 
-![result](docs/result-2.png)
+![result](docs/vulnerabilities.png)
 </details>
 
 ### Scan a k8s cluster all
@@ -63,7 +73,7 @@ trivy scan2html k8s --report=all interactive_report.html
 <details>
 <summary>Result</summary>
 
-![result](docs/result-3.png)
+![result](docs/misconfigurations.png)
 </details>
 
 ### Scan a k8s cluster summary
@@ -73,7 +83,7 @@ trivy scan2html k8s --report summary cluster interactive_report.html
 <details>
 <summary>Result</summary>
 
-![result](docs/result-4.png)
+![result](docs/k8s-cluster-summary.png)
 </details>
 
 ### Scan and generate SBOM(spdx) report
