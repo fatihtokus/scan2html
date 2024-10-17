@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'antd';
+import { Button, Space } from 'antd';
 import './SeverityToolbar.css';
 import { NormalizedResultForDataTable } from '../../types';
 import { SeverityCount } from '../../types/ui/index.ts';
@@ -52,8 +52,8 @@ const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onSeverityCli
   }, [result]);
 
   return (
-    <>
-      Filter by:
+    <Space>
+     Filter by:
       {resultsPerSeverity.map(({ severity, count, color }) => (
         <Button
           key={severity}
@@ -66,7 +66,7 @@ const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onSeverityCli
           {count} {severity}
         </Button>
       ))}
-    </>
+    </Space>
   );
 };
 

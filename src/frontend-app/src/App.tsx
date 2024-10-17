@@ -80,28 +80,6 @@ function App() {
   useEffect(() => {
     loadEPSSData();
   }, []);
-
-  // useEffect(() => {
-  //   // Step 1: Log the raw CSV content
-  //   console.log("Raw EPSS Data:", defaultEPSSData);
-  
-  //   // Step 2: Clean the data by removing the first line
-  //   const cleanedEPSSData = defaultEPSSData.split('\n').slice(1).join('\n');
-  //   console.log("Cleaned EPSS Data:", cleanedEPSSData);
-  
-  //   // Step 3: Parse the cleaned CSV content
-  //   Papa.parse<EPSSPerVulnerability>(cleanedEPSSData, {
-  //     header: true,
-  //     dynamicTyping: true,
-  //     complete: (results) => {
-  //       console.log("Parsed Results:", results.data);  // Log parsed results
-  //       setEpssData(results.data as EPSSPerVulnerability[]);  // Update the state
-  //     },
-  //     error: (error) => {
-  //       console.error("Error parsing CSV:", error);  // Handle parsing errors
-  //     }
-  //   });
-  // }, []);
   
   useEffect(() => {
     if (epssData.length > 0) {
