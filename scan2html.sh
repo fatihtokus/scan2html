@@ -30,7 +30,7 @@ Examples:
   # Scan and generate SBOM(spdx) report
   trivy scan2html image --format spdx alpine:3.15 interactive_result.html
 
-  # Generate a report from multiple json scan results - experimental
+  # Generate report from multiple scan results - experimental
   trivy scan2html generate interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
 
 EOS
@@ -40,8 +40,8 @@ EOS
 function replaceText() {
     echo "function replaceText"
     local input_file="$1"
-    local search_text="{TEMP_DATA:0}"
-    local replace_file="$2"
+    local search_text="$2"
+    local replace_file="$3"
 
     # Check if the input file exists
     if [ ! -f "$input_file" ]; then
@@ -80,7 +80,7 @@ function replaceText() {
     # Overwrite the input file with the modified content
     mv "$temp_file" "$input_file"
 
-    # echo "Replacement complete. Text matching '$search_text' replaced with the content of '$replace_file' in '$input_file'."
+    echo "Replacement complete. Text matching '$search_text' replaced with the content of '$replace_file' in '$input_file'."
 }
 
 function generateReportName() {
@@ -132,6 +132,16 @@ function combineReports {
   echo "Content written to $combinedResultFile"
 }
 
+function prepareEpssData {
+  echo "function prepareEpssData"
+  echo "all_params: $@"
+  BASEDIR="$1"
+  epssData="$2"
+  # Prepend the backtick to the first line of the file
+  echo -n '`' > "$epssData" && cat "$BASEDIR"/epss_scores.csv >> "$epssData" && echo '`' >> "$epssData"
+  #cat $epssData
+}
+
 function generateHtmlReport {
   echo "function generateHtmlReport"
   echo "all_params: $@"
@@ -139,6 +149,8 @@ function generateHtmlReport {
   echo "BASEDIR: $BASEDIR"
   reportName="$2"
   echo "reportName: $reportName"
+  withEpss="$3"
+  echo "withEpss: $withEpss"
   tmp_result="results.json"
   result_json="$BASEDIR"/$tmp_result
 
@@ -146,35 +158,49 @@ function generateHtmlReport {
 
   cat "$BASEDIR"/report_template.html >>"$reportName"
 
+
   # Check if the replace file exists
   if [ ! -f "$reportName" ]; then
       echo "Error: reportName: '$reportName' not found!"
       exit 1
   fi
 
-  # Using replace_text function
-  replaceText "$reportName" "$result_json"
+  replaceText "$reportName" "{TEMP_RESULTS:0}" "$result_json"
+
+ if [[ "$withEpss" == "true" ]]; then
+    echo "Epss enabled!"
+    epssData="$BASEDIR"/epss_scores_tmp.csv
+    prepareEpssData "$BASEDIR" "$epssData"
+    replaceText "$reportName" "\"TEMP_EPSS_DATA\"" "$epssData"
+    echo "Epss imported!"
+    trap 'rm -f $epssData' EXIT
+  fi
 
   echo "$reportName has been created!"
 }
 
-
 function generate {
   echo "function generate"
   echo "all_params: $@"
-  reportName="$2"
+  withEpss=false;
+  reportName="$2";
+  args=("${@:4:$#0}")
+  if [[ "$reportName" == "--with-epss" ]]; then
+    withEpss=true
+    reportName="$3"
+    args=("${@:5}")  # Extract arguments from position 5 onwards
+  fi
+
   echo "reportName: $reportName"
   BASEDIR=$(dirname "$0")
   tmp_result="results.json"
   result_json="$BASEDIR"/$tmp_result
   echo "BASEDIR: $BASEDIR"
-  args=("${@:4:$#0}")
   resultsFiles="${args[@]}"
   echo "resultsFiles: $resultsFiles"
 
   combineReports "$result_json" "$resultsFiles"
-
-  generateHtmlReport "$BASEDIR" "$reportName"
+  generateHtmlReport "$BASEDIR" "$reportName" "$withEpss"
   
   exit
 }

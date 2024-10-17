@@ -2,12 +2,13 @@ import { NormalizedResultForDataTable } from "../types";
 import { CommonScanResult, CommonResult, Holder } from "../types/external/defaultResult";
 
 export function getVulnerabilities(results: any[] //CommonScanResult[]
+  , epssData: any[]
 ): NormalizedResultForDataTable[] {
-  let formattedResultJson: NormalizedResultForDataTable[] = [];
   if (results === undefined) {
-    return formattedResultJson;
+    return [];
   }
 
+  let formattedResultJson: NormalizedResultForDataTable[] = [];
   results.forEach((result) => {
     let tempResult = getVulnerabilitiesFromAReport(result);
     if (tempResult.length > 0) {
@@ -15,7 +16,19 @@ export function getVulnerabilities(results: any[] //CommonScanResult[]
     }      
   });
 
-  return formattedResultJson;
+  return enrichWithEPSSCores(formattedResultJson, epssData);
+}
+
+function enrichWithEPSSCores(vulnerabilities: NormalizedResultForDataTable[], epssData: any[]
+): NormalizedResultForDataTable[] {
+  vulnerabilities.forEach(vulnerability => {
+    let EPSS_Score = epssData.filter(epssPerVulnerability =>  epssPerVulnerability.cve === vulnerability.ID)[0];
+    if (EPSS_Score) {
+      vulnerability.EPSS_Score = parseFloat((EPSS_Score.percentile * 100).toFixed(3));
+    }
+  });
+
+  return vulnerabilities;
 }
 
 function getVulnerabilitiesFromAReport(

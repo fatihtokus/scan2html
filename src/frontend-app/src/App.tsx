@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { Button, notification, Menu, Switch, MenuTheme } from "antd";
+import Papa, { ParseResult } from "papaparse";
 import TrivyReport from "./components/trivy-report/TrivyReport";
 import TableTitle from "./components/shared/TableTitle";
-import defaultData from "./data/data.json";
+import defaultData from "./data/results.json";
+import defaultEPSSData from "./data/epss.cvs?raw";
 import { NormalizedResultForDataTable, UploadInfo } from "./types";
+import { EPSSPerVulnerability } from "./types/external/epss";
 import { getSecrets, getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
 import { UploadOutlined, LockOutlined, ExclamationCircleOutlined, SettingOutlined, ClusterOutlined, ProfileOutlined, MenuFoldOutlined, MenuUnfoldOutlined, BugOutlined } from "@ant-design/icons";
 import "./App.css";
@@ -27,6 +30,7 @@ function App() {
   const [loadedReportFiles, setLoadedReportFiles] = useState<string[]>([]);
   const [manuallyLoadedReportFile, setManuallyLoadedReportFile] = useState("");
   const [loadedData, setLoadedData] = useState([{}]);
+  const [epssData, setEpssData] = useState<EPSSPerVulnerability[]>([]);
   const [collapsed, setCollapsed] = useState(false);
   const [theme, setTheme] = useState<MenuTheme>('light');
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -55,16 +59,68 @@ function App() {
         });
   };
 
+
+  const loadEPSSData = () => {
+    // Step 1: Remove the first line that starts with `#`
+    const cleanedEPSSData = defaultEPSSData.split('\n').slice(1).join('\n');
+    console.log(`cleanedEPSSData:`, cleanedEPSSData);
+    Papa.parse<EPSSPerVulnerability>(cleanedEPSSData, {
+      header: true, // Treat the first line as headers
+      dynamicTyping: true, // Automatically convert strings to numbers when appropriate
+      complete: (results: ParseResult<EPSSPerVulnerability>) => {
+        console.log(`Parsed Results:`, results.data);  // Log parsed results here
+        setEpssData(results.data as EPSSPerVulnerability[]);         
+      },
+      error: (error: Error) => {
+        console.error(`Error parsing CSV:`, error);
+      }
+    });
+  };
+
   useEffect(() => {
+    loadEPSSData();
+  }, []);
+
+  // useEffect(() => {
+  //   // Step 1: Log the raw CSV content
+  //   console.log("Raw EPSS Data:", defaultEPSSData);
+  
+  //   // Step 2: Clean the data by removing the first line
+  //   const cleanedEPSSData = defaultEPSSData.split('\n').slice(1).join('\n');
+  //   console.log("Cleaned EPSS Data:", cleanedEPSSData);
+  
+  //   // Step 3: Parse the cleaned CSV content
+  //   Papa.parse<EPSSPerVulnerability>(cleanedEPSSData, {
+  //     header: true,
+  //     dynamicTyping: true,
+  //     complete: (results) => {
+  //       console.log("Parsed Results:", results.data);  // Log parsed results
+  //       setEpssData(results.data as EPSSPerVulnerability[]);  // Update the state
+  //     },
+  //     error: (error) => {
+  //       console.error("Error parsing CSV:", error);  // Handle parsing errors
+  //     }
+  //   });
+  // }, []);
+  
+  useEffect(() => {
+    if (epssData.length > 0) {
+      console.log("Updated EPSS Data:", epssData);
+
+    } else {
+      console.log("EPSS Data is empty.");
+    }
+
     const reportUrls = queryParameters.getAll("reportUrls");
-    console.log(`reportUrls ${reportUrls}`);
+    console.log(`reportUrls`, reportUrls);
     if(reportUrls.length > 0){
       setLoadedReportFiles(reportUrls);
     } else {
       setLoadedData(defaultData);
     }
-
-  }, []);
+  }, [epssData]);
+  
+  
 
   useEffect(() => {
     console.log(`loadedReportFiles ${loadedReportFiles}`);
@@ -78,7 +134,7 @@ function App() {
 
   useEffect(() => {
     console.log(`loadedData.length ${loadedData.length}`);
-    setVulnerabilities(getVulnerabilities(loadedData));
+    setVulnerabilities(getVulnerabilities(loadedData, epssData));
     setSecrets(getSecrets(loadedData));
     setMisconfigurations(getMisconfigurations(loadedData));
     setMisconfigurationSummary(getMisconfigurationSummary(loadedData));
