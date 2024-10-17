@@ -53,6 +53,7 @@ const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onSeverityCli
 
   return (
     <Space>
+     Filter by:
       {resultsPerSeverity.map(({ severity, count, color }) => (
         <Button
           key={severity}

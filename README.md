@@ -15,6 +15,8 @@ A [Trivy](https://github.com/aquasecurity/trivy) plugin that scans and outputs t
 
 ## Install
 ```sh
+trivy plugin install scan2html
+or
 trivy plugin install github.com/fatihtokus/scan2html
 ```
 
@@ -27,6 +29,12 @@ trivy plugin uninstall scan2html
 ### Generate a report from multiple json scan results - experimental
 ```sh
 trivy scan2html generate interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
+```
+
+## Usage
+### Generate report with EPSS scores from multiple scan results - experimental
+```sh
+trivy scan2html generate --with-epss interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
 ```
 
 ### Scan a local folder
@@ -111,5 +119,8 @@ Examples:
   
   # Generate a report from multiple json scan results - experimental
   trivy scan2html generate interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
+  
+  # Generate report with EPSS scores from multiple scan results - experimental
+  trivy scan2html generate --with-epss interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
 
 ```
