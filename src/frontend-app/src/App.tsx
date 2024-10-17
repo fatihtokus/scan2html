@@ -148,6 +148,7 @@ function App() {
     }
 
     setFilledResultsPerCategory(tempResults);
+
     setMenuItems([
       { key: "vulnerabilities", icon: <BugOutlined />, label: `Vulnerabilities (${vulnerabilities.length})` },
       { key: "secrets", icon: <LockOutlined />, label: `Secrets (${secrets.length})` },
