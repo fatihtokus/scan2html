@@ -30,11 +30,8 @@ Examples:
   # Scan and generate SBOM(spdx) report
   trivy scan2html image --format spdx alpine:3.15 interactive_result.html
 
-  # Generate a report from multiple json scan results - experimental
+  # Generate report from multiple scan results - experimental
   trivy scan2html generate interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
-
-  # Generate report with EPSS scores from multiple scan results - experimental
-  trivy scan2html generate --with-epss interactive_result.html from vulnerabilities.json misconfigs.json secrets.json
 
 EOS
   exit
@@ -136,13 +133,41 @@ function combineReports {
 }
 
 function prepareEpssData {
-  echo "function prepareEpssData"
-  echo "all_params: $@"
-  BASEDIR="$1"
-  epssData="$2"
-  # Prepend the backtick to the first line of the file
-  echo -n '`' > "$epssData" && cat "$BASEDIR"/epss_scores.csv >> "$epssData" && echo '`' >> "$epssData"
-  #cat $epssData
+    echo "function prepareEpssData"
+    echo "all_params: $@"
+    BASEDIR="$1"
+    epssData="$2"
+
+    FILENAME="epss_scores-current.csv.gz"
+    FILENAMECSV="epss_scores-current.csv"
+
+    if [ -f "$BASEDIR/$FILENAME" ]; then
+      echo "Deleting existing file: $BASEDIR/$FILENAME"
+      rm -f "$BASEDIR/$FILENAME"
+    fi
+
+    echo "Downloading EPSS Scores from: https://epss.cyentia.com/$FILENAME"
+
+    # Download the file directly to the target directory
+    curl --progress-bar --max-time 60 -L -o "$BASEDIR/$FILENAME" https://epss.cyentia.com/$FILENAME
+
+    # Check if the download succeeded and if the file size is non-zero
+    if [ $? -eq 0 ] && [ -s "$BASEDIR/$FILENAME" ]; then
+        echo "Download completed. Decompressing file..."
+        # Check if the file already exists and delete it
+        if [ -f "$BASEDIR/$FILENAMECSV" ]; then
+          echo "Deleting existing file: $BASEDIR/$FILENAMECSV"
+          rm -f "$BASEDIR/$FILENAMECSV"
+        fi
+        gzip -d "$BASEDIR/$FILENAME"
+        trap 'echo "Cleaning up: $BASEDIR/$FILENAME"; rm -f "$BASEDIR/$FILENAME"' EXIT
+        trap 'echo "Cleaning up: $BASEDIR/$FILENAMECSV"; rm -f "$BASEDIR/$FILENAMECSV"' EXIT
+    else
+        echo "Downloading EPSS Scores failed or file is empty: https://epss.cyentia.com/$FILENAME"
+    fi
+
+    # Prepend the backtick to the first line of the file
+    echo -n '`' > "$epssData" && cat "$BASEDIR/$FILENAMECSV" >> "$epssData" && echo '`' >> "$epssData"
 }
 
 function generateHtmlReport {
