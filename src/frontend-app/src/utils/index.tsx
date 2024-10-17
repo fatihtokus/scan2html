@@ -24,7 +24,7 @@ function enrichWithEPSSCores(vulnerabilities: NormalizedResultForDataTable[], ep
   vulnerabilities.forEach(vulnerability => {
     let EPSS_Score = epssData.filter(epssPerVulnerability =>  epssPerVulnerability.cve === vulnerability.ID)[0];
     if (EPSS_Score) {
-      vulnerability.EPSS_Score = parseFloat((EPSS_Score.percentile * 100).toFixed(3));
+      vulnerability.EPSS_Score = parseFloat((EPSS_Score.percentile * 100).toFixed(2));
     }
   });
 
