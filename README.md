@@ -15,6 +15,8 @@ A [Trivy](https://github.com/aquasecurity/trivy) plugin that scans and outputs t
 
 ## Install
 ```sh
+trivy plugin install scan2html
+or
 trivy plugin install github.com/fatihtokus/scan2html
 ```
 
