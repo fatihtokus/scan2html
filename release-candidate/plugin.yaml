@@ -1,5 +1,9 @@
+variables:
+  - name: version
+    value: rc0.3.7
+
 name: "scan2html"
-version: &version "rc0.3.7"  # Define the version once with an anchor
+version: $(version)
 maintainer: fatihtokus
 repository: github.com/fatihtokus/scan2html
 summary: A Trivy plugin that scans and outputs the results to a single page app.
@@ -10,8 +14,8 @@ description: |-
 platforms:
   - selector:
       os: windows
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v#{version}/scan2html.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/$(version)/scan2html.tar.gz
     bin: ./scan2html.sh
   -
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v#{version}/scan2html.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/$(version)/scan2html.tar.gz
     bin: ./scan2html.sh
