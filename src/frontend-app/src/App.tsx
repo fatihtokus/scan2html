@@ -5,6 +5,7 @@ import TrivyReport from "./components/trivy-report/TrivyReport";
 import TableTitle from "./components/shared/TableTitle";
 import defaultData from "./data/results.json";
 import defaultEPSSData from "./data/epss.cvs?raw";
+import defaultResultMetaData from "./data/result-metadata.json";
 import { NormalizedResultForDataTable, UploadInfo } from "./types";
 import { EPSSPerVulnerability } from "./types/external/epss";
 import { getSecrets, getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
@@ -97,8 +98,6 @@ function App() {
       setLoadedData(defaultData);
     }
   }, [epssData]);
-  
-  
 
   useEffect(() => {
     console.log(`loadedReportFiles ${loadedReportFiles}`);
@@ -120,6 +119,18 @@ function App() {
     setK8sClusterSummaryRBACAssessment(getK8sClusterSummaryForRBACAssessment(loadedData));
     setSupplyChainSBOM(getSupplyChainSBOM(loadedData));
   }, [loadedData]);
+
+  useEffect(() => {
+    setMenuItems([
+      { key: "vulnerabilities", icon: <BugOutlined />, label: `Vulnerabilities (${vulnerabilities.length})` },
+      { key: "secrets", icon: <LockOutlined />, label: `Secrets (${secrets.length})` },
+      { key: "misconfigurationSummary", icon: <ExclamationCircleOutlined />, label: `Misconfiguration Summary (${misconfigurationSummary.length})` },
+      { key: "misconfigurations", icon: <SettingOutlined />, label: `Misconfigurations (${misconfigurations.length})` },
+      { key: "k8sClusterSummary", icon: <ClusterOutlined />, label: `K8s Cluster Summary (${k8sClusterSummaryInfraAssessment.length} / ${k8sClusterSummaryRBACAssessment.length})` },
+      { key: "supplyChainSBOM", icon: <ProfileOutlined />, label: `Supply Chain SBOM(spdx) (${supplyChainSBOM.length})`  },
+      { key: "loadAReport", icon: <UploadOutlined />, label: "Load a report" }
+    ]);
+  }, [vulnerabilities, misconfigurationSummary, secrets, misconfigurations, k8sClusterSummaryInfraAssessment, k8sClusterSummaryRBACAssessment, supplyChainSBOM]);
 
   useEffect(() => {
     let tempResults: string[] = [];
@@ -148,16 +159,8 @@ function App() {
     }
 
     setFilledResultsPerCategory(tempResults);
-    setMenuItems([
-      { key: "vulnerabilities", icon: <BugOutlined />, label: `Vulnerabilities (${vulnerabilities.length})` },
-      { key: "secrets", icon: <LockOutlined />, label: `Secrets (${secrets.length})` },
-      { key: "misconfigurationSummary", icon: <ExclamationCircleOutlined />, label: `Misconfiguration Summary (${misconfigurationSummary.length})` },
-      { key: "misconfigurations", icon: <SettingOutlined />, label: `Misconfigurations (${misconfigurations.length})` },
-      { key: "k8sClusterSummary", icon: <ClusterOutlined />, label: `K8s Cluster Summary (${k8sClusterSummaryInfraAssessment.length} / ${k8sClusterSummaryRBACAssessment.length})` },
-      { key: "supplyChainSBOM", icon: <ProfileOutlined />, label: `Supply Chain SBOM(spdx) (${supplyChainSBOM.length})`  },
-      { key: "loadAReport", icon: <UploadOutlined />, label: "Load a report" }
-    ]);
-  }, [vulnerabilities, misconfigurationSummary, secrets, misconfigurations, k8sClusterSummaryInfraAssessment, k8sClusterSummaryRBACAssessment, supplyChainSBOM]);
+
+  }, [menuItems]);
 
   useEffect(() => {
     if(filledResultsPerCategory.length > 0) {
@@ -171,11 +174,11 @@ function App() {
 
   useEffect(() => {
     if (menuItems.length > 0){
-      const label = menuItems.filter((item) => item?.key == selectedMenu);
-      setReportTitle(`Trivy Report - ${label[0]?.label}`);
+      const selectedMenuLabel = menuItems.filter((item) => item?.key == selectedMenu);
+      setReportTitle(`${defaultResultMetaData[0].REPORT_TITLE} - ${selectedMenuLabel[0]?.label}`);
     }
     
-  }, [selectedMenu]);
+  }, [selectedMenu, menuItems]);
 
   const onReportUpload = (info: UploadInfo) => {
     console.log(info);
