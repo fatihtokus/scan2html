@@ -8,7 +8,7 @@
 
 
 
-Before moving on, please consider giving us a GitHub star ⭐️.Thank you!
+Before moving on, please consider giving us a GitHub star ⭐️. Thank you!
 
 ## About scan2html
 A [Trivy](https://github.com/aquasecurity/trivy) plugin that scans and outputs the results (vulnerabilities, misconfigurations, secrets, SBOM in containers, Kubernetes, code repositories, clouds and more) to an interactive html file.
