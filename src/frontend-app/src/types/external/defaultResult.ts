@@ -81,6 +81,8 @@ export type Vulnerability = {
   Description: string;
   References: string[];
   CVSS: CVSS;
+  PublishedDate: string;
+  LastModifiedDate: string;
 };
 
 type CVSS = {
