@@ -12,7 +12,7 @@ import { filterDropdown, localeCompare, severityCompare, numberCompare } from '.
 import SeverityTag from '../shared/SeverityTag';
 import { severityFilters } from '../../constants';
 import SeverityToolbar from '../shared/SeverityToolbar';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 interface VulnerabilitiesProps {
   result: NormalizedResultForDataTable[];
@@ -208,7 +208,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.PublishedDate, b.PublishedDate),
       sortDirections: ['descend', 'ascend'],
       render:(PublishedDate)=> (
-        moment(PublishedDate).format('YYYY-MM-DD')
+        dayjs(PublishedDate).format('YYYY-MM-DD')
     ),
     },
     {
@@ -220,7 +220,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.LastModifiedDate, b.LastModifiedDate),
       sortDirections: ['descend', 'ascend'],
       render:(LastModifiedDate)=> (
-        moment(LastModifiedDate).format('YYYY-MM-DD')
+        dayjs(LastModifiedDate).format('YYYY-MM-DD')
     ),
     },
   ];
