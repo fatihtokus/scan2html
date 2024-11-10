@@ -18,6 +18,9 @@ export class NormalizedResultForDataTable {
 
   // Vulnerability
   References?: string[];
+  PublishedDate?: string;
+  LastModifiedDate?: string;
+  Description?: string;
 
   // Secrets
   Category?: string;

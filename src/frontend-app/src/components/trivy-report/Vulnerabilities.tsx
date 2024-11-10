@@ -12,6 +12,7 @@ import { filterDropdown, localeCompare, severityCompare, numberCompare } from '.
 import SeverityTag from '../shared/SeverityTag';
 import { severityFilters } from '../../constants';
 import SeverityToolbar from '../shared/SeverityToolbar';
+import moment from 'moment';
 
 interface VulnerabilitiesProps {
   result: NormalizedResultForDataTable[];
@@ -176,8 +177,8 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       ...getColumnSearchProps('InstalledVersion'),
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.InstalledVersion, b.InstalledVersion),
       sortDirections: ['descend', 'ascend'],
-      render:(text, record)=> (
-          <span title={record.PkgPath ? 'Path: ' + record.PkgPath : ''}>{text} </span>
+      render:(InstalledVersion, record)=> (
+          <span title={record.PkgPath ? 'Path: ' + record.PkgPath : ''}>{InstalledVersion} </span>
       ),
     },
     {
@@ -197,6 +198,30 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       ...getColumnSearchProps('Title'),
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Title, b.Title),
       sortDirections: ['descend', 'ascend'],
+    },
+    {
+      title: 'Published Date',
+      dataIndex: 'PublishedDate',
+      key: 'PublishedDate',
+      width: '5%',
+      ...getColumnSearchProps('PublishedDate'),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.PublishedDate, b.PublishedDate),
+      sortDirections: ['descend', 'ascend'],
+      render:(PublishedDate)=> (
+        moment(PublishedDate).format('YYYY-MM-DD')
+    ),
+    },
+    {
+      title: 'LastModified Date',
+      dataIndex: 'LastModifiedDate',
+      key: 'LastModifiedDate',
+      width: '5%',
+      ...getColumnSearchProps('LastModifiedDate'),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.LastModifiedDate, b.LastModifiedDate),
+      sortDirections: ['descend', 'ascend'],
+      render:(LastModifiedDate)=> (
+        moment(LastModifiedDate).format('YYYY-MM-DD')
+    ),
     },
   ];
 
@@ -220,6 +245,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
         expandable={{
           expandedRowRender: (vulnerability) => (
             <div style={{ margin: 0 }}>
+              <strong>Description:</strong> {vulnerability.Description}   
               <p><strong>References:</strong></p>
               <ul>
                 {vulnerability.References?.map((ref, index) => (
