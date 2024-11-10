@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "antd": "^5.12.6",
-    "moment": "^2.30.1",
+    "dayjs": "^1.11.13",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
