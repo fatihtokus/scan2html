@@ -212,7 +212,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
     ),
     },
     {
-      title: 'LastModified Date',
+      title: 'Last Modified Date',
       dataIndex: 'LastModifiedDate',
       key: 'LastModifiedDate',
       width: '5%',
