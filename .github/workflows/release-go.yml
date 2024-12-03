@@ -1,0 +1,36 @@
+name: Release go
+
+on:
+  workflow_call:
+    inputs:
+      next-version:
+        required: true
+        description: Next version
+        type: string
+
+jobs:
+  release-go:
+    name: Release go
+    runs-on: ubuntu-latest
+    if: ${{ inputs.next-version != '' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+
+      - run: git tag rc${{ inputs.next-version }}
+
+      - name: GoReleaser
+        uses: goreleaser/goreleaser-action@v4
+        with:
+          version: latest
+          args: release --clean --timeout 60m
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_CURRENT_TAG: rc${{ inputs.next-version }}

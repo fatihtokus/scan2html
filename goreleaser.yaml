@@ -1,8 +1,8 @@
 project_name: scan2html
 builds:
   -
-    main: .
-    binary: count
+    main: main.go
+    binary: scan2html
     ldflags:
       - -s -w
       - "-extldflags '-static'"
@@ -23,4 +23,5 @@ archives:
     files:
       - README.md
       - LICENSE
+      - report_template.html
       - plugin.yaml
