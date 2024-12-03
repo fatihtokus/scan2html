@@ -5,7 +5,7 @@ on:
     branches:
       - migration-to-go
     paths:
-      - "/release-candidate/plugin.yaml"
+      - "release-candidate/plugin.yaml"
 
 permissions:
   contents: read
