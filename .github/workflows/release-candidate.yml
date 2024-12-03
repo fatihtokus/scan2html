@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   check-version:
-    uses: fatihtokus/scan2html/.github/workflows/check-version.yaml@migration-to-go
+    uses: fatihtokus/scan2html/.github/workflows/check-version.yml@migration-to-go
   build:
     name: "Build front-end application"
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
           cat "$reportTemplate"
   release:
     needs: check-version
-    uses: fatihtokus/scan2html/.github/workflows/release-go.yaml@migration-to-go
+    uses: fatihtokus/scan2html/.github/workflows/release-go.yml@migration-to-go
     with:
       next-version: '${{ needs.check-version.outputs.next-version }}'
 
