@@ -36,7 +36,7 @@ trivy scan2html generate --scan2html-flags --output interactive_report.html --fr
 
 ### Generate report with EPSS scores from multiple scan results - experimental
 ```sh
-trivy scan2html generate --scan2html-flags --with-epss --output interactive_report.html --from vulnerabilities.json misconfigs.json secrets.json
+trivy scan2html generate --scan2html-flags --with-epss --output interactive_report.html --from vulnerabilities.json,misconfigs.json,secrets.json
 ```
 <details>
 <summary>Result</summary>
