@@ -1,5 +1,5 @@
 name: "scan2html"
-version: "rc0.3.9"
+version: "rc0.3.10"
 maintainer: fatihtokus
 repository: github.com/fatihtokus/scan2html
 summary: A Trivy plugin that scans and outputs the results to a single page app.
