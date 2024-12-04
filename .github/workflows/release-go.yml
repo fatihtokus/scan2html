@@ -24,7 +24,7 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - run: git tag rc${{ inputs.next-version }}
+      - run: git tag v${{ inputs.next-version }}
 
       - name: GoReleaser
         uses: goreleaser/goreleaser-action@v4
@@ -33,4 +33,4 @@ jobs:
           args: release --clean --timeout 60m
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GORELEASER_CURRENT_TAG: rc${{ inputs.next-version }}
+          GORELEASER_CURRENT_TAG: v${{ inputs.next-version }}
