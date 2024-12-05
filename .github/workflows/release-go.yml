@@ -24,13 +24,23 @@ jobs:
         with:
           go-version-file: go.mod
 
-      - run: git tag v${{ inputs.next-version }}
+      - name: Tagging
+        run: git tag v${{ inputs.next-version }}
+
+      - name: Determine if Pre-Release
+        id: prerelease-check
+        run: |
+          if [[ "${{ inputs.next-version }}" == *"rc"* ]]; then
+            echo "PRERELEASE=--prerelease" >> $GITHUB_ENV
+          else
+            echo "PRERELEASE=" >> $GITHUB_ENV
+          fi
 
       - name: GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-          args: ${{ inputs.next-version.contains('rc') && 'release --clean --prerelease --timeout 60m' || 'release --clean --timeout 60m' }}
+          args: release --clean ${{ env.PRERELEASE }} --timeout 60m
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: v${{ inputs.next-version }}
