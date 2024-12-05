@@ -36,6 +36,7 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 
 			wantPlugin: Flags{
 				"--scan2html-flags": "",
+				"--report-title":    "Trivy Report",
 				"--output":          "interactive_report.html",
 			},
 			wantTrivyCmd: []string{"fs", "--scanners", "vuln,secret,misconfig", ".", "--format", "json", "--output", expectedTempReportPath},
@@ -46,6 +47,7 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 
 			wantPlugin: Flags{
 				"--scan2html-flags": "",
+				"--report-title":    "Trivy Report",
 				"--output":          "interactive_report.html",
 			},
 			wantTrivyCmd: []string{"k8s", "cluster", "--format", "json", "--output", expectedTempReportPath},
@@ -56,6 +58,7 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 
 			wantPlugin: Flags{
 				"--scan2html-flags": "",
+				"--report-title":    "Trivy Report",
 				"--output":          "interactive_report.html",
 			},
 			wantTrivyCmd: []string{"k8s", "--report=all", "--format", "json", "--output", expectedTempReportPath},
@@ -66,6 +69,7 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 
 			wantPlugin: Flags{
 				"--scan2html-flags": "",
+				"--report-title":    "Trivy Report",
 				"--output":          "interactive_report.html",
 			},
 			wantTrivyCmd: []string{"k8s", "--report", "summary", "cluster", "--format", "json", "--output", expectedTempReportPath},
@@ -76,6 +80,7 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 
 			wantPlugin: Flags{
 				"--scan2html-flags": "",
+				"--report-title":    "Trivy Report",
 				"--output":          "interactive_report.html",
 			},
 			wantTrivyCmd: []string{"image", "--format", "spdx-json", "alpine:3.15", "--output", expectedTempReportPath},
@@ -88,6 +93,7 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 				"generate":          "",
 				"--scan2html-flags": "",
 				"--with-epss":       "",
+				"--report-title":    "Trivy Report",
 				"--output":          "interactive_report.html",
 				"--from":            "vulnerabilities.json,misconfigs.json,secrets.json",
 			},
@@ -99,6 +105,7 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 			wantPlugin: Flags{
 				"--scan2html-flags": "",
 				"--with-epss":       "",
+				"--report-title":    "Trivy Report",
 				"--output":          "cluster",
 			},
 			wantTrivyCmd: []string{"k8s", "--format", "json", "--output", expectedTempReportPath},
@@ -107,8 +114,9 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 			name: "Boolean and value flags",
 			args: []string{"ingored_flag", "k8s", "cluster", "--with-epss", "--output", "report.html"},
 			wantPlugin: Flags{
-				"--with-epss": "",
-				"--output":    "report.html",
+				"--with-epss":    "",
+				"--report-title": "Trivy Report",
+				"--output":       "report.html",
 			},
 			wantTrivyCmd: []string{"k8s", "cluster", "--format", "json", "--output", expectedTempReportPath},
 		},
@@ -117,7 +125,8 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 			args: []string{"ingored_flag", "k8s", "cluster", "interactive_report.html"},
 
 			wantPlugin: Flags{
-				"--output": "interactive_report.html",
+				"--report-title": "Trivy Report",
+				"--output":       "interactive_report.html",
 			},
 			wantTrivyCmd: []string{"k8s", "cluster", "--format", "json", "--output", expectedTempReportPath},
 		},
@@ -125,7 +134,8 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 			name: "Unknown flags treated as Trivy command",
 			args: []string{"ingored_flag", "--unknown-flag", "scan"},
 			wantPlugin: Flags{
-				"--output": "scan",
+				"--report-title": "Trivy Report",
+				"--output":       "scan",
 			},
 			wantTrivyCmd: []string{
 				"--unknown-flag", "--format", "json", "--output", expectedTempReportPath,
@@ -135,8 +145,9 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 			name: "Mixed plugin and Trivy flags",
 			args: []string{"ingored_flag", "--with-epss", "--unknown-flag", "scan", "--output", "report.html"},
 			wantPlugin: Flags{
-				"--with-epss": "",
-				"--output":    "report.html",
+				"--with-epss":    "",
+				"--report-title": "Trivy Report",
+				"--output":       "report.html",
 			},
 			wantTrivyCmd: []string{
 				"--unknown-flag",

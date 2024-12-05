@@ -14,7 +14,7 @@ import (
 )
 
 func GenerateHtmlReport(pluginFlags common.Flags) error {
-	log.Println("Function: generateHtmlReport")
+	log.Printf("GenerateHtmlReport: %v", pluginFlags)
 	defer os.Remove(common.GetScan2htmlTempReportPath())
 
 	baseDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
@@ -22,9 +22,9 @@ func GenerateHtmlReport(pluginFlags common.Flags) error {
 		log.Fatalf("Failed to determine base directory: %v", err)
 	}
 
-	var reportName = pluginFlags["--output"]
+	reportName := pluginFlags["--output"]
 	_, withEpss := pluginFlags["--with-epss"]
-	var reportTitle = pluginFlags["--report-title"]
+	reportTitle := pluginFlags["--report-title"]
 	// Log input parameters for clarity
 	log.Printf("Base Directory: %s\n", baseDir)
 	log.Printf("With EPSS: %t\n", withEpss)
@@ -61,16 +61,17 @@ func GenerateHtmlReport(pluginFlags common.Flags) error {
 
 	// Handle EPSS data if enabled
 	if withEpss {
-		fmt.Println("EPSS enabled!")
+		log.Println("EPSS enabled!")
 		var epssDataFile, err = epss.PrepareEpssData()
 		if err != nil {
 			return fmt.Errorf("failed to prepare EPSS data: %v", err)
 		}
-		err = replaceTextByFile(reportName, "\"TEMP_EPSS_DATA\"", epssDataFile)
+
 		// replaceTextByFile "$report_name" "\"TEMP_EPSS_DATA\"" "$epss_data"
-		if err != nil {
+		if err := replaceTextByFile(reportName, "\"TEMP_EPSS_DATA\"", epssDataFile); err != nil {
 			return fmt.Errorf("failed to replace EPSS data in %s: %v", reportName, err)
 		}
+
 		log.Println("EPSS data imported!")
 
 		// Schedule deletion of the EPSS data file upon function exit
@@ -135,11 +136,14 @@ func replaceTextByFile(inputFile, searchText, replaceFile string) error {
 
 // generateReportName creates a unique report name based on timestamp if the file already exists.
 func generateReportName(reportName string) string {
-	if _, err := os.Stat(reportName); err == nil {
-		timestamp := time.Now().Format("20060102150405")
-		newReportName := strings.Replace(reportName, ".html", fmt.Sprintf("(%s).html", timestamp), 1)
-		log.Printf("%s already exists, creating %s instead!\n", reportName, newReportName)
-		reportName = newReportName
+	if _, err := os.Stat(reportName); os.IsNotExist(err) {
+		return reportName // File doesn't exist, return the original name
 	}
-	return reportName
+
+	// Generate a new report name with a timestamp
+	timestamp := time.Now().Format("2006_01_02_15_04_05_06")
+	newReportName := strings.Replace(reportName, ".html", fmt.Sprintf("(%s).html", timestamp), 1)
+	log.Printf("File %s already exists. Using %s instead.\n", reportName, newReportName)
+
+	return newReportName
 }

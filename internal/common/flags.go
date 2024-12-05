@@ -19,6 +19,7 @@ var AvailableFlags = map[string]bool{
 type Flags map[string]string
 
 func RetrievePluginFlagsAndCommand(args []string) (Flags, []string) {
+	log.Printf("RetrievePluginFlagsAndCommand: %v", args)
 	trivyFlags := []string{}
 	pluginFlags := make(Flags)
 	isSPDX := false
@@ -35,6 +36,7 @@ func RetrievePluginFlagsAndCommand(args []string) (Flags, []string) {
 				pluginFlags[arg] = ""
 			}
 		} else {
+			// replacing spdx format with spdx-json
 			if arg == "--format" && args[i+1] == "spdx" {
 				trivyFlags = append(trivyFlags, "--format", "spdx-json")
 				i++
@@ -48,8 +50,13 @@ func RetrievePluginFlagsAndCommand(args []string) (Flags, []string) {
 	// Handle deprecated usage
 	if _, exists := pluginFlags["--output"]; !exists {
 		log.Println("Deprecated use of scan2html plugin. Please refer to help to see the new usage!")
+		// Using last flag of trivy as the output
 		pluginFlags["--output"] = trivyFlags[len(trivyFlags)-1]
 		trivyFlags = trivyFlags[:len(trivyFlags)-1]
+	}
+
+	if _, exists := pluginFlags["--report-title"]; !exists {
+		pluginFlags["--report-title"] = "Trivy Report"
 	}
 
 	if !isSPDX {
@@ -58,10 +65,17 @@ func RetrievePluginFlagsAndCommand(args []string) (Flags, []string) {
 
 	trivyFlags = append(trivyFlags, "--output", GetScan2htmlTempReportPath())
 
+	log.Printf("RetrievePluginFlagsAndCommand - pluginFlags: %v", pluginFlags)
+	log.Printf("RetrievePluginFlagsAndCommand - trivyFlags: %v", trivyFlags)
 	return pluginFlags, trivyFlags[1:]
 }
 
 func IsHelp() bool {
+
+	if len(os.Args) <= 1 {
+		return true
+	}
+
 	for _, arg := range os.Args {
 		if arg == "-h" || arg == "--help" {
 			return true
@@ -73,8 +87,50 @@ func IsHelp() bool {
 func PrintHelp(version string) {
 	fmt.Printf(`
 scan2html v%s
-Usage: trivy scan2html [options] command target filename
-Options:
-  -h, --help    Show usage.
+Usage: trivy scan2html [-h,--help] command target filename
+ A Trivy plugin that scans and output the results to a html file.
+Usage: trivy scan2html [-h,--help] command target filename
+  trivy scan2html <trivy [global flags] command [flags] target> --scan2html-flags [scan2html flags]
+  trivy scan2html generate --scan2html-flags [scan2html flags]
+
+Utility Commands
+  generate    Generate a report from multiple json scan results
+  help        Help about any command
+  version     Print the version
+
+Flags:
+  -h, --help      Show usage.
+  --output        Report name
+  --report-title  Report title
+  --with-epss     Include EPSS data
+  --from          Comma separated json scan result files
+
+Examples:
+   # Scan an image
+  trivy scan2html image alpine:latest --scan2html-flags --output interactive_report.html
+
+  # Scan an image from local tar file
+  trivy scan2html image --input ruby-3.1.tar --scan2html-flags --output interactive_report.html
+
+  # Scan a local folder
+  trivy scan2html fs --scanners vuln,secret,misconfig . --scan2html-flags --output interactive_report.html
+
+  # Scan a k8s cluster
+  trivy scan2html k8s cluster --scan2html-flags --output interactive_report.html
+
+  # Scan a k8s cluster all
+  trivy scan2html k8s --report=all --scan2html-flags --output interactive_report.html
+
+  # Scan a k8s cluster summary
+  trivy scan2html k8s --report summary cluster --scan2html-flags --output interactive_report.html
+
+  # Scan and generate SBOM(spdx) report
+  trivy scan2html image --format spdx alpine:3.15 --scan2html-flags --output interactive_report.html
+
+  # Generate a report from multiple json scan results - experimental
+  trivy scan2html generate --scan2html-flags --output interactive_report.html --from vulnerabilities.json,misconfigs.json,secrets.json
+
+  # Generate report with EPSS scores from multiple scan results - experimental
+  trivy scan2html generate --scan2html-flags --with-epss --output interactive_report.html --from vulnerabilities.json,misconfigs.json,secrets.json
 `, version)
 }

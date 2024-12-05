@@ -9,15 +9,18 @@ import (
 	"scan2html/internal/trivy"
 )
 
+var (
+	version          = "dev"
+)
+
 func main() {
-	if common.IsHelp() || len(os.Args) <= 1 {
+	if common.IsHelp() {
 		helpMessage()
 	}
 
 	pluginFlags, trivyCommand := common.RetrievePluginFlagsAndCommand(os.Args)
 
-	// Generate Trivy JSON report
-	err, exitCode := trivy.GenerateJsonReport(trivyCommand)
+	exitCode, err := trivy.GenerateJsonReport(trivyCommand)
 	if err != nil {
 		log.Fatalf("Failed to generate Trivy JSON report - exit code %d: %v", exitCode, err)
 		os.Exit(exitCode)
@@ -27,9 +30,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error generating HTML report: %v", err)
 	}
+
+	os.Exit(exitCode)
 }
 
 func helpMessage() {
-	common.PrintHelp("dev")
+	common.PrintHelp(version)
 	os.Exit(0)
 }

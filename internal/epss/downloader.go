@@ -4,6 +4,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -22,87 +23,88 @@ func PrepareEpssData() (string, error) {
 	tmpEpssGZFilepath := filepath.Join(os.TempDir(), epssGZFileName)
 	tmpEpssFilepath := filepath.Join(os.TempDir(), epssFileName)
 	epssDownloadUrl := fmt.Sprintf("%s/%s", epssURL, epssGZFileName)
-	fmt.Printf("Downloading EPSS Scores from: %s\n", epssDownloadUrl)
+	log.Printf("Downloading EPSS Scores from: %s\n", epssDownloadUrl)
 
-	// Perform the HTTP GET request
-	resp, err := http.Get(epssDownloadUrl)
-	if err != nil {
-		return "", fmt.Errorf("failed to download EPSS data: %w", err)
+	if err := DownloadFile(epssDownloadUrl, tmpEpssGZFilepath); err != nil {
+		return "", err
 	}
-	defer func() {
-		if cerr := resp.Body.Close(); cerr != nil {
-			fmt.Printf("Warning: failed to close response body: %v\n", cerr)
-		}
-	}()
+	log.Printf("EPSS data downloaded to: %s\n", tmpEpssGZFilepath)
 
-	// Check HTTP response status
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("unexpected HTTP status: %d %s", resp.StatusCode, http.StatusText(resp.StatusCode))
+	if err := DecompressFile(tmpEpssGZFilepath, tmpEpssFilepath); err != nil {
+		return "", err
 	}
 
-	// Create the temporary compressed file
-	outFile, err := os.Create(tmpEpssGZFilepath)
-	if err != nil {
-		return "", fmt.Errorf("failed to create file %s: %w", tmpEpssGZFilepath, err)
-	}
-	defer func() {
-		if cerr := outFile.Close(); cerr != nil {
-			fmt.Printf("Warning: failed to close output file: %v\n", cerr)
-		}
-	}()
-
-	// Copy the response body to the compressed file
-	if _, err = io.Copy(outFile, resp.Body); err != nil {
-		return "", fmt.Errorf("failed to write response body to file: %w", err)
-	}
-
-	fmt.Printf("EPSS data downloaded to: %s\n", tmpEpssGZFilepath)
-
-	// Open the compressed file for reading
-	gzFile, err := os.Open(tmpEpssGZFilepath)
-	if err != nil {
-		return "", fmt.Errorf("failed to open compressed file %s: %w", tmpEpssGZFilepath, err)
-	}
-	defer func() {
-		if cerr := gzFile.Close(); cerr != nil {
-			fmt.Printf("Warning: failed to close compressed file: %v\n", cerr)
-		}
-	}()
-
-	// Create a GZIP reader
-	gzReader, err := gzip.NewReader(gzFile)
-	if err != nil {
-		return "", fmt.Errorf("failed to create GZIP reader: %w", err)
-	}
-	defer func() {
-		if cerr := gzReader.Close(); cerr != nil {
-			fmt.Printf("Warning: failed to close GZIP reader: %v\n", cerr)
-		}
-	}()
-
-	// Create the uncompressed file
-	uncompressedFile, err := os.Create(tmpEpssFilepath)
-	if err != nil {
-		return "", fmt.Errorf("failed to create uncompressed file %s: %w", tmpEpssFilepath, err)
-	}
-	defer func() {
-		if cerr := uncompressedFile.Close(); cerr != nil {
-			fmt.Printf("Warning: failed to close uncompressed file: %v\n", cerr)
-		}
-	}()
-
-	// Copy the decompressed data to the uncompressed file
-	if _, err = io.Copy(uncompressedFile, gzReader); err != nil {
-		return "", fmt.Errorf("failed to write decompressed data to file: %w", err)
-	}
+	stats, _ := os.Stat(tmpEpssFilepath)
+	log.Printf("File decompressed successfully to %s with size of: %d bytes\n", tmpEpssFilepath, stats.Size())
 
 	// Add backticks to the beginning and end of the file
 	if err := addBackticksToFile(tmpEpssFilepath); err != nil {
 		return "", fmt.Errorf("failed to add backticks to file: %w", err)
 	}
 
-	fmt.Printf("Unzipped and modified EPSS data saved to: %s\n", tmpEpssFilepath)
+	log.Printf("Unzipped and modified EPSS data saved to: %s\n", tmpEpssFilepath)
 	return tmpEpssFilepath, nil
+}
+
+// DecompressFile decompresses a GZIP file and writes the decompressed content to the specified destination.
+func DecompressFile(gzFilepath, outputFilepath string) error {
+	// Open the compressed file
+	gzFile, err := os.Open(gzFilepath)
+	if err != nil {
+		return fmt.Errorf("failed to open compressed file %s: %w", gzFilepath, err)
+	}
+	defer gzFile.Close()
+
+	// Create a GZIP reader
+	gzReader, err := gzip.NewReader(gzFile)
+	if err != nil {
+		return fmt.Errorf("failed to create GZIP reader: %w", err)
+	}
+	defer gzReader.Close()
+
+	// Create the output file
+	outputFile, err := os.Create(outputFilepath)
+	if err != nil {
+		return fmt.Errorf("failed to create output file %s: %w", outputFilepath, err)
+	}
+	defer outputFile.Close()
+
+	// Copy decompressed data to the output file
+	if _, err := io.Copy(outputFile, gzReader); err != nil {
+		return fmt.Errorf("failed to write decompressed data: %w", err)
+	}
+
+	return nil
+}
+
+// DownloadFile downloads a file from a given URL and saves it to the specified path.
+func DownloadFile(url, filepath string) error {
+	// Perform the HTTP GET request
+	resp, err := http.Get(url)
+	if err != nil {
+		return fmt.Errorf("failed to download file: %w", err)
+	}
+	defer resp.Body.Close()
+
+	// Check HTTP response status
+	if resp.StatusCode != http.StatusOK {
+		return fmt.Errorf("unexpected HTTP status: %d %s", resp.StatusCode, http.StatusText(resp.StatusCode))
+	}
+
+	// Create the destination file
+	outFile, err := os.Create(filepath)
+	if err != nil {
+		return fmt.Errorf("failed to create file %s: %w", filepath, err)
+	}
+	defer outFile.Close()
+
+	// Copy the response body to the destination file
+	_, err = io.Copy(outFile, resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to write response body to file: %w", err)
+	}
+
+	return nil
 }
 
 // addBackticksToFile adds backticks to the start and end of the specified file.
