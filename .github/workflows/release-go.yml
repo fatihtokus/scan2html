@@ -40,7 +40,8 @@ jobs:
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-          args: release --clean ${{ env.PRERELEASE }} --timeout 60m
+          prerelease: "{{ .Tag | regexMatch `-rc\.` }}"
+          args: release --clean --timeout 60m
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: v${{ inputs.next-version }}
