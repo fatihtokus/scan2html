@@ -10,11 +10,10 @@ import (
 	"strings"
 )
 
-// GenerateTrivyJsonReport runs the Trivy scan and generates a JSON report.
-func GenerateJsonReport(trivyFlags []string) error {
-	// Append flags to output results as JSON to the specified file
-	//trivyFlags = append(trivyFlags, "--format", "json", "--output", outputFile)
+func GenerateJsonReport(trivyFlags []string) (error, int) {
+	// Path for the temporary output file
 	outputFile := common.GetScan2htmlTempReportPath()
+
 	// Run the Trivy command
 	cmd := exec.Command(findTrivyInstallation(), trivyFlags...)
 	var stdout, stderr bytes.Buffer
@@ -22,20 +21,31 @@ func GenerateJsonReport(trivyFlags []string) error {
 	cmd.Stderr = &stderr
 
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("trivy command failed: %w\nStderr: %s", err, stderr.String())
+		// Check if it's an ExitError to retrieve the exit code
+		var exitCode int
+		if exitErr, ok := err.(*exec.ExitError); ok {
+			// Extract the exit code
+			exitCode = exitErr.ExitCode()
+			return fmt.Errorf("trivy command failed with exit code %d: %s", exitCode, stderr.String()), exitCode
+		}
+
+		// Non-ExitError cases
+		return fmt.Errorf("trivy command execution failed: %w", err), 0
+
 	}
 
 	// Check if the output file was created
 	if _, err := os.Stat(outputFile); os.IsNotExist(err) {
-		return fmt.Errorf("output file %s was not created", outputFile)
+		return fmt.Errorf("output file %s was not created", outputFile), 0
 	}
 
-	return nil
+	return nil, 0
 }
 
-func findTrivyInstallation() string {
-	if err := validateTrivyInstallation("./trivy"); err != nil {
-		log.Println("./trivy is not installated, using trivy")
+var findTrivyInstallation = func() string {
+	if err := validateTrivyInstallation("./trivy"); err == nil {
+		log.Println("Using ./trivy")
+		return "./trivy"
 	}
 	return "trivy"
 }
