@@ -19,10 +19,14 @@ jobs:
     permissions:
       contents: write
     needs: check-version
-    if: ${{ needs.check-version.outputs.next_version != '' }}
+    #if: ${{ needs.check-version.outputs.next_version != '' }}
     env:
       reportTemplate: 'report_template.html'
     steps:
+      - name: Debug check-version output
+        run: |
+          echo "Next version: ${{ needs.check-version.outputs.next_version }}"
+
       - name: Harden Runner
         uses: step-security/harden-runner@0d381219ddf674d61a7572ddd19d7941e271515c # v2.9.0
         with:

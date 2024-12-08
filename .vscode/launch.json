@@ -31,7 +31,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}",
-            "args": ["generate", "--scan2html-flags", "--output", "interactive_report.html", "--from", "test/data/default/results.json,test/data/k8s/results.json", "--with-epss"]
+            "args": ["generate", "--scan2html-flags", "--output", "interactive_report.html", "--from", "test/data/default/results.json,test/data/k8s/results.json"]
         },
         {
             "name": "Debug Scan2html with Depricated flags",
