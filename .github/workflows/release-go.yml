@@ -40,6 +40,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
+          # this doesn't work
           prerelease: '{{ .Tag | regexMatch `-rc\.` }}'
           args: release --clean --timeout 60m
         env:

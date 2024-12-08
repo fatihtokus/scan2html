@@ -10,6 +10,22 @@
             "args": ["image", "--format", "spdx", "ghcr.io/zalando/spilo-15:3.0-p1", "--scan2html-flags", "--output", "interactive_report.html", "--report-title", "Trivy Report Test", "--with-epss"]
         },
         {
+            "name": "Image scan with a custom exit code",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "args": ["image", "--scanners", "vuln", "ruby:3.1", "--severity", "CRITICAL", "--scan2html-flags", "--output", "interactive_report.html"]
+        },
+        {
+            "name": "Image scan with a custom exit code-2",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}",
+            "args": ["image", "--scanners", "vuln", "ruby:3.1", "--exit-code", "5", "--severity", "CRITICAL", "--scan2html-flags", "--output", "interactive_report.html"]
+        },
+        {
             "name": "Regression-1",
             "type": "go",
             "request": "launch",

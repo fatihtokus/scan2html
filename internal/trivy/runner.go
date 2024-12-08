@@ -20,16 +20,9 @@ func GenerateJsonReport(trivyFlags []string) (int, error) {
 	var exitCode = 0
 	if err := cmd.Run(); err != nil {
 		// Check if it's an ExitError to retrieve the exit code
-
 		if exitErr, ok := err.(*exec.ExitError); ok {
-			// Extract the exit code
 			exitCode = exitErr.ExitCode()
-			return exitCode, fmt.Errorf("trivy command failed with exit code %d: %s", exitCode, stderr.String())
 		}
-
-		// Non-ExitError cases
-		return 0, fmt.Errorf("trivy command execution failed: %w", err)
-
 	}
 
 	// Check if the output file was created
@@ -40,7 +33,7 @@ func GenerateJsonReport(trivyFlags []string) (int, error) {
 	}
 	log.Printf("Generated Json report: %s with size of: %d bytes", outputFile, stats.Size())
 
-	return 0, nil
+	return exitCode, nil
 }
 
 var findTrivyInstallation = func() string {

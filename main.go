@@ -21,10 +21,10 @@ func main() {
 	pluginFlags, trivyCommand := common.RetrievePluginFlagsAndCommand(os.Args)
 
 	exitCode, err := trivy.GenerateJsonReport(trivyCommand)
-	if err != nil {
-		log.Fatalf("Failed to generate Trivy JSON report - exit code %d: %v", exitCode, err)
-		os.Exit(exitCode)
-	}
+	// if err != nil {
+	// 	log.Fatalf("Failed to generate Trivy JSON report - exit code %d: %v", exitCode, err)
+	// 	os.Exit(exitCode)
+	// }
 
 	err = report.GenerateHtmlReport(pluginFlags)
 	if err != nil {
