@@ -59,6 +59,13 @@ jobs:
           } >"$reportTemplate"
           
           cat "$reportTemplate"
+
+      - name: Upload report_template.html
+        uses: actions/upload-artifact@v3
+        with:
+          name: report-template
+          path: ${{ env.reportTemplate }}
+
   release:
     needs:
       - check-version

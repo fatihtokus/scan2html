@@ -19,6 +19,16 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Download report_template.html
+        uses: actions/download-artifact@v3
+        with:
+          name: report-template
+
+      - name: Use the downloaded report template
+        run: |
+          ls -l report_template.html
+          cat report_template.html
+
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
@@ -27,21 +37,21 @@ jobs:
       - name: Tagging
         run: git tag v${{ inputs.next-version }}
 
-      - name: Determine if Pre-Release
-        id: prerelease-check
-        run: |
-          if [[ "${{ inputs.next-version }}" == *"rc"* ]]; then
-            echo "PRERELEASE=--prerelease" >> $GITHUB_ENV
-          else
-            echo "PRERELEASE=" >> $GITHUB_ENV
-          fi
+#      - name: Determine if Pre-Release
+#        id: prerelease-check
+#        run: |
+#          if [[ "${{ inputs.next-version }}" == *"rc"* ]]; then
+#            echo "PRERELEASE=--prerelease" >> $GITHUB_ENV
+#          else
+#            echo "PRERELEASE=" >> $GITHUB_ENV
+#          fi
 
       - name: GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
           # this doesn't work
-          prerelease: '{{ .Tag | regexMatch `-rc\.` }}'
+          #prerelease: '{{ .Tag | regexMatch `-rc\.` }}'
           args: release --clean --timeout 60m
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
