@@ -15,14 +15,6 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}",
-            "args": ["image", "--scanners", "vuln", "ruby:3.1", "--severity", "CRITICAL", "--scan2html-flags", "--output", "interactive_report.html"]
-        },
-        {
-            "name": "Image scan with a custom exit code-2",
-            "type": "go",
-            "request": "launch",
-            "mode": "debug",
-            "program": "${workspaceFolder}",
             "args": ["image", "--scanners", "vuln", "ruby:3.1", "--exit-code", "5", "--severity", "CRITICAL", "--scan2html-flags", "--output", "interactive_report.html"]
         },
         {
@@ -34,12 +26,12 @@
             "args": ["fs", "--scanners", "vuln,secret,misconfig", ".", "--scan2html-flags", "--output", "interactive_report.html"]
         },
         {
-            "name": "Regression-2",
+            "name": "Generate a report from multiple json scan results",
             "type": "go",
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}",
-            "args": ["k8s", "cluster", "--scan2html-flags", "--output", "interactive_report.html"]
+            "args": ["generate", "--scan2html-flags", "--output", "interactive_report.html", "--from", "test/data/default/results.json,test/data/k8s/results.json", "--with-epss"]
         },
         {
             "name": "Debug Scan2html with Depricated flags",
@@ -47,7 +39,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}",
-            "args": ["image", "--format", "spdx", "ghcr.io/zalando/spilo-15:3.0-p1", "test-report-depricated.html"]
+            "args": ["image", "--scanners", "vuln", "ruby:3.1", "interactive_report.html"]
         },
         {
             "name": "Debug scan2htmlBash",

@@ -147,3 +147,42 @@ func generateReportName(reportName string) string {
 
 	return newReportName
 }
+
+func CombineReports(pluginFlags common.Flags) error {
+	log.Println("Function: combineReports")
+	from := pluginFlags["--from"]
+	resultFiles := strings.Split(from, ",")
+	log.Printf("From resultFiles: %v\n", resultFiles)
+
+	var resultFileContents []string
+
+	// Iterate through each file and combine their contents
+	for _, file := range resultFiles {
+		if _, err := os.Stat(file); err != nil {
+			if os.IsNotExist(err) {
+				log.Printf("File %s does not exist.\n", file)
+				return fmt.Errorf("file %s does not exist", file)
+			}
+			return fmt.Errorf("failed to check file %s: %w", file, err)
+		}
+
+		log.Printf("Reading contents of %s:\n", file)
+		content, err := os.ReadFile(file)
+		if err != nil {
+			return fmt.Errorf("failed to read file %s: %w", file, err)
+		}
+
+		resultFileContents = append(resultFileContents, string(content))
+	}
+
+	// Combine contents into a single string
+	combinedContent := strings.Join(resultFileContents, ",")
+
+	// Write the combined contents to the result file
+	if err := os.WriteFile(common.GetScan2htmlTempReportPath(), []byte(combinedContent), 0644); err != nil {
+		return fmt.Errorf("failed to write to file %s: %w", common.GetScan2htmlTempReportPath(), err)
+	}
+
+	log.Printf("Content written to %s\n", common.GetScan2htmlTempReportPath())
+	return nil
+}

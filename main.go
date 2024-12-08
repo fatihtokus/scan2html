@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -10,7 +11,7 @@ import (
 )
 
 var (
-	version          = "dev"
+	version = "dev"
 )
 
 func main() {
@@ -20,13 +21,22 @@ func main() {
 
 	pluginFlags, trivyCommand := common.RetrievePluginFlagsAndCommand(os.Args)
 
-	exitCode, err := trivy.GenerateJsonReport(trivyCommand)
+	var exitCode = 0
+	if _, exists := pluginFlags["generate"]; exists {
+		if err := report.CombineReports(pluginFlags); err != nil {
+			fmt.Printf("Error: %v\n", err)
+			os.Exit(1)
+		}
+	} else {
+		exitCode, _ = trivy.GenerateJsonReport(trivyCommand)
+	}
+
 	// if err != nil {
 	// 	log.Fatalf("Failed to generate Trivy JSON report - exit code %d: %v", exitCode, err)
 	// 	os.Exit(exitCode)
 	// }
 
-	err = report.GenerateHtmlReport(pluginFlags)
+	err := report.GenerateHtmlReport(pluginFlags)
 	if err != nil {
 		log.Fatalf("Error generating HTML report: %v", err)
 	}
