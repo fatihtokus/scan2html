@@ -40,3 +40,5 @@
 
 # Go workspace file
 go.work
+
+report_template.html
