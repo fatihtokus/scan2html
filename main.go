@@ -36,7 +36,7 @@ func main() {
 	// 	os.Exit(exitCode)
 	// }
 
-	err := report.GenerateHtmlReport(pluginFlags)
+	err := report.GenerateHtmlReport(pluginFlags, version)
 	if err != nil {
 		log.Fatalf("Error generating HTML report: %v", err)
 	}

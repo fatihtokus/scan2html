@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-func GenerateHtmlReport(pluginFlags common.Flags) error {
+func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 	log.Printf("GenerateHtmlReport: %v", pluginFlags)
 	defer os.Remove(common.GetScan2htmlTempReportPath())
 
@@ -48,6 +48,11 @@ func GenerateHtmlReport(pluginFlags common.Flags) error {
 	// if _, err := os.Stat(reportName); os.IsNotExist(err) {
 	// 	return fmt.Errorf("error: report file '%s' not found", reportName)
 	// }
+
+	err = replaceTextByText(reportName, "TEMP_APP_VERSION", version)
+	if err != nil {
+		return fmt.Errorf("failed to replace report title in %s: %v", reportName, err)
+	}
 
 	// Replace placeholders with actual content in the report file
 	err = replaceTextByText(reportName, "{REPORT_TITLE:\"Temp Trivy Report\"}", fmt.Sprintf("{REPORT_TITLE:'%s'}", reportTitle))
