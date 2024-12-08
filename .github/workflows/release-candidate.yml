@@ -59,11 +59,11 @@ jobs:
           } >"$reportTemplate"
           
           cat "$reportTemplate"
-#  release:
-#    needs: check-version
-#    uses: fatihtokus/scan2html/.github/workflows/release-go.yml@migration-to-go
-#    with:
-#      next-version: '${{ needs.check-version.outputs.next-version }}'
+  release:
+    needs: check-version
+    uses: fatihtokus/scan2html/.github/workflows/release-go.yml@migration-to-go
+    with:
+      next-version: '${{ needs.check-version.outputs.next-version }}'
 
 #      - name: Compress
 #        run: tar -zcvf scan2html.tar.gz scan2html.sh "$reportTemplate" LICENSE release-candidate/plugin.yaml
