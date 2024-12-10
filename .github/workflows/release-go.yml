@@ -37,16 +37,6 @@ jobs:
       - name: Tagging
         run: git tag v${{ inputs.next-version }}
 
-      - name: Debug Module
-        run: |
-          echo "Module path: $(go list -m)"
-          echo "Module root: $(go env GOPATH)/src/$(go list -m)"
-          go list ./...
-
-      - name: Clear Go Cache
-        run: go clean -modcache
-
-
       - name: GoReleaser
         uses: goreleaser/goreleaser-action@v4
         with:
