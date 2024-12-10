@@ -40,5 +40,9 @@
 
 # Go workspace file
 go.work
+/vendor
 
+# This is generated on CI after front-end app build
 report_template.html
+
+

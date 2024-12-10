@@ -37,14 +37,15 @@ jobs:
       - name: Tagging
         run: git tag v${{ inputs.next-version }}
 
-#      - name: Determine if Pre-Release
-#        id: prerelease-check
-#        run: |
-#          if [[ "${{ inputs.next-version }}" == *"rc"* ]]; then
-#            echo "PRERELEASE=--prerelease" >> $GITHUB_ENV
-#          else
-#            echo "PRERELEASE=" >> $GITHUB_ENV
-#          fi
+      - name: Debug Module
+        run: |
+          echo "Module path: $(go list -m)"
+          echo "Module root: $(go env GOPATH)/src/$(go list -m)"
+          go list ./...
+
+      - name: Clear Go Cache
+        run: go clean -modcache
+
 
       - name: GoReleaser
         uses: goreleaser/goreleaser-action@v4
@@ -52,7 +53,7 @@ jobs:
           version: latest
           # this doesn't work
           #prerelease: '{{ .Tag | regexMatch `-rc\.` }}'
-          args: release --clean --timeout 60m
+          args: release --clean --timeout 60m --debug
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: v${{ inputs.next-version }}
