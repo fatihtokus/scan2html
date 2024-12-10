@@ -36,8 +36,8 @@ jobs:
 
       - name: Tagging
         run: git tag v${{ inputs.next-version }}
-      -
-        name: Import GPG key
+
+      - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v6
         with:
