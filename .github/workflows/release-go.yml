@@ -62,3 +62,7 @@ jobs:
           GORELEASER_CURRENT_TAG: v${{ inputs.next-version }}
           GPG_FILE: "gpg.key"
           #GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+
+      - name: "remove gpg key"
+        run: |
+          rm gpg.key

@@ -44,5 +44,6 @@ go.work
 
 # This is generated on CI after front-end app build
 report_template.html
+gpg.key
 
 
