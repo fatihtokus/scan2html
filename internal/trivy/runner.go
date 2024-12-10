@@ -3,9 +3,9 @@ package trivy
 import (
 	"bytes"
 	"fmt"
-	"scan2html/internal/logger"
 	"os"
 	"os/exec"
+	"scan2html/internal/logger"
 	"scan2html/internal/common"
 	"strings"
 )
