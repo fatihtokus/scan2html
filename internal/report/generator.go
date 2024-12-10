@@ -9,12 +9,13 @@ import (
 	"path/filepath"
 	"scan2html/internal/common"
 	"scan2html/internal/epss"
+	"scan2html/internal/logger"
 	"strings"
 	"time"
 )
 
 func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
-	log.Printf("GenerateHtmlReport: %v", pluginFlags)
+	logger.Logger.Infof("GenerateHtmlReport: %v", pluginFlags)
 	defer os.Remove(common.GetScan2htmlTempReportPath())
 
 	baseDir, err := filepath.Abs(filepath.Dir(os.Args[0]))
@@ -26,10 +27,10 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 	_, withEpss := pluginFlags["--with-epss"]
 	reportTitle := pluginFlags["--report-title"]
 	// Log input parameters for clarity
-	log.Printf("Base Directory: %s\n", baseDir)
-	log.Printf("With EPSS: %t\n", withEpss)
-	log.Printf("Report Title: %s\n", reportTitle)
-	log.Printf("Report Name: %s\n", reportName)
+	logger.Logger.Infof("Base Directory: %s\n", baseDir)
+	logger.Logger.Infof("With EPSS: %t\n", withEpss)
+	logger.Logger.Infof("Report Title: %s\n", reportTitle)
+	logger.Logger.Infof("Report Name: %s\n", reportName)
 
 	// Generate a unique report name if necessary
 	reportName = generateReportName(reportName)
@@ -66,7 +67,7 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 
 	// Handle EPSS data if enabled
 	if withEpss {
-		log.Println("EPSS enabled!")
+		logger.Logger.Infoln("EPSS enabled!")
 		var epssDataFile, err = epss.PrepareEpssData()
 		if err != nil {
 			return fmt.Errorf("failed to prepare EPSS data: %v", err)
@@ -77,13 +78,13 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 			return fmt.Errorf("failed to replace EPSS data in %s: %v", reportName, err)
 		}
 
-		log.Println("EPSS data imported!")
+		logger.Logger.Infoln("EPSS data imported!")
 
 		// Schedule deletion of the EPSS data file upon function exit
 		defer os.Remove(epssDataFile)
 	}
 
-	log.Printf("%s has been created successfully!\n", reportName)
+	logger.Logger.Infof("%s has been created successfully!\n", reportName)
 	return nil
 }
 
@@ -148,16 +149,16 @@ func generateReportName(reportName string) string {
 	// Generate a new report name with a timestamp
 	timestamp := time.Now().Format("2006_01_02_15_04_05_06")
 	newReportName := strings.Replace(reportName, ".html", fmt.Sprintf("(%s).html", timestamp), 1)
-	log.Printf("File %s already exists. Using %s instead.\n", reportName, newReportName)
+	logger.Logger.Infof("File %s already exists. Using %s instead.\n", reportName, newReportName)
 
 	return newReportName
 }
 
 func CombineReports(pluginFlags common.Flags) error {
-	log.Println("Function: combineReports")
+	logger.Logger.Infoln("Function: combineReports")
 	from := pluginFlags["--from"]
 	resultFiles := strings.Split(from, ",")
-	log.Printf("From resultFiles: %v\n", resultFiles)
+	logger.Logger.Infof("From resultFiles: %v\n", resultFiles)
 
 	var resultFileContents []string
 
@@ -165,13 +166,13 @@ func CombineReports(pluginFlags common.Flags) error {
 	for _, file := range resultFiles {
 		if _, err := os.Stat(file); err != nil {
 			if os.IsNotExist(err) {
-				log.Printf("File %s does not exist.\n", file)
+				logger.Logger.Infof("File %s does not exist.\n", file)
 				return fmt.Errorf("file %s does not exist", file)
 			}
 			return fmt.Errorf("failed to check file %s: %w", file, err)
 		}
 
-		log.Printf("Reading contents of %s:\n", file)
+		logger.Logger.Infof("Reading contents of %s:\n", file)
 		content, err := os.ReadFile(file)
 		if err != nil {
 			return fmt.Errorf("failed to read file %s: %w", file, err)
@@ -188,6 +189,6 @@ func CombineReports(pluginFlags common.Flags) error {
 		return fmt.Errorf("failed to write to file %s: %w", common.GetScan2htmlTempReportPath(), err)
 	}
 
-	log.Printf("Content written to %s\n", common.GetScan2htmlTempReportPath())
+	logger.Logger.Infof("Content written to %s\n", common.GetScan2htmlTempReportPath())
 	return nil
 }

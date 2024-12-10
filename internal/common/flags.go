@@ -2,7 +2,7 @@ package common
 
 import (
 	"fmt"
-	"log"
+	"scan2html/internal/logger"
 	"os"
 )
 
@@ -19,7 +19,7 @@ var AvailableFlags = map[string]bool{
 type Flags map[string]string
 
 func RetrievePluginFlagsAndCommand(args []string) (Flags, []string) {
-	log.Printf("RetrievePluginFlagsAndCommand: %v", args)
+	logger.Logger.Infof("RetrievePluginFlagsAndCommand: %v", args)
 	trivyFlags := []string{}
 	pluginFlags := make(Flags)
 	isSPDX := false
@@ -49,7 +49,7 @@ func RetrievePluginFlagsAndCommand(args []string) (Flags, []string) {
 
 	// Handle deprecated usage
 	if _, exists := pluginFlags["--output"]; !exists {
-		log.Println("Deprecated use of scan2html plugin. Please refer to help to see the new usage!")
+		logger.Logger.Infoln("Deprecated use of scan2html plugin. Please refer to help to see the new usage!")
 		// Using last flag of trivy as the output
 		pluginFlags["--output"] = trivyFlags[len(trivyFlags)-1]
 		trivyFlags = trivyFlags[:len(trivyFlags)-1]
@@ -65,8 +65,8 @@ func RetrievePluginFlagsAndCommand(args []string) (Flags, []string) {
 
 	trivyFlags = append(trivyFlags, "--output", GetScan2htmlTempReportPath())
 
-	log.Printf("RetrievePluginFlagsAndCommand - pluginFlags: %v", pluginFlags)
-	log.Printf("RetrievePluginFlagsAndCommand - trivyFlags: %v", trivyFlags)
+	logger.Logger.Infof("RetrievePluginFlagsAndCommand - pluginFlags: %v", pluginFlags)
+	logger.Logger.Infof("RetrievePluginFlagsAndCommand - trivyFlags: %v", trivyFlags)
 	return pluginFlags, trivyFlags[1:]
 }
 

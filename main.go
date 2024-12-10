@@ -2,10 +2,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
-
 	"scan2html/internal/common"
+	"scan2html/internal/logger"
 	"scan2html/internal/report"
 	"scan2html/internal/trivy"
 )
@@ -15,6 +14,8 @@ var (
 )
 
 func main() {
+	logger.Logger.Info("Scan2html started")
+
 	if common.IsHelp() {
 		helpMessage()
 	}
@@ -38,7 +39,7 @@ func main() {
 
 	err := report.GenerateHtmlReport(pluginFlags, version)
 	if err != nil {
-		log.Fatalf("Error generating HTML report: %v", err)
+		logger.Logger.Fatalf("Error generating HTML report: %v", err)
 	}
 
 	os.Exit(exitCode)

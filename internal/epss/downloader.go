@@ -4,7 +4,7 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
-	"log"
+	"scan2html/internal/logger"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -23,26 +23,26 @@ func PrepareEpssData() (string, error) {
 	tmpEpssGZFilepath := filepath.Join(os.TempDir(), epssGZFileName)
 	tmpEpssFilepath := filepath.Join(os.TempDir(), epssFileName)
 	epssDownloadUrl := fmt.Sprintf("%s/%s", epssURL, epssGZFileName)
-	log.Printf("Downloading EPSS Scores from: %s\n", epssDownloadUrl)
+	logger.Logger.Infof("Downloading EPSS Scores from: %s\n", epssDownloadUrl)
 
 	if err := DownloadFile(epssDownloadUrl, tmpEpssGZFilepath); err != nil {
 		return "", err
 	}
-	log.Printf("EPSS data downloaded to: %s\n", tmpEpssGZFilepath)
+	logger.Logger.Infof("EPSS data downloaded to: %s\n", tmpEpssGZFilepath)
 
 	if err := DecompressFile(tmpEpssGZFilepath, tmpEpssFilepath); err != nil {
 		return "", err
 	}
 
 	stats, _ := os.Stat(tmpEpssFilepath)
-	log.Printf("File decompressed successfully to %s with size of: %d bytes\n", tmpEpssFilepath, stats.Size())
+	logger.Logger.Infof("File decompressed successfully to %s with size of: %d bytes\n", tmpEpssFilepath, stats.Size())
 
 	// Add backticks to the beginning and end of the file
 	if err := addBackticksToFile(tmpEpssFilepath); err != nil {
 		return "", fmt.Errorf("failed to add backticks to file: %w", err)
 	}
 
-	log.Printf("Unzipped and modified EPSS data saved to: %s\n", tmpEpssFilepath)
+	logger.Logger.Infof("Unzipped and modified EPSS data saved to: %s\n", tmpEpssFilepath)
 	return tmpEpssFilepath, nil
 }
 

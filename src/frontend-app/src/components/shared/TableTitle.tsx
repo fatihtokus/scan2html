@@ -11,7 +11,7 @@ const TableTitle = ({ title = "Trivy Report" }) => {
       <Title level={3}>{title}</Title>
       <div style={{ display: "flex", alignItems: "center", paddingTop: "1.25rem" }}>
         <Link href={href} target="_blank">
-          via scan2html(TEMP_APP_VERSION)
+          via scan2html(vTEMP_APP_VERSION)
         </Link>
         <Link href={href} target="_blank">
           <GithubOutlined style={{ fontSize: "1.5em", marginLeft: "0.5em" }} />

@@ -3,7 +3,7 @@ package trivy
 import (
 	"bytes"
 	"fmt"
-	"log"
+	"scan2html/internal/logger"
 	"os"
 	"os/exec"
 	"scan2html/internal/common"
@@ -12,7 +12,7 @@ import (
 
 func GenerateJsonReport(trivyFlags []string) (int, error) {
 	// Run the Trivy command
-	log.Printf("Run the Trivy command: %s %s", findTrivyInstallation(), strings.Join(trivyFlags, " "))
+	logger.Logger.Infof("Run the Trivy command: %s %s", findTrivyInstallation(), strings.Join(trivyFlags, " "))
 	cmd := exec.Command(findTrivyInstallation(), trivyFlags...)
 	var stdout, stderr bytes.Buffer
 	cmd.Stdout = &stdout
@@ -31,14 +31,14 @@ func GenerateJsonReport(trivyFlags []string) (int, error) {
 	if os.IsNotExist(err) {
 		return exitCode, fmt.Errorf("output file %s was not created", outputFile)
 	}
-	log.Printf("Generated Json report: %s with size of: %d bytes", outputFile, stats.Size())
+	logger.Logger.Infof("Generated Json report: %s with size of: %d bytes", outputFile, stats.Size())
 
 	return exitCode, nil
 }
 
 var findTrivyInstallation = func() string {
 	if err := validateTrivyInstallation("./trivy"); err == nil {
-		log.Println("Using ./trivy")
+		logger.Logger.Infoln("Using ./trivy")
 		return "./trivy"
 	}
 	return "trivy"
