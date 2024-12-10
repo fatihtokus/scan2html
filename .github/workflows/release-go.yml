@@ -43,7 +43,7 @@ jobs:
           version: latest
           # this doesn't work
           #prerelease: '{{ .Tag | regexMatch `-rc\.` }}'
-          args: release --clean --timeout 60m --debug
+          args: release --clean --timeout 60m
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GORELEASER_CURRENT_TAG: v${{ inputs.next-version }}
