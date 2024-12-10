@@ -37,13 +37,6 @@ jobs:
       - name: Tagging
         run: git tag v${{ inputs.next-version }}
 
-#      - name: Import GPG key
-#        id: import_gpg
-#        uses: crazy-max/ghaction-import-gpg@v6
-#        with:
-#          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-#          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-
       - name: Cosign install
         uses: sigstore/cosign-installer@e1523de7571e31dbe865fd2e80c5c7c23ae71eb4
 
