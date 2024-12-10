@@ -1,5 +1,5 @@
 name: "scan2html"
-version: "0.3.9-rc.34"
+version: "0.3.9-rc.35"
 maintainer: fatihtokus
 repository: github.com/fatihtokus/scan2html
 summary: A Trivy plugin that scans and outputs the results to a single page app.
@@ -11,20 +11,20 @@ platforms:
   - selector:
       os: darwin
       arch: amd64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.34/scan2html_0.3.9-rc.34_darwin-amd64.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.35/scan2html_0.3.9-rc.35_darwin-amd64.tar.gz
     bin: ./scan2html
   - selector:
       os: darwin
       arch: arm64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.34/scan2html_0.3.9-rc.34_darwin-arm64.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.35/scan2html_0.3.9-rc.35_darwin-arm64.tar.gz
     bin: ./scan2html
   - selector:
       os: linux
       arch: amd64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.34/scan2html_0.3.9-rc.34_linux-amd64.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.35/scan2html_0.3.9-rc.35_linux-amd64.tar.gz
     bin: ./scan2html
   - selector:
       os: linux
       arch: arm64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.34/scan2html_0.3.9-rc.34_linux-arm64.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.35/scan2html_0.3.9-rc.35_linux-arm64.tar.gz
     bin: ./scan2html
