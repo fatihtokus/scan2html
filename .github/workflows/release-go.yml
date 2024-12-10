@@ -44,6 +44,9 @@ jobs:
 #          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
 #          passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
+      - name: Cosign install
+        uses: sigstore/cosign-installer@e1523de7571e31dbe865fd2e80c5c7c23ae71eb4
+
       - name: "save gpg key"
         env:
           GPG_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
