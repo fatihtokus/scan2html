@@ -1,0 +1,63 @@
+name: Release go
+
+on:
+  workflow_call:
+    inputs:
+      next-version:
+        required: true
+        description: Next version
+        type: string
+
+jobs:
+  release-go:
+    name: Release go
+    runs-on: ubuntu-latest
+    if: ${{ inputs.next-version != '' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Download report_template.html
+        uses: actions/download-artifact@v3
+        with:
+          name: report-template
+
+      - name: Use the downloaded report template
+        run: |
+          ls -l report_template.html
+          cat report_template.html
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: go.mod
+
+      - name: Tagging
+        run: git tag v${{ inputs.next-version }}
+
+      - name: Cosign install
+        uses: sigstore/cosign-installer@e1523de7571e31dbe865fd2e80c5c7c23ae71eb4
+
+      - name: "save gpg key"
+        env:
+          GPG_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          echo "$GPG_KEY" > gpg.key
+
+      - name: GoReleaser
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: latest
+          # this doesn't work
+          #prerelease: '{{ .Tag | regexMatch `-rc\.` }}'
+          args: release --clean --timeout 60m
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_CURRENT_TAG: v${{ inputs.next-version }}
+          GPG_FILE: "gpg.key"
+
+      - name: "remove gpg key"
+        run: |
+          rm gpg.key

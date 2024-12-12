@@ -18,8 +18,9 @@ Utility Commands
 Flags:
   -h, --help      Show usage.
   --output        Report name
-  --report-title  Report Title
+  --report-title  Report title
   --with-epss     Include EPSS data
+  --from          Comma separated json scan result files
 
 Examples:
    # Scan an image
