@@ -30,16 +30,30 @@ func init() {
 		EncodeCaller:   zapcore.ShortCallerEncoder,
 	}
 
-	// Create a core that writes to stdout
-	core := zapcore.NewCore(
-		zapcore.NewConsoleEncoder(encoderCfg), // Console-friendly output
+	// Core for stdout (Info and below)
+	stdoutCore := zapcore.NewCore(
+		zapcore.NewConsoleEncoder(encoderCfg),
 		zapcore.AddSync(zapcore.Lock(os.Stdout)),
-		zapcore.DebugLevel, // Log level
+		zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+			return lvl < zapcore.ErrorLevel
+		}),
 	)
 
+	// Core for stderr (Error and above)
+	stderrCore := zapcore.NewCore(
+		zapcore.NewConsoleEncoder(encoderCfg),
+		zapcore.AddSync(zapcore.Lock(os.Stderr)),
+		zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+			return lvl >= zapcore.ErrorLevel
+		}),
+	)
+
+	// Combine both cores
+	combinedCore := zapcore.NewTee(stdoutCore, stderrCore)
+
 	// Create a logger
-	logger := zap.New(core)
-	defer logger.Sync() // Flushes buffer, if any
+	logger := zap.New(combinedCore)
+	defer logger.Sync()
 
 	// Use the Sugared logger for easier syntax
 	Logger = logger.Sugar()
