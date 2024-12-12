@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   check-version:
-    uses: fatihtokus/scan2html/.github/workflows/check-version.yml
+    uses: fatihtokus/scan2html/.github/workflows/check-version.yml@main
   build-front-end:
     name: "Build front-end application"
     runs-on: ubuntu-latest
@@ -71,6 +71,6 @@ jobs:
     needs:
       - check-version
       - build-front-end
-    uses: fatihtokus/scan2html/.github/workflows/release-go.yml
+    uses: fatihtokus/scan2html/.github/workflows/release-go.yml@main
     with:
       next-version: '${{ needs.check-version.outputs.next-version }}'
