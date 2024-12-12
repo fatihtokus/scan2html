@@ -3,7 +3,7 @@ name: Release-Candidate
 on:
   push:
     branches:
-      - migration-to-go
+      - main
     paths:
       - "release-candidate/plugin.yaml"
 
