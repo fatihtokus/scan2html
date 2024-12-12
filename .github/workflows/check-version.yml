@@ -23,4 +23,4 @@ jobs:
       - name: Get new version
         id: next-version
         #run: echo "next_version=$(git diff HEAD^ HEAD --diff-filter=ACMRT -- release-candidate/plugin.yaml -- -U0 | awk '/^\+\s*version:/ {print $2}' | grep -Po '\d+\.\d+\.\d+')" >> $GITHUB_OUTPUT
-        run: echo "next_version=$(git diff HEAD^ HEAD --diff-filter=ACMRT -- release-candidate/plugin.yaml -- -U0 | awk '/^\+\s*version:/ {print $2}' | grep -Po '\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?')" >> $GITHUB_OUTPUT
+        run: echo "next_version=$(git diff HEAD^ HEAD --diff-filter=ACMRT -- plugin.yaml -- -U0 | awk '/^\+\s*version:/ {print $2}' | grep -Po '\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?')" >> $GITHUB_OUTPUT
