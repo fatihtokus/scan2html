@@ -37,18 +37,9 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 
 	// Append the report template to the report file
 	templateContent, _ := common.ReadPluginFile("report_template.html")
-	//templateContent, err := os.ReadFile(templatePath)
-	// if err != nil {
-	// 	return fmt.Errorf("could not read template file %s: %v", templatePath, err)
-	// }
 	if err := os.WriteFile(reportName, templateContent, 0644); err != nil {
 		return fmt.Errorf("could not create report file %s: %v", reportName, err)
 	}
-
-	// // Check if the report file was created successfully
-	// if _, err := os.Stat(reportName); os.IsNotExist(err) {
-	// 	return fmt.Errorf("error: report file '%s' not found", reportName)
-	// }
 
 	err = replaceTextByText(reportName, "TEMP_APP_VERSION", version)
 	if err != nil {

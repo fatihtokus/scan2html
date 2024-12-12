@@ -7,7 +7,39 @@ usage: A Trivy plugin that scans and outputs the results to a single page app.
 description: |-
   A Trivy plugin that scans and outputs the results (vulnerabilities, misconfigurations, secrets, SBOM in containers, Kubernetes, code repositories, clouds and more) to a single page app.
   trivy scan2html [-h,--help] command target filename
+
 platforms:
+  - selector:
+      os: linux
+      arch: amd64
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_linux-amd64.tar.gz
+    bin: ./scan2html
+  - selector:
+      os: linux
+      arch: arm
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_linux-arm.tar.gz
+    bin: ./scan2html
+  - selector:
+      os: linux
+      arch: arm64
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_linux-arm64.tar.gz
+    bin: ./scan2html
+  - selector:
+      os: linux
+      arch: s390x
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_linux-s390x.tar.gz
+    bin: ./scan2html
+  - selector:
+      os: linux
+      arch: ppc64le
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_linux-ppc64le.tar.gz
+    bin: ./scan2html
+  - selector:
+      os: linux
+      arch: 386
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_linux-386.tar.gz
+    bin: ./scan2html
+
   - selector:
       os: darwin
       arch: amd64
@@ -18,13 +50,20 @@ platforms:
       arch: arm64
     uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_darwin-arm64.tar.gz
     bin: ./scan2html
+
   - selector:
-      os: linux
-      arch: amd64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_linux-amd64.tar.gz
+      os: freebsd
+      arch: 386
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_freebsd-386.tar.gz
     bin: ./scan2html
   - selector:
-      os: linux
-      arch: arm64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_linux-arm64.tar.gz
+      os: freebsd
+      arch: amd64
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_freebsd-amd64.tar.gz
+    bin: ./scan2html
+
+  - selector:
+      os: windows
+      arch: amd64
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.9-rc.36/scan2html_0.3.9-rc.36_windows-amd64.zip
     bin: ./scan2html

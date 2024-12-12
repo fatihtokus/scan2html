@@ -56,37 +56,3 @@ func validateTrivyInstallation(trivyInstllation string) error {
 
 	return nil
 }
-
-// ParseCommand extracts the command to be passed to Trivy.
-// func ParseCommand(args []string) ([]string, error) {
-// 	if len(args) < 2 {
-// 		return nil, fmt.Errorf("insufficient arguments to determine Trivy command")
-// 	}
-
-// 	// Everything after "scan2html" is treated as part of the Trivy command
-// 	trivyCommand := args[1:]
-
-// 	// Ensure the command contains valid syntax
-// 	if !isTrivyCommandValid(trivyCommand) {
-// 		return nil, fmt.Errorf("invalid Trivy command: %v", strings.Join(trivyCommand, " "))
-// 	}
-
-// 	return trivyCommand, nil
-// }
-
-// // isTrivyCommandValid performs basic checks on the Trivy command.
-// func isTrivyCommandValid(command []string) bool {
-// 	if len(command) < 1 {
-// 		return false
-// 	}
-
-// 	// Example validation: Ensure the first argument is a valid Trivy subcommand
-// 	validSubcommands := []string{"image", "filesystem", "rootfs", "repo", "config"}
-// 	for _, valid := range validSubcommands {
-// 		if command[0] == valid {
-// 			return true
-// 		}
-// 	}
-
-// 	return false
-// }
