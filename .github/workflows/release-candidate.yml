@@ -3,7 +3,7 @@ name: Release-Candidate
 on:
   push:
     branches:
-      - migration-to-go
+      - main
     paths:
       - "release-candidate/plugin.yaml"
 
@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   check-version:
-    uses: fatihtokus/scan2html/.github/workflows/check-version.yml@migration-to-go
+    uses: fatihtokus/scan2html/.github/workflows/check-version.yml
   build-front-end:
     name: "Build front-end application"
     runs-on: ubuntu-latest
@@ -71,6 +71,6 @@ jobs:
     needs:
       - check-version
       - build-front-end
-    uses: fatihtokus/scan2html/.github/workflows/release-go.yml@migration-to-go
+    uses: fatihtokus/scan2html/.github/workflows/release-go.yml
     with:
       next-version: '${{ needs.check-version.outputs.next-version }}'

@@ -2,17 +2,25 @@ name: Release
 
 on:
   push:
-    tags:
-      - "v*"
+    branches:
+      - main
+    paths:
+      - "plugin.yaml"
 
 permissions:
-  contents: read
+  contents: write # For report_template.html creation
+  id-token: write # For cosign
 
 jobs:
-  build:
+  check-version:
+    uses: fatihtokus/scan2html/.github/workflows/check-version.yml
+  build-front-end:
+    name: "Build front-end application"
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    needs: check-version
+    if: ${{ needs.check-version.outputs.next-version != '' }}
     env:
       reportTemplate: 'report_template.html'
     steps:
@@ -34,9 +42,8 @@ jobs:
         with:
           working-directory: src/frontend-app
 
-      - name: Build project
+      - name: Build frontend project
         run: |
-          pwd
           cd src/frontend-app/
           npm run build
 
@@ -56,34 +63,17 @@ jobs:
           } >"$reportTemplate"
           
           cat "$reportTemplate"
-      - name: Compress
-        run: tar -zcvf scan2html.tar.gz scan2html.sh "$reportTemplate" LICENSE plugin.yaml
-     
-      - name: Install GPG
-        run: sudo apt-get install -y gnupg
 
-      - name: Configure GPG
-        run: |
-          mkdir -p ~/.gnupg
-          chmod 700 ~/.gnupg
-          echo "use-agent" > ~/.gnupg/gpg.conf
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-
-      - name: Import GPG key
-        run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --import
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-
-      - name: Sign the release file
-        run: |
-          gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --armor --detach-sign scan2html.tar.gz
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Release
-        uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844 # v1
+      - name: Upload report_template.html
+        uses: actions/upload-artifact@v3
         with:
-          files: |
-            scan2html.tar.gz
-            scan2html.tar.gz.asc
+          name: report-template
+          path: ${{ env.reportTemplate }}
+
+  release:
+    needs:
+      - check-version
+      - build-front-end
+    uses: fatihtokus/scan2html/.github/workflows/release-go.yml
+    with:
+      next-version: '${{ needs.check-version.outputs.next-version }}'
