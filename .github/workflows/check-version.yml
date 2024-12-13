@@ -7,6 +7,9 @@ on:
         description: Next version
         value: ${{ jobs.check-version.outputs.next_version }}
 
+permissions:
+  contents: read
+
 jobs:
   check-version:
     name: 'Check version'
@@ -16,8 +19,13 @@ jobs:
     outputs:
       next_version: ${{ steps.next-version.outputs.next_version }}
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0080882f6c36860b6ba35c610c98ce87d4e2f26f # v2.10.2
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           fetch-depth: 2
       - name: Get new version
