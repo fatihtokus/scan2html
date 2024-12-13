@@ -3,7 +3,7 @@ name: Release-Candidate
 on:
   push:
     branches:
-      - main
+      - release-candidate
     paths:
       - "release-candidate/plugin.yaml"
 
@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   check-version:
-    uses: fatihtokus/scan2html/.github/workflows/check-version.yml@main
+    uses: fatihtokus/scan2html/.github/workflows/check-release-candidate-version.yml@release-candidate
   build-front-end:
     name: "Build front-end application"
     runs-on: ubuntu-latest
@@ -62,7 +62,7 @@ jobs:
           cat "$reportTemplate"
 
       - name: Upload report_template.html
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@ff15f0306b3f739f7b6fd43fb5d26cd321bd4de5 # v3.2.1
         with:
           name: report-template
           path: ${{ env.reportTemplate }}
