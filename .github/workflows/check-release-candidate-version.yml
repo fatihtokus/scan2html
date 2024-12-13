@@ -7,8 +7,8 @@ on:
         description: Next version
         value: ${{ jobs.check-version.outputs.next_version }}
 
-permissions:
-  contents: read
+#permissions:
+#  contents: read
 
 jobs:
   check-version:
