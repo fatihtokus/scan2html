@@ -119,7 +119,36 @@ func replaceTextByText(inputFile, searchText, replaceContent string) error {
 		return fmt.Errorf("error writing to temp file: %v", err)
 	}
 
-	return os.Rename(tempFile.Name(), inputFile)
+	
+	return copyAndRemove(tempFile.Name(), inputFile)
+}
+
+func copyAndRemove(src, dst string) error {
+    // Open the source file
+    sourceFile, err := os.Open(src)
+    if err != nil {
+        return err
+    }
+    defer sourceFile.Close()
+
+    // Create the destination file
+    destFile, err := os.Create(dst)
+    if err != nil {
+        return err
+    }
+    defer destFile.Close()
+
+    // Copy the contents
+    if _, err := io.Copy(destFile, sourceFile); err != nil {
+        return err
+    }
+
+    // Close files before removal
+    sourceFile.Close()
+    destFile.Close()
+
+    // Remove the source file
+    return os.Remove(src)
 }
 
 // replaceTextByFile replaces occurrences of search_text in the input file with content from replace_file.
