@@ -1,0 +1,28 @@
+name: Check version
+
+on:
+  workflow_call:
+    outputs:
+      next-version:
+        description: Next version
+        value: ${{ jobs.check-version.outputs.next_version }}
+
+permissions:
+  contents: read
+
+jobs:
+  check-version:
+    name: 'Check release candidate version'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      next_version: ${{ steps.next-version.outputs.next_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+      - name: Get new version
+        id: next-version
+        run: echo "next_version=$(git diff HEAD^ HEAD --diff-filter=ACMRT -- release-candidate/plugin.yaml -- -U0 | awk '/^\+\s*version:/ {print $2}' | grep -Po '\d+\.\d+\.\d+(-[a-zA-Z0-9.]+)?')" >> $GITHUB_OUTPUT
