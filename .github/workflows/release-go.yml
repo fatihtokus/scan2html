@@ -8,8 +8,8 @@ on:
         description: Next version
         type: string
 
-permissions:
-  contents: read
+#permissions:
+#  contents: read
 
 jobs:
   release-go:
