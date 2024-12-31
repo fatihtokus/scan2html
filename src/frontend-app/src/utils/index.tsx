@@ -154,7 +154,8 @@ function mapSecretResults(results: CommonResult[]): NormalizedResultForDataTable
           Category: secret.Category,
           Severity: secret.Severity,
           StartLine: "" + secret.StartLine,
-          EndLine: "" + secret.EndLine
+          EndLine: "" + secret.EndLine,
+          Code: secret.Code,
         } as NormalizedResultForDataTable);
       });
     }
@@ -493,7 +494,12 @@ function mapMisconfigurationResults(results: CommonResult[]): NormalizedResultFo
             Title: misconfiguration.Title,
             Type: misconfiguration.Type,
             Message: misconfiguration.Message,
-            References: misconfiguration.References
+            References: misconfiguration.References,
+            Description: misconfiguration.Description,
+            Resource: misconfiguration.CauseMetadata.Resource,
+            Code: misconfiguration.CauseMetadata.Code,
+            StartLine: "" + misconfiguration.CauseMetadata.StartLine,
+            EndLine: "" + misconfiguration.CauseMetadata.EndLine
           } as NormalizedResultForDataTable);
         });
       }
