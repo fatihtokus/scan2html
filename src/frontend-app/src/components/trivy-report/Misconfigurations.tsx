@@ -12,6 +12,7 @@ import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable 
 import Highlighter from "react-highlight-words";
 import { filterDropdown, localeCompare, severityCompare } from "../../utils";
 import SeverityToolbar from '../shared/SeverityToolbar.tsx';
+import CodeDisplay from '../shared/CodeDisplay.tsx';
 
 interface MisconfigurationsProps {
   result: NormalizedResultForDataTable[];
@@ -43,6 +44,14 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText("");
+  };
+
+  const handleExpand = (expanded: boolean, record: NormalizedResultForDataTable) => {
+    if (expanded) {
+      setExpandedRowKeys((prevKeys) => [...prevKeys, record.key]);
+    } else {
+      setExpandedRowKeys((prevKeys) => prevKeys.filter((key) => key !== record.key));
+    }
   };
 
   const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
@@ -161,27 +170,23 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
     },
   ];
 
-  const handleExpand = (expanded: boolean, record: NormalizedResultForDataTable) => {
-    if (expanded) {
-      setExpandedRowKeys((prevKeys) => [...prevKeys, record.key]);
-    } else {
-      setExpandedRowKeys((prevKeys) => prevKeys.filter((key) => key !== record.key));
-    }
-  };
-
   return (
     <>
     <SeverityToolbar result={result} onSeverityClick={handleSeverityClick}/>
     <Table columns={columns} dataSource={filteredData} pagination={{ defaultPageSize: 20 }} size="small" sticky 
       expandable={{
-        expandedRowRender: (vulnerability) => (
+        expandedRowRender: (misconfiguration) => (
           <div style={{ margin: 0 }}>
+            <strong>Description:</strong> {misconfiguration.Description}   
+            <CodeDisplay lines={misconfiguration.Code?.Lines || []} />
             <p><strong>References:</strong></p>
             <ul>
-              {vulnerability.References?.map((ref, index) => (
-              <Link href={ref} target="_blank">
-                 <li key={index}>{ref}</li>
-              </Link>
+              {misconfiguration.References?.map((ref, index) => (
+                <li key={index}>
+                <Link href={ref} target="_blank">
+                  {ref}
+                </Link>
+                </li>
               ))}
             </ul>
           </div>

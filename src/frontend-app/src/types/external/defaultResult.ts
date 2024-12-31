@@ -106,6 +106,16 @@ export type Misconfiguration = {
   PrimaryURL: string;
   References: string[];
   Status: string;
+  CauseMetadata: CauseMetadata;
+};
+
+export type CauseMetadata = {
+  Resource: string;
+  Provider: string;
+  Service: string;
+  StartLine: number;
+  EndLine: number;
+  Code: Code;
 };
 
 export type Secret = {
@@ -130,4 +140,6 @@ export type Line = {
   Annotation: string;
   Truncated: boolean;
   Highlighted: string;
+  FirstCause: boolean;
+  LastCause: boolean;
 };

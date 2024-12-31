@@ -7,6 +7,7 @@ import { useRef, useState, useEffect } from "react";
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import { filterDropdown, localeCompare, severityCompare } from "../../utils";
 import SeverityToolbar from '../shared/SeverityToolbar.tsx';
+import CodeDisplay from '../shared/CodeDisplay.tsx';
 
 import SeverityTag from "../shared/SeverityTag";
 import { severityFilters } from "../../constants";
@@ -22,6 +23,7 @@ const Secrets: React.FC<SecretsProps> = ({ result }) => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const [filteredData, setFilteredData] = useState<NormalizedResultForDataTable[]>([]);
   const searchInput = useRef<InputRef>(null);
+  const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
 
   useEffect(() => {
     setFilteredData(result);
@@ -41,6 +43,14 @@ const Secrets: React.FC<SecretsProps> = ({ result }) => {
   const handleReset = (clearFilters: () => void) => {
     clearFilters();
     setSearchText("");
+  };
+
+  const handleExpand = (expanded: boolean, record: NormalizedResultForDataTable) => {
+    if (expanded) {
+      setExpandedRowKeys((prevKeys) => [...prevKeys, record.key]);
+    } else {
+      setExpandedRowKeys((prevKeys) => prevKeys.filter((key) => key !== record.key));
+    }
   };
 
   const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
@@ -171,7 +181,16 @@ const Secrets: React.FC<SecretsProps> = ({ result }) => {
   return (
     <>
       <SeverityToolbar result={result} onSeverityClick={handleSeverityClick}/>
-      <Table columns={columns} dataSource={filteredData} pagination={{ defaultPageSize: 20 }} size="small" sticky />
+      <Table columns={columns} dataSource={filteredData} pagination={{ defaultPageSize: 20 }} size="small" sticky 
+      expandable={{
+        expandedRowRender: (secret) => (
+          <CodeDisplay lines={secret.Code?.Lines || []} />
+        ),
+        expandedRowKeys: expandedRowKeys,
+        onExpand: handleExpand,
+        columnWidth: '2%', // Set this to a narrow column
+      }}
+      />
     </>
   );
 };

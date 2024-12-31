@@ -21,6 +21,8 @@ export class NormalizedResultForDataTable {
   PublishedDate?: string;
   LastModifiedDate?: string;
   Description?: string;
+  Resource?: string;
+  Code?: Code;
 
   // Secrets
   Category?: string;
@@ -147,3 +149,18 @@ export interface UploadFile {
   originFileObj?: File;
   [key: string]: any;
 }
+
+export type Code = {
+  Lines: Line[];
+};
+
+export type Line = {
+  Number: number;
+  Content: string;
+  IsCause: boolean;
+  Annotation: string;
+  Truncated: boolean;
+  Highlighted: string;
+  FirstCause: boolean;
+  LastCause: boolean;
+};
