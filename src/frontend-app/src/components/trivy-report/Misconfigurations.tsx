@@ -10,7 +10,7 @@ import SeverityTag from "../shared/SeverityTag";
 import { severityFilters } from "../../constants";
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import Highlighter from "react-highlight-words";
-import { filterDropdown, localeCompare, severityCompare } from "../../utils";
+import { filterDropdown, localeCompare, severityCompare, removeDuplicateResults } from "../../utils";
 import SeverityToolbar from '../shared/SeverityToolbar.tsx';
 import CodeDisplay from '../shared/CodeDisplay.tsx';
 
@@ -25,14 +25,30 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
   const [filteredData, setFilteredData] = useState<NormalizedResultForDataTable[]>([]);
   const searchInput = useRef<InputRef>(null);
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
+  const [deduplicationOn, setDeduplicationOn] = useState(true);
+    const [deduplicatedResults, setDeduplicatedResults] = useState<NormalizedResultForDataTable[]>(result);
 
   useEffect(() => {
-    setFilteredData(result);
+    updateFilteredData(result);
+    updateDeduplicatedResults(result);
   }, [result]);
+
+  useEffect(() => {
+    updateFilteredData(result);
+    updateDeduplicatedResults(result);
+  }, [deduplicationOn]);
 
   const handleSeverityClick = (severity: string) => {
     const filtered = result.filter(item => severity === 'all' || item.Severity?.toLowerCase() === severity); //doesn't work for negligible
-    setFilteredData(filtered);
+    updateFilteredData(filtered);
+  };
+
+  const updateDeduplicatedResults = (result: NormalizedResultForDataTable[]) => {
+    setDeduplicatedResults(deduplicationOn ? removeDuplicateResults(result) : result);
+  };
+
+  const updateFilteredData = (result: NormalizedResultForDataTable[]) => {
+    setFilteredData(deduplicationOn ? removeDuplicateResults(result) : result);
   };
 
   const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndexForNormalizedResultForDataTable) => {
@@ -52,6 +68,10 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
     } else {
       setExpandedRowKeys((prevKeys) => prevKeys.filter((key) => key !== record.key));
     }
+  };
+
+  const toggleDeduplication = () => {
+    setDeduplicationOn(!deduplicationOn);
   };
 
   const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
@@ -172,7 +192,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
 
   return (
     <>
-    <SeverityToolbar result={result} onSeverityClick={handleSeverityClick}/>
+    <SeverityToolbar result={deduplicatedResults} onSeverityClick={handleSeverityClick} onDeduplicationClick={toggleDeduplication} deduplicationOn={deduplicationOn}/>
     <Table columns={columns} dataSource={filteredData} pagination={{ defaultPageSize: 20 }} size="small" sticky 
       expandable={{
         expandedRowRender: (misconfiguration) => (

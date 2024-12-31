@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Space } from 'antd';
+import { Button, Space, Checkbox } from 'antd';
 import './SeverityToolbar.css';
 import { NormalizedResultForDataTable } from '../../types';
 import { SeverityCount } from '../../types/ui/index.ts';
@@ -7,9 +7,11 @@ import { SeverityCount } from '../../types/ui/index.ts';
 interface SeverityToolbarProps {
   result: NormalizedResultForDataTable[];
   onSeverityClick: (severity: string) => void;
+  onDeduplicationClick: () => void;
+  deduplicationOn: boolean;
 }
 
-const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onSeverityClick }) => {
+const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onSeverityClick, onDeduplicationClick, deduplicationOn }) => {
   const [resultsPerSeverity, setResultsPerSeverity] = useState<SeverityCount[]>([]);
 
   useEffect(() => {
@@ -52,6 +54,7 @@ const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onSeverityCli
   }, [result]);
 
   return (
+    <div className="severity-toolbar">
     <Space>
      Filter by:
       {resultsPerSeverity.map(({ severity, count, color }) => (
@@ -66,7 +69,11 @@ const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onSeverityCli
           {count} {severity}
         </Button>
       ))}
-    </Space>
+      </Space>
+      <Checkbox onClick={() => onDeduplicationClick(false)} checked={deduplicationOn}>
+        Enable Deduplication
+      </Checkbox>
+    </div>
   );
 };
 

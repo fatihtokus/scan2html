@@ -7,3 +7,14 @@
   .ant-space-item:last-child .ant-btn {
     margin-right: 0;
   }
+
+.severity-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px; /* Add margin to the bottom */
+}
+
+.deduplication-checkbox {
+  margin-left: auto;
+}

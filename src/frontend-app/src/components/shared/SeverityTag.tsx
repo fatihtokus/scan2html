@@ -1,5 +1,18 @@
 import { Tag } from "antd";
 
+export function isNegligible(severity: string)
+: boolean {
+  switch (severity.toLowerCase()) {
+    case "critical":
+    case "high":
+    case "medium":
+    case "low":
+      return false
+    default:
+      return true;
+  }
+};
+
 const SeverityTag = ({ severity }: { severity: string }) => {
   let color;
 

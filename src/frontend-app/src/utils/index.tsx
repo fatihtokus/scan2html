@@ -1,6 +1,16 @@
 import { NormalizedResultForDataTable } from "../types";
 import { CommonScanResult, CommonResult, Holder } from "../types/external/defaultResult";
 
+export function removeDuplicateResults(results: NormalizedResultForDataTable[])
+: NormalizedResultForDataTable[] {
+  const uniqueResults = results.filter((result, index, self) =>
+    index === self.findIndex((v) => (
+      v.ID === result.ID
+    ))
+  );
+  return uniqueResults;
+};
+
 export function getVulnerabilities(results: any[] //CommonScanResult[]
   , epssData: any[]
 ): NormalizedResultForDataTable[] {
