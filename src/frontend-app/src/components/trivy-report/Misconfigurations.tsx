@@ -197,7 +197,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
       expandable={{
         expandedRowRender: (misconfiguration) => (
           <div style={{ margin: 0 }}>
-            <strong>Description:</strong> {misconfiguration.Description}   
+            <strong>Description:</strong> {misconfiguration.Description}
             <CodeDisplay lines={misconfiguration.Code?.Lines || []} />
             <p><strong>References:</strong></p>
             <ul>
