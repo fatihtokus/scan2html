@@ -70,7 +70,7 @@ const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onSeverityCli
         </Button>
       ))}
       </Space>
-      <Checkbox onClick={() => onDeduplicationClick(false)} checked={deduplicationOn}>
+      <Checkbox onClick={() => onDeduplicationClick()} checked={deduplicationOn}>
         Enable Deduplication
       </Checkbox>
     </div>

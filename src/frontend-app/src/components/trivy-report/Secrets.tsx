@@ -5,8 +5,9 @@ import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState, useEffect } from "react";
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
-import { filterDropdown, localeCompare, severityCompare } from "../../utils";
+import { filterDropdown, localeCompare, severityCompare, removeDuplicateResults } from "../../utils";
 import SeverityToolbar from '../shared/SeverityToolbar.tsx';
+import { isNegligible } from '../shared/SeverityTag';
 import CodeDisplay from '../shared/CodeDisplay.tsx';
 
 import SeverityTag from "../shared/SeverityTag";
@@ -24,13 +25,29 @@ const Secrets: React.FC<SecretsProps> = ({ result }) => {
   const [filteredData, setFilteredData] = useState<NormalizedResultForDataTable[]>([]);
   const searchInput = useRef<InputRef>(null);
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
+  const [deduplicationOn, setDeduplicationOn] = useState(true);
+  const [deduplicatedResults, setDeduplicatedResults] = useState<NormalizedResultForDataTable[]>(result);
 
   useEffect(() => {
-    setFilteredData(result);
+    updateFilteredData(result);
+    updateDeduplicatedResults(result);
   }, [result]);
 
+  useEffect(() => {
+    updateFilteredData(result);
+    updateDeduplicatedResults(result);
+  }, [deduplicationOn]);
+
+  const updateDeduplicatedResults = (result: NormalizedResultForDataTable[]) => {
+    setDeduplicatedResults(deduplicationOn ? removeDuplicateResults(result) : result);
+  };
+
+  const updateFilteredData = (result: NormalizedResultForDataTable[]) => {
+    setFilteredData(deduplicationOn ? removeDuplicateResults(result) : result);
+  };
+
   const handleSeverityClick = (severity: string) => {
-    const filtered = result.filter(item => severity === 'all' || item.Severity?.toLowerCase() === severity); //doesn't work for negligible
+    const filtered = result.filter(item => severity === 'all' || item.Severity?.toLowerCase() === severity || isNegligible(item.Severity?.toLowerCase() || 'UNKNOWN'));
     setFilteredData(filtered);
   };
 
@@ -51,6 +68,10 @@ const Secrets: React.FC<SecretsProps> = ({ result }) => {
     } else {
       setExpandedRowKeys((prevKeys) => prevKeys.filter((key) => key !== record.key));
     }
+  };
+
+  const toggleDeduplication = () => {
+    setDeduplicationOn(!deduplicationOn);
   };
 
   const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
@@ -180,7 +201,7 @@ const Secrets: React.FC<SecretsProps> = ({ result }) => {
 
   return (
     <>
-      <SeverityToolbar result={result} onSeverityClick={handleSeverityClick}/>
+      <SeverityToolbar result={deduplicatedResults} onSeverityClick={handleSeverityClick} onDeduplicationClick={toggleDeduplication} deduplicationOn={deduplicationOn}/>
       <Table columns={columns} dataSource={filteredData} pagination={{ defaultPageSize: 20 }} size="small" sticky 
       expandable={{
         expandedRowRender: (secret) => (
