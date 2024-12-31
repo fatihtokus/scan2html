@@ -8,7 +8,8 @@ import type { InputRef } from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from '../../types';
-import { filterDropdown, localeCompare, severityCompare, numberCompare } from '../../utils';
+import { filterDropdown, localeCompare, severityCompare, numberCompare, removeDuplicateResults } from '../../utils';
+import { isNegligible } from '../shared/SeverityTag';
 import SeverityTag from '../shared/SeverityTag';
 import { severityFilters } from '../../constants';
 import SeverityToolbar from '../shared/SeverityToolbar';
@@ -25,10 +26,26 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
   const [filteredData, setFilteredData] = useState<NormalizedResultForDataTable[]>([]);
   const [expandedRowKeys, setExpandedRowKeys] = useState<React.Key[]>([]);
   const searchInput = useRef<InputRef>(null);
+  const [deduplicationOn, setDeduplicationOn] = useState(true);
+  const [deduplicatedResults, setDeduplicatedResults] = useState<NormalizedResultForDataTable[]>(result);
 
   useEffect(() => {
-    setFilteredData(result);
+    updateFilteredData(result);
+    updateDeduplicatedResults(result);
   }, [result]);
+
+  useEffect(() => {
+    updateFilteredData(result);
+    updateDeduplicatedResults(result);
+  }, [deduplicationOn]);
+
+  const updateDeduplicatedResults = (result: NormalizedResultForDataTable[]) => {
+    setDeduplicatedResults(deduplicationOn ? removeDuplicateResults(result) : result);
+  };
+
+  const updateFilteredData = (result: NormalizedResultForDataTable[]) => {
+    setFilteredData(deduplicationOn ? removeDuplicateResults(result) : result);
+  };
 
   const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndexForNormalizedResultForDataTable) => {
     confirm();
@@ -42,8 +59,12 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
   };
 
   const handleSeverityClick = (severity: string) => {
-    const filtered = result.filter(item => severity === 'all' || item.Severity?.toLowerCase() === severity); //doesn't work for negligible
-    setFilteredData(filtered);
+    const filtered = result.filter(item => severity === 'all' || item.Severity?.toLowerCase() === severity || isNegligible(item.Severity?.toLowerCase() || 'UNKNOWN'));
+    updateFilteredData(filtered);
+  };
+
+  const toggleDeduplication = () => {
+    setDeduplicationOn(!deduplicationOn);
   };
 
   const getColumnSearchProps = (dataIndex: DataIndexForNormalizedResultForDataTable): ColumnType<NormalizedResultForDataTable> => ({
@@ -235,7 +256,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
 
   return (
     <>
-      <SeverityToolbar result={result} onSeverityClick={handleSeverityClick} />
+      <SeverityToolbar result={deduplicatedResults} onSeverityClick={handleSeverityClick} onDeduplicationClick={toggleDeduplication} deduplicationOn={deduplicationOn}/>
       <Table
         columns={columns}
         dataSource={filteredData}
