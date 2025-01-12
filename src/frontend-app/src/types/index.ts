@@ -29,6 +29,13 @@ export class NormalizedResultForDataTable {
   StartLine?: string;
   EndLine?: string;
 
+  // Licenses
+  FilePath?: string;
+  PkgName?: string;
+  Link?: string;
+  Text?: string;
+  Confidence?: string;
+
   // K8s Misconfiguration Summary
   Successes?: number;
   Failures?: number;

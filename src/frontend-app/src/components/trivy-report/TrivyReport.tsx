@@ -6,10 +6,12 @@ import K8sClusterSummary from "./K8sClusterSummary";
 import SupplyChainSBOM from "./SupplyChainSBOM";
 import UploadAReport from "./UploadAReport";
 import Secrets from "./Secrets";
+import Licenses from "./Licenses";
 
 interface TrivyReportProps {
   vulnerabilities: NormalizedResultForDataTable[];
   secrets: NormalizedResultForDataTable[];
+  licenses: NormalizedResultForDataTable[];
   misconfigurations: NormalizedResultForDataTable[];
   misconfigurationSummary: NormalizedResultForDataTable[];
   k8sClusterSummaryInfraAssessment: NormalizedResultForDataTable[];
@@ -24,6 +26,7 @@ interface TrivyReportProps {
 const TrivyReport: React.FC<TrivyReportProps> = ({
   vulnerabilities,
   secrets,
+  licenses,
   misconfigurations,
   misconfigurationSummary,
   k8sClusterSummaryInfraAssessment,
@@ -36,6 +39,7 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
 }) => {
   console.log("TrivyReport-vulnerabilities:", vulnerabilities);
   console.log("TrivyReport-secrets:", secrets);
+  console.log("TrivyReport-licenses:", licenses);
   console.log("TrivyReport-misconfigurations:", misconfigurations);
   console.log("TrivyReport-misconfigurationSummary:", misconfigurationSummary);
   console.log("TrivyReport-k8sClusterSummaryInfraAssessment:", k8sClusterSummaryInfraAssessment);
@@ -46,6 +50,7 @@ const TrivyReport: React.FC<TrivyReportProps> = ({
     <>
       {selectedMenu === "vulnerabilities" && <Vulnerabilities result={vulnerabilities} />}
       {selectedMenu === "secrets" && <Secrets result={secrets} />}
+      {selectedMenu === "licenses" && <Licenses result={licenses} />}
       {selectedMenu === "misconfigurations" && <Misconfigurations result={misconfigurations} />}
       {selectedMenu === "misconfigurationSummary" && <MisconfigurationSummary result={misconfigurationSummary} />}
       {selectedMenu === "k8sClusterSummary" && (

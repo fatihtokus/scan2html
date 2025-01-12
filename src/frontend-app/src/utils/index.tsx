@@ -93,6 +93,33 @@ function getSecretsFromAReport(
   return [];
 }
 
+export function getLicenses(results: any[] //CommonScanResult[]
+): NormalizedResultForDataTable[] {
+  let formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results === undefined) {
+    return formattedResultJson;
+  }
+
+  results.forEach((result) => {
+    let tempResult = getLicensesFromAReport(result);
+    if (tempResult.length > 0) {
+      formattedResultJson = formattedResultJson.concat(tempResult);
+    }      
+  });
+
+  return formattedResultJson;
+}
+
+function getLicensesFromAReport(
+  results: any //CommonScanResult
+): NormalizedResultForDataTable[] {
+  if (results.Results) {
+    return mapLicenseResults(results.Results);
+  }
+
+  return [];
+}
+
 export function filterDropdown(rowValue: any, searchValue: any) {
   if (rowValue === undefined) {
     return false;
@@ -166,6 +193,35 @@ function mapSecretResults(results: CommonResult[]): NormalizedResultForDataTable
           StartLine: "" + secret.StartLine,
           EndLine: "" + secret.EndLine,
           Code: secret.Code,
+        } as NormalizedResultForDataTable);
+      });
+    }
+  });
+
+  return formattedResultJson;
+}
+
+function mapLicenseResults(results: CommonResult[]): NormalizedResultForDataTable[] {
+  const formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (results === undefined) {
+    return formattedResultJson;
+  }
+
+  results.forEach((result) => {
+    if (result.Licenses) {
+      result.Licenses.forEach((license) => {
+        formattedResultJson.push({
+          key: Math.random(),
+          ID: "" + Math.random(), // There is no unique ID for licenses
+          Target: result.Target,
+          Category: license.Category,
+          Severity: license.Severity,
+          PkgName: license.PkgName,
+          FilePath: license.FilePath,
+          Name: license.Name,
+          Text: license.Text,
+          Confidence: "" + license.Confidence,
+          Link: license.Link,
         } as NormalizedResultForDataTable);
       });
     }
