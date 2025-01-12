@@ -10,7 +10,6 @@ on:
 permissions:
   contents: write # For report_template.html creation
   id-token: write # For cosign
-
 jobs:
   check-version:
     uses: fatihtokus/scan2html/.github/workflows/check-release-candidate-version.yml@release-candidate
