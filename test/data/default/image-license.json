@@ -1,0 +1,267 @@
+{
+  "SchemaVersion": 2,
+  "CreatedAt": "2025-01-09T16:34:14.863043Z",
+  "ArtifactName": "alpine:3.15",
+  "ArtifactType": "container_image",
+  "Metadata": {
+    "OS": {
+      "Family": "alpine",
+      "Name": "3.15.11"
+    },
+    "ImageID": "sha256:32b91e3161c8fc2e3baf2732a594305ca5093c82ff4e0c9f6ebbd2a879468e1d",
+    "DiffIDs": [
+      "sha256:2879a4821959ab702528e28a1c59cd26c4956112497f6d1dbfd86c8d88003983"
+    ],
+    "RepoTags": [
+      "alpine:3.15"
+    ],
+    "RepoDigests": [
+      "alpine@sha256:19b4bcc4f60e99dd5ebdca0cbce22c503bbcff197549d7e19dab4f22254dc864"
+    ],
+    "ImageConfig": {
+      "architecture": "amd64",
+      "container": "8dbb129219f0dc0649663e4af8fade3e11d10f86688f9add64d41649bf7b1966",
+      "created": "2023-11-30T23:23:11.980068941Z",
+      "docker_version": "20.10.23",
+      "history": [
+        {
+          "created": "2023-11-30T23:23:11.878184473Z",
+          "created_by": "/bin/sh -c #(nop) ADD file:aa1af71c6b66d2dddee4797236e3e526f70f904ab641cc0dd6b41445cfedf9b4 in / "
+        },
+        {
+          "created": "2023-11-30T23:23:11.980068941Z",
+          "created_by": "/bin/sh -c #(nop)  CMD [\"/bin/sh\"]",
+          "empty_layer": true
+        }
+      ],
+      "os": "linux",
+      "rootfs": {
+        "type": "layers",
+        "diff_ids": [
+          "sha256:2879a4821959ab702528e28a1c59cd26c4956112497f6d1dbfd86c8d88003983"
+        ]
+      },
+      "config": {
+        "Cmd": [
+          "/bin/sh"
+        ],
+        "Env": [
+          "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        ],
+        "Image": "sha256:1a5902e767089a635e1ac91572f08c46aca66ad2cdc8d8e33fff41a9ac1795be"
+      }
+    }
+  },
+  "Results": [
+    {
+      "Target": "OS Packages",
+      "Class": "license",
+      "Licenses": [
+        {
+          "Severity": "HIGH",
+          "Category": "restricted",
+          "PkgName": "alpine-baselayout",
+          "FilePath": "",
+          "Name": "GPL-2.0-only",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "alpine-keys",
+          "FilePath": "",
+          "Name": "MIT",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "HIGH",
+          "Category": "restricted",
+          "PkgName": "apk-tools",
+          "FilePath": "",
+          "Name": "GPL-2.0-only",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "HIGH",
+          "Category": "restricted",
+          "PkgName": "busybox",
+          "FilePath": "",
+          "Name": "GPL-2.0-only",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "MEDIUM",
+          "Category": "reciprocal",
+          "PkgName": "ca-certificates-bundle",
+          "FilePath": "",
+          "Name": "MPL-2.0",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "ca-certificates-bundle",
+          "FilePath": "",
+          "Name": "MIT",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "libc-utils",
+          "FilePath": "",
+          "Name": "BSD-2-Clause",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "libc-utils",
+          "FilePath": "",
+          "Name": "BSD-3-Clause",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "libcrypto1.1",
+          "FilePath": "",
+          "Name": "OpenSSL",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "libretls",
+          "FilePath": "",
+          "Name": "ISC",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "libretls",
+          "FilePath": "",
+          "Name": "BSD-3-Clause",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "libretls",
+          "FilePath": "",
+          "Name": "MIT",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "libssl1.1",
+          "FilePath": "",
+          "Name": "OpenSSL",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "musl",
+          "FilePath": "",
+          "Name": "MIT",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "musl-utils",
+          "FilePath": "",
+          "Name": "MIT",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "musl-utils",
+          "FilePath": "",
+          "Name": "BSD-3-Clause",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "HIGH",
+          "Category": "restricted",
+          "PkgName": "musl-utils",
+          "FilePath": "",
+          "Name": "GPL-2.0-or-later",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "HIGH",
+          "Category": "restricted",
+          "PkgName": "scanelf",
+          "FilePath": "",
+          "Name": "GPL-2.0-only",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "HIGH",
+          "Category": "restricted",
+          "PkgName": "ssl_client",
+          "FilePath": "",
+          "Name": "GPL-2.0-only",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        },
+        {
+          "Severity": "LOW",
+          "Category": "notice",
+          "PkgName": "zlib",
+          "FilePath": "",
+          "Name": "Zlib",
+          "Text": "",
+          "Confidence": 1,
+          "Link": ""
+        }
+      ]
+    },
+    {
+      "Target": "Loose File License(s)",
+      "Class": "license-file"
+    }
+  ]
+}

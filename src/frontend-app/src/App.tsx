@@ -8,8 +8,8 @@ import defaultEPSSData from "./data/epss.cvs?raw";
 import defaultResultMetaData from "./data/result-metadata.json";
 import { NormalizedResultForDataTable, UploadInfo } from "./types";
 import { EPSSPerVulnerability } from "./types/external/epss";
-import { getSecrets, getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
-import { UploadOutlined, LockOutlined, ExclamationCircleOutlined, SettingOutlined, ClusterOutlined, ProfileOutlined, MenuFoldOutlined, MenuUnfoldOutlined, BugOutlined } from "@ant-design/icons";
+import { getSecrets, getLicenses, getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
+import { FileProtectOutlined, UploadOutlined, LockOutlined, ExclamationCircleOutlined, SettingOutlined, ClusterOutlined, ProfileOutlined, MenuFoldOutlined, MenuUnfoldOutlined, BugOutlined } from "@ant-design/icons";
 import "./App.css";
 import type { MenuProps } from "antd";
 
@@ -22,6 +22,7 @@ type MenuItem = {
 function App() {
   const [vulnerabilities, setVulnerabilities] = useState<NormalizedResultForDataTable[]>([]);
   const [secrets, setSecrets] = useState<NormalizedResultForDataTable[]>([]);
+  const [licenses, setLicenses] = useState<NormalizedResultForDataTable[]>([]);
   const [misconfigurations, setMisconfigurations] = useState<NormalizedResultForDataTable[]>([]);
   const [misconfigurationSummary, setMisconfigurationSummary] = useState<NormalizedResultForDataTable[]>([]);
   const [k8sClusterSummaryInfraAssessment, setK8sClusterSummaryInfraAssessment] = useState<NormalizedResultForDataTable[]>([]);
@@ -113,6 +114,7 @@ function App() {
     console.log(`loadedData.length ${loadedData.length}`);
     setVulnerabilities(getVulnerabilities(loadedData, epssData));
     setSecrets(getSecrets(loadedData));
+    setLicenses(getLicenses(loadedData));
     setMisconfigurations(getMisconfigurations(loadedData));
     setMisconfigurationSummary(getMisconfigurationSummary(loadedData));
     setK8sClusterSummaryInfraAssessment(getK8sClusterSummaryForInfraAssessment(loadedData));
@@ -124,6 +126,7 @@ function App() {
     setMenuItems([
       { key: "vulnerabilities", icon: <BugOutlined />, label: `Vulnerabilities (${vulnerabilities.length})` },
       { key: "secrets", icon: <LockOutlined />, label: `Secrets (${secrets.length})` },
+      { key: "licenses", icon: <FileProtectOutlined />, label: `Licenses (${licenses.length})` },
       { key: "misconfigurationSummary", icon: <ExclamationCircleOutlined />, label: `Misconfiguration Summary (${misconfigurationSummary.length})` },
       { key: "misconfigurations", icon: <SettingOutlined />, label: `Misconfigurations (${misconfigurations.length})` },
       { key: "k8sClusterSummary", icon: <ClusterOutlined />, label: `K8s Cluster Summary (${k8sClusterSummaryInfraAssessment.length} / ${k8sClusterSummaryRBACAssessment.length})` },
@@ -140,6 +143,10 @@ function App() {
 
     if (secrets.length > 0){
       tempResults.push("secrets");
+    }
+
+    if (licenses.length > 0){
+      tempResults.push("licenses");
     }
 
     if (misconfigurations.length > 0){
@@ -240,6 +247,7 @@ function App() {
         <TrivyReport
           vulnerabilities={vulnerabilities}
           secrets={secrets}
+          licenses={licenses}
           misconfigurations={misconfigurations}
           misconfigurationSummary={misconfigurationSummary}
           k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment}

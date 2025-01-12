@@ -115,7 +115,7 @@ Flags:
   
 Examples:
    # Scan an image
-  trivy scan2html image alpine:latest --scan2html-flags --output interactive_report.html
+  trivy scan2html image --scanners vuln,secret,misconfig,licenses alpine:latest --scan2html-flags --output interactive_report.html
 
   # Scan an image from local tar file
   trivy scan2html image --input ruby-3.1.tar --scan2html-flags --output interactive_report.html

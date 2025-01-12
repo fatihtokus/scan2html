@@ -106,14 +106,14 @@ Flags:
   --from          Comma separated json scan result files
 
 Examples:
-   # Scan an image
-  trivy scan2html image alpine:latest --scan2html-flags --output interactive_report.html
+  # Scan an image
+  trivy scan2html image --scanners vuln,secret,misconfig,licenses alpine:latest --scan2html-flags --output interactive_report.html
 
   # Scan an image from local tar file
   trivy scan2html image --input ruby-3.1.tar --scan2html-flags --output interactive_report.html
 
   # Scan a local folder
-  trivy scan2html fs --scanners vuln,secret,misconfig . --scan2html-flags --output interactive_report.html
+  trivy scan2html fs --scanners vuln,secret,misconfig,licenses . --scan2html-flags --output interactive_report.html
 
   # Scan a k8s cluster
   trivy scan2html k8s cluster --scan2html-flags --output interactive_report.html

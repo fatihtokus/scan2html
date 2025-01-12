@@ -43,6 +43,7 @@ export type CommonResult = {
   Vulnerabilities: Vulnerability[];
   MisconfSummary: MisconfSummary;
   Misconfigurations: Misconfiguration[];
+  Licenses: License[];
 
   // specific to default scan result
   Secrets: Secret[];
@@ -127,6 +128,17 @@ export type Secret = {
   StartLine: number;
   EndLine: number;
   Code: Code;
+};
+
+export type License = {
+  Category: string;
+  Severity: string;
+  PkgName: string;
+  FilePath: string;
+  Name: string;
+  Text: string;
+  Confidence: number;
+  Link: string;
 };
 
 export type Code = {
