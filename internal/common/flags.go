@@ -2,8 +2,8 @@ package common
 
 import (
 	"fmt"
-	"scan2html/internal/logger"
 	"os"
+	"scan2html/internal/logger"
 )
 
 var AvailableFlags = map[string]bool{
@@ -11,6 +11,7 @@ var AvailableFlags = map[string]bool{
 	"--scan2html-flags": true,
 	"--output":          false,
 	"--with-epss":       true,
+	"--with-exploits":   true,
 	"--report-title":    false,
 	"generate":          true,
 	"--from":            false,

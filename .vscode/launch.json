@@ -40,14 +40,6 @@
             "mode": "debug",
             "program": "${workspaceFolder}",
             "args": ["image", "--scanners", "vuln", "ruby:3.1", "interactive_report.html"]
-        },
-        {
-            "name": "Debug scan2htmlBash",
-            "type": "bashdb",
-            "request": "launch",
-            "program": "${workspaceFolder}/scan2html",
-            "args": ["trivy", "scan2html", "image", "--format", "spdx", "ghcr.io/zalando/spilo-15:3.0-p1", "test-report.html"]
-            //"args": ["test/assets/app-template-test.html", "test/data/default/results.json", "test-report.html"]
         }
     ]
 }

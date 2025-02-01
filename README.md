@@ -135,10 +135,10 @@ Examples:
   # Scan and generate SBOM(spdx) report
   trivy scan2html image --format spdx alpine:3.15 --scan2html-flags --output interactive_report.html
   
-  # Generate a report from multiple json scan results - experimental
+  # Generate a report from multiple json scan results
   trivy scan2html generate --scan2html-flags --output interactive_report.html --from vulnerabilities.json,misconfigs.json,secrets.json
   
-  # Generate report with EPSS scores from multiple scan results - experimental
+  # Generate report with EPSS scores from multiple scan results
   trivy scan2html generate --scan2html-flags --with-epss --output interactive_report.html --from vulnerabilities.json,misconfigs.json,secrets.json
 
 ```

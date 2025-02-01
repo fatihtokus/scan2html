@@ -1,4 +1,5 @@
 import { NormalizedResultForDataTable } from "../types";
+import { CisaExploit } from "../types/external/cisaExploit";
 import { CommonScanResult, CommonResult, Holder } from "../types/external/defaultResult";
 
 export function removeDuplicateResults(results: NormalizedResultForDataTable[])
@@ -12,7 +13,7 @@ export function removeDuplicateResults(results: NormalizedResultForDataTable[])
 };
 
 export function getVulnerabilities(results: any[] //CommonScanResult[]
-  , epssData: any[]
+  , epssData: any[], knownExloitedVulnerabilitiesData: CisaExploit[]
 ): NormalizedResultForDataTable[] {
   if (results === undefined) {
     return [];
@@ -26,7 +27,15 @@ export function getVulnerabilities(results: any[] //CommonScanResult[]
     }      
   });
 
-  return enrichWithEPSSCores(formattedResultJson, epssData);
+  if (epssData.length > 0) {
+    formattedResultJson = enrichWithEPSSCores(formattedResultJson, epssData);
+  }
+
+  if (knownExloitedVulnerabilitiesData.length > 0 && knownExloitedVulnerabilitiesData[0].count > 0) {  
+    formattedResultJson = enrichWithEPSSCores1(formattedResultJson, knownExloitedVulnerabilitiesData[0]);
+  }
+    
+  return formattedResultJson;
 }
 
 function enrichWithEPSSCores(vulnerabilities: NormalizedResultForDataTable[], epssData: any[]
@@ -35,6 +44,18 @@ function enrichWithEPSSCores(vulnerabilities: NormalizedResultForDataTable[], ep
     let EPSS_Score = epssData.filter(epssPerVulnerability =>  epssPerVulnerability.cve === vulnerability.ID)[0];
     if (EPSS_Score) {
       vulnerability.EPSS_Score = parseFloat((EPSS_Score.percentile * 100).toFixed(2));
+    }
+  });
+
+  return vulnerabilities;
+}
+
+function enrichWithEPSSCores1(vulnerabilities: NormalizedResultForDataTable[], knownExloitedVulnerabilitiesData: CisaExploit
+): NormalizedResultForDataTable[] {
+  vulnerabilities.forEach(vulnerability => {
+    let EPSS_Score = knownExloitedVulnerabilitiesData.vulnerabilities.filter(epssPerVulnerability =>  epssPerVulnerability.cveID === vulnerability.ID)[0];
+    if (EPSS_Score) {
+      vulnerability.Exploits = "CISA";
     }
   });
 
