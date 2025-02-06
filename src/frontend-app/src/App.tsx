@@ -9,14 +9,14 @@ import defaultEPSSData from "./data/epss.cvs?raw";
 import defaultResultMetaData from "./data/result-metadata.json";
 import { NormalizedResultForDataTable, UploadInfo } from "./types";
 import { EPSSPerVulnerability } from "./types/external/epss";
-import { CisaExploit } from "./types/external/cisaExploit";
+import { CisaExploit, isCisaExploitArray } from "./types/external/cisaExploit";
 import { getSecrets, getLicenses, getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
 import { FileProtectOutlined, UploadOutlined, LockOutlined, ExclamationCircleOutlined, SettingOutlined, ClusterOutlined, ProfileOutlined, MenuFoldOutlined, MenuUnfoldOutlined, BugOutlined } from "@ant-design/icons";
 import "./App.css";
 import type { MenuProps } from "antd";
 
 
-const knownExploitedVulnerabilities: CisaExploit[] = knownExploitedVulnerabilitiesData as CisaExploit[];
+const knownExploitedVulnerabilities: CisaExploit[] = isCisaExploitArray(knownExploitedVulnerabilitiesData) ? knownExploitedVulnerabilitiesData : [];
 
 type MenuItem = {
   key: string;
