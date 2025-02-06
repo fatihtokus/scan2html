@@ -10,6 +10,9 @@ on:
 #permissions:
 #  contents: read
 
+permissions:
+  contents: read
+
 jobs:
   check-version:
     name: 'Check release candidate version'
@@ -19,8 +22,13 @@ jobs:
     outputs:
       next_version: ${{ steps.next-version.outputs.next_version }}
     steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@cb605e52c26070c328afc4562f0b4ada7618a84e # v2.10.4
+        with:
+          egress-policy: audit
+
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3.6.0
         with:
           fetch-depth: 2
       - name: Get new version
