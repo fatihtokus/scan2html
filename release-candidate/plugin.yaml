@@ -1,5 +1,5 @@
 name: "scan2html"
-version: "0.3.16-rc.17"
+version: "0.3.16-rc.18"
 maintainer: fatihtokus
 repository: github.com/fatihtokus/scan2html
 summary: A Trivy plugin that scans and outputs the results to a single page app.
@@ -12,58 +12,58 @@ platforms:
   - selector:
       os: linux
       arch: amd64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_linux-amd64.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_linux-amd64.tar.gz
     bin: ./scan2html
   - selector:
       os: linux
       arch: arm
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_linux-arm.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_linux-arm.tar.gz
     bin: ./scan2html
   - selector:
       os: linux
       arch: arm64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_linux-arm64.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_linux-arm64.tar.gz
     bin: ./scan2html
   - selector:
       os: linux
       arch: s390x
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_linux-s390x.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_linux-s390x.tar.gz
     bin: ./scan2html
   - selector:
       os: linux
       arch: ppc64le
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_linux-ppc64le.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_linux-ppc64le.tar.gz
     bin: ./scan2html
   - selector:
       os: linux
       arch: 386
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_linux-386.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_linux-386.tar.gz
     bin: ./scan2html
 
   - selector:
       os: darwin
       arch: amd64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_darwin-amd64.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_darwin-amd64.tar.gz
     bin: ./scan2html
   - selector:
       os: darwin
       arch: arm64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_darwin-arm64.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_darwin-arm64.tar.gz
     bin: ./scan2html
 
   - selector:
       os: freebsd
       arch: 386
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_freebsd-386.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_freebsd-386.tar.gz
     bin: ./scan2html
   - selector:
       os: freebsd
       arch: amd64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_freebsd-amd64.tar.gz
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_freebsd-amd64.tar.gz
     bin: ./scan2html
 
   - selector:
       os: windows
       arch: amd64
-    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.17/scan2html_0.3.16-rc.17_windows-amd64.zip
+    uri: https://github.com/fatihtokus/scan2html/releases/download/v0.3.16-rc.18/scan2html_0.3.16-rc.18_windows-amd64.zip
     bin: ./scan2html
