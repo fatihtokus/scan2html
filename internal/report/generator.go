@@ -122,7 +122,8 @@ func replaceTextByText(inputFile, searchText, replaceContent string) error {
 	}
 	defer file.Close()
 
-	tempFile, err := os.CreateTemp("", "modified_")
+	timestamp := time.Now().Format("2006_01_02_15_04_05_06")
+	tempFile, err := os.CreateTemp("", fmt.Sprintf("modified_%s", timestamp))
 	if err != nil {
 		return fmt.Errorf("could not create temp file: %v", err)
 	}
