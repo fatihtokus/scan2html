@@ -46,7 +46,7 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 
 	err = replaceTextByText(reportName, "TEMP_APP_VERSION", version)
 	if err != nil {
-		return fmt.Errorf("failed to replace report title in %s: %v", reportName, err)
+		return fmt.Errorf("failed to replace app version in %s: %v", reportName, err)
 	}
 
 	// Replace placeholders with actual content in the report file
