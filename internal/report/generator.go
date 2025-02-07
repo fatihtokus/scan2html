@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"scan2html/internal/common"
 	"scan2html/internal/epss"
 	"scan2html/internal/exploit"
@@ -172,22 +173,14 @@ func copyAndRemove(src, dst string) error {
 	if err != nil {
 		return fmt.Errorf("failed to open source file %s: %v", src, err)
 	}
-	defer func() {
-		if cerr := sourceFile.Close(); cerr != nil {
-			log.Printf("failed to close source file %s: %v", src, cerr)
-		}
-	}()
+	defer sourceFile.Close()
 
 	// Create the destination file
 	destFile, err := os.Create(dst)
 	if err != nil {
 		return fmt.Errorf("failed to create destination file %s: %v", dst, err)
 	}
-	defer func() {
-		if cerr := destFile.Close(); cerr != nil {
-			log.Printf("failed to close destination file %s: %v", dst, cerr)
-		}
-	}()
+	defer destFile.Close()
 
 	// Copy the contents
 	if _, err := io.Copy(destFile, sourceFile); err != nil {
@@ -199,20 +192,23 @@ func copyAndRemove(src, dst string) error {
 		return fmt.Errorf("failed to sync destination file %s: %v", dst, err)
 	}
 
-	// Explicitly close the destination file
+	// Close the destination file
 	if err := destFile.Close(); err != nil {
 		return fmt.Errorf("failed to close destination file %s: %v", dst, err)
 	}
 
-	// Explicitly close the source file
+	// Close the source file
 	if err := sourceFile.Close(); err != nil {
 		return fmt.Errorf("failed to close source file %s: %v", src, err)
 	}
 
-	// Add a small delay before attempting to remove the source file
-	time.Sleep(100 * time.Millisecond)
+	// Check if the operating system is Windows
+	if runtime.GOOS == "windows" {
+		// Remove the source file is failing on windows
+		return nil
+	}
 
-	// Attempt to remove the source file
+	// Remove the source file
 	if err := os.Remove(src); err != nil {
 		return fmt.Errorf("failed to remove source file %s: %v", src, err)
 	}
