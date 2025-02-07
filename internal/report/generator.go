@@ -172,14 +172,22 @@ func copyAndRemove(src, dst string) error {
 	if err != nil {
 		return fmt.Errorf("failed to open source file %s: %v", src, err)
 	}
-	defer sourceFile.Close()
+	defer func() {
+		if cerr := sourceFile.Close(); cerr != nil {
+			log.Printf("failed to close source file %s: %v", src, cerr)
+		}
+	}()
 
 	// Create the destination file
 	destFile, err := os.Create(dst)
 	if err != nil {
 		return fmt.Errorf("failed to create destination file %s: %v", dst, err)
 	}
-	defer destFile.Close()
+	defer func() {
+		if cerr := destFile.Close(); cerr != nil {
+			log.Printf("failed to close destination file %s: %v", dst, cerr)
+		}
+	}()
 
 	// Copy the contents
 	if _, err := io.Copy(destFile, sourceFile); err != nil {
@@ -191,17 +199,20 @@ func copyAndRemove(src, dst string) error {
 		return fmt.Errorf("failed to sync destination file %s: %v", dst, err)
 	}
 
-	// Close the destination file
+	// Explicitly close the destination file
 	if err := destFile.Close(); err != nil {
 		return fmt.Errorf("failed to close destination file %s: %v", dst, err)
 	}
 
-	// Close the source file
+	// Explicitly close the source file
 	if err := sourceFile.Close(); err != nil {
 		return fmt.Errorf("failed to close source file %s: %v", src, err)
 	}
 
-	// Remove the source file
+	// Add a small delay before attempting to remove the source file
+	time.Sleep(100 * time.Millisecond)
+
+	// Attempt to remove the source file
 	if err := os.Remove(src); err != nil {
 		return fmt.Errorf("failed to remove source file %s: %v", src, err)
 	}
