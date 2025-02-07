@@ -127,7 +127,6 @@ func replaceTextByText(inputFile, searchText, replaceContent string) error {
 	if err != nil {
 		return fmt.Errorf("could not create temp file: %v", err)
 	}
-	defer tempFile.Close()
 
 	reader := bufio.NewReader(file)
 	writer := bufio.NewWriter(tempFile)
@@ -164,14 +163,12 @@ func copyAndRemove(src, dst string) error {
 	if err != nil {
 		return err
 	}
-	defer sourceFile.Close()
 
 	// Create the destination file
 	destFile, err := os.Create(dst)
 	if err != nil {
 		return err
 	}
-	defer destFile.Close()
 
 	// Copy the contents
 	if _, err := io.Copy(destFile, sourceFile); err != nil {
