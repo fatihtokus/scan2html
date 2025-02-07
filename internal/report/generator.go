@@ -114,6 +114,15 @@ func handleExploit(withExploits bool, reportName string) (bool, error) {
 	return false, nil
 }
 
+// replaceTextByFile replaces occurrences of search_text in the input file with content from replace_file.
+func replaceTextByFile(inputFile, searchText, replaceFile string) error {
+	replaceContent, err := os.ReadFile(replaceFile)
+	if err != nil {
+		return fmt.Errorf("could not read file %s: %v", replaceFile, err)
+	}
+	return replaceTextByText(inputFile, searchText, string(replaceContent))
+}
+
 // replaceTextByText replaces occurrences of search_text in the input file with replace_content.
 func replaceTextByText(inputFile, searchText, replaceContent string) error {
 	file, err := os.Open(inputFile)
@@ -161,35 +170,43 @@ func copyAndRemove(src, dst string) error {
 	// Open the source file
 	sourceFile, err := os.Open(src)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to open source file %s: %v", src, err)
 	}
+	defer sourceFile.Close()
 
 	// Create the destination file
 	destFile, err := os.Create(dst)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create destination file %s: %v", dst, err)
 	}
+	defer destFile.Close()
 
 	// Copy the contents
 	if _, err := io.Copy(destFile, sourceFile); err != nil {
-		return err
+		return fmt.Errorf("failed to copy contents from %s to %s: %v", src, dst, err)
 	}
 
-	// Close files before removal
-	sourceFile.Close()
-	destFile.Close()
+	// Ensure all data is written to the destination file
+	if err := destFile.Sync(); err != nil {
+		return fmt.Errorf("failed to sync destination file %s: %v", dst, err)
+	}
+
+	// Close the destination file
+	if err := destFile.Close(); err != nil {
+		return fmt.Errorf("failed to close destination file %s: %v", dst, err)
+	}
+
+	// Close the source file
+	if err := sourceFile.Close(); err != nil {
+		return fmt.Errorf("failed to close source file %s: %v", src, err)
+	}
 
 	// Remove the source file
-	return os.Remove(src)
-}
-
-// replaceTextByFile replaces occurrences of search_text in the input file with content from replace_file.
-func replaceTextByFile(inputFile, searchText, replaceFile string) error {
-	replaceContent, err := os.ReadFile(replaceFile)
-	if err != nil {
-		return fmt.Errorf("could not read file %s: %v", replaceFile, err)
+	if err := os.Remove(src); err != nil {
+		return fmt.Errorf("failed to remove source file %s: %v", src, err)
 	}
-	return replaceTextByText(inputFile, searchText, string(replaceContent))
+
+	return nil
 }
 
 // generateReportName creates a unique report name based on timestamp if the file already exists.
