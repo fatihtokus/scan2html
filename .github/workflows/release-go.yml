@@ -31,8 +31,7 @@ jobs:
           fetch-depth: 0
 
       - name: Download report_template.html
-        uses: actions/download-artifact@v3
-#        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a # v3.0.2
+        uses: actions/download-artifact@v4
         with:
           name: report-template
 
@@ -42,7 +41,6 @@ jobs:
           cat report_template.html
 
       - name: Set up Go
-#        uses: actions/setup-go@93397bea11091df50f3d7e59dc26a7711a8bcfbe # v4.1.0
         uses: actions/setup-go@v4
         with:
           go-version-file: go.mod
@@ -60,7 +58,6 @@ jobs:
           echo "$GPG_KEY" > gpg.key
 
       - name: GoReleaser
-#        uses: goreleaser/goreleaser-action@9ed2f89a662bf1735a48bc8557fd212fa902bebf # v6.1.0
         uses: goreleaser/goreleaser-action@v6
         with:
           version: latest
