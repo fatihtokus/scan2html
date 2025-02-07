@@ -213,6 +213,8 @@ func copyAndRemove(src, dst string) error {
 		return fmt.Errorf("failed to remove source file %s: %v", src, err)
 	}
 
+	defer os.Remove(src)
+
 	return nil
 }
 
