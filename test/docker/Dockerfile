@@ -14,7 +14,7 @@ COPY script.sh .
 
 COPY scan2html.sh .
 
-# Make the script executable
+# Make the script executable - refactor this for golang
 RUN chmod +x script.sh
 
 # Make the script executable

@@ -7,8 +7,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 	"scan2html/internal/common"
 	"scan2html/internal/epss"
+	"scan2html/internal/exploit"
 	"scan2html/internal/logger"
 	"strings"
 	"time"
@@ -25,10 +27,12 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 
 	reportName := pluginFlags["--output"]
 	_, withEpss := pluginFlags["--with-epss"]
+	_, withExploits := pluginFlags["--with-exploits"]
 	reportTitle := pluginFlags["--report-title"]
 	// Log input parameters for clarity
 	logger.Logger.Infof("Base Directory: %s\n", baseDir)
 	logger.Logger.Infof("With EPSS: %t\n", withEpss)
+	logger.Logger.Infof("With Exploits: %t\n", withExploits)
 	logger.Logger.Infof("Report Title: %s\n", reportTitle)
 	logger.Logger.Infof("Report Name: %s\n", reportName)
 
@@ -43,7 +47,7 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 
 	err = replaceTextByText(reportName, "TEMP_APP_VERSION", version)
 	if err != nil {
-		return fmt.Errorf("failed to replace report title in %s: %v", reportName, err)
+		return fmt.Errorf("failed to replace app version in %s: %v", reportName, err)
 	}
 
 	// Replace placeholders with actual content in the report file
@@ -57,26 +61,67 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 	}
 
 	// Handle EPSS data if enabled
-	if withEpss {
-		logger.Logger.Infoln("EPSS enabled!")
-		var epssDataFile, err = epss.PrepareEpssData()
-		if err != nil {
-			return fmt.Errorf("failed to prepare EPSS data: %v", err)
-		}
+	// replaceTextByFile "$report_name" "\"TEMP_EPSS_DATA\"" "$epss_data"
+	// Schedule deletion of the EPSS data file upon function exit
+	shouldReturn, returnValue := handleEPSS(withEpss, reportName)
+	if shouldReturn {
+		return returnValue
+	}
 
-		// replaceTextByFile "$report_name" "\"TEMP_EPSS_DATA\"" "$epss_data"
-		if err := replaceTextByFile(reportName, "\"TEMP_EPSS_DATA\"", epssDataFile); err != nil {
-			return fmt.Errorf("failed to replace EPSS data in %s: %v", reportName, err)
-		}
-
-		logger.Logger.Infoln("EPSS data imported!")
-
-		// Schedule deletion of the EPSS data file upon function exit
-		defer os.Remove(epssDataFile)
+	shouldReturn, returnValue = handleExploit(withExploits, reportName)
+	if shouldReturn {
+		return returnValue
 	}
 
 	logger.Logger.Infof("%s has been created successfully!\n", reportName)
 	return nil
+}
+
+func handleEPSS(withEpss bool, reportName string) (bool, error) {
+	if withEpss {
+		logger.Logger.Infoln("EPSS enabled!")
+		var epssDataFile, err = epss.PrepareEpssData()
+		if err != nil {
+			return true, fmt.Errorf("failed to prepare EPSS data: %v", err)
+		}
+
+		if err := replaceTextByFile(reportName, "\"TEMP_EPSS_DATA\"", epssDataFile); err != nil {
+			return true, fmt.Errorf("failed to replace EPSS data in %s: %v", reportName, err)
+		}
+
+		logger.Logger.Infoln("EPSS data imported!")
+
+		defer os.Remove(epssDataFile)
+	}
+	return false, nil
+}
+
+func handleExploit(withExploits bool, reportName string) (bool, error) {
+	if withExploits {
+		logger.Logger.Infoln("Exploits enabled!")
+		var exploitDataFile, err = exploit.PrepareExploitData()
+		if err != nil {
+			return true, fmt.Errorf("failed to prepare Exploits data: %v", err)
+		}
+
+		if err := replaceTextByFile(reportName, "{TEMP_EXPLOITS:0}", exploitDataFile); err != nil {
+			return true, fmt.Errorf("failed to replace Exploits data in %s: %v", reportName, err)
+		}
+
+		logger.Logger.Infoln("Exploits data imported!")
+
+		defer os.Remove(exploitDataFile)
+	}
+	return false, nil
+}
+
+// replaceTextByFile replaces occurrences of search_text in the input file with content from replace_file.
+func replaceTextByFile(inputFile, searchText, replaceFile string) error {
+	replaceContent, err := os.ReadFile(replaceFile)
+	if err != nil {
+		return fmt.Errorf("could not read file %s: %v", replaceFile, err)
+	}
+	return replaceTextByText(inputFile, searchText, string(replaceContent))
 }
 
 // replaceTextByText replaces occurrences of search_text in the input file with replace_content.
@@ -87,11 +132,11 @@ func replaceTextByText(inputFile, searchText, replaceContent string) error {
 	}
 	defer file.Close()
 
-	tempFile, err := os.CreateTemp("", "modified_")
+	timestamp := time.Now().Format("2006_01_02_15_04_05_06")
+	tempFile, err := os.CreateTemp("", fmt.Sprintf("modified_%s", timestamp))
 	if err != nil {
 		return fmt.Errorf("could not create temp file: %v", err)
 	}
-	defer tempFile.Close()
 
 	reader := bufio.NewReader(file)
 	writer := bufio.NewWriter(tempFile)
@@ -119,45 +164,52 @@ func replaceTextByText(inputFile, searchText, replaceContent string) error {
 		return fmt.Errorf("error writing to temp file: %v", err)
 	}
 
-	
 	return copyAndRemove(tempFile.Name(), inputFile)
 }
 
 func copyAndRemove(src, dst string) error {
-    // Open the source file
-    sourceFile, err := os.Open(src)
-    if err != nil {
-        return err
-    }
-    defer sourceFile.Close()
-
-    // Create the destination file
-    destFile, err := os.Create(dst)
-    if err != nil {
-        return err
-    }
-    defer destFile.Close()
-
-    // Copy the contents
-    if _, err := io.Copy(destFile, sourceFile); err != nil {
-        return err
-    }
-
-    // Close files before removal
-    sourceFile.Close()
-    destFile.Close()
-
-    // Remove the source file
-    return os.Remove(src)
-}
-
-// replaceTextByFile replaces occurrences of search_text in the input file with content from replace_file.
-func replaceTextByFile(inputFile, searchText, replaceFile string) error {
-	replaceContent, err := os.ReadFile(replaceFile)
+	// Open the source file
+	sourceFile, err := os.Open(src)
 	if err != nil {
-		return fmt.Errorf("could not read file %s: %v", replaceFile, err)
+		return fmt.Errorf("failed to open source file %s: %v", src, err)
 	}
-	return replaceTextByText(inputFile, searchText, string(replaceContent))
+	defer sourceFile.Close()
+
+	// Create the destination file
+	destFile, err := os.Create(dst)
+	if err != nil {
+		return fmt.Errorf("failed to create destination file %s: %v", dst, err)
+	}
+	defer destFile.Close()
+
+	// Copy the contents
+	if _, err := io.Copy(destFile, sourceFile); err != nil {
+		return fmt.Errorf("failed to copy contents from %s to %s: %v", src, dst, err)
+	}
+
+	// Ensure all data is written to the destination file
+	if err := destFile.Sync(); err != nil {
+		return fmt.Errorf("failed to sync destination file %s: %v", dst, err)
+	}
+
+	// Close the destination file
+	if err := destFile.Close(); err != nil {
+		return fmt.Errorf("failed to close destination file %s: %v", dst, err)
+	}
+
+	// Close the source file
+	if err := sourceFile.Close(); err != nil {
+		return fmt.Errorf("failed to close source file %s: %v", src, err)
+	}
+
+	// Check if the operating system is Windows
+	if runtime.GOOS == "windows" {
+		// Remove the source file is failing on windows
+		return nil
+	}
+
+	defer os.Remove(src)
+	return nil
 }
 
 // generateReportName creates a unique report name based on timestamp if the file already exists.

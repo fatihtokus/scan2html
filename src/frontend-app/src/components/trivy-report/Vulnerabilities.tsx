@@ -13,6 +13,7 @@ import { isNegligible } from '../shared/SeverityTag';
 import SeverityTag from '../shared/SeverityTag';
 import { severityFilters } from '../../constants';
 import SeverityToolbar from '../shared/SeverityToolbar';
+import Exploits from '../shared/Exploits';
 import dayjs from 'dayjs';
 
 interface VulnerabilitiesProps {
@@ -191,6 +192,16 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       sortDirections: ['descend', 'ascend'],
     },
     {
+      title: 'Exploits',
+      dataIndex: 'Exploits',
+      key: 'Exploits',
+      width: '5%',
+      ...getColumnSearchProps('Exploits'),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => numberCompare(a.Exploits, b.Exploits),
+      sortDirections: ['descend', 'ascend'],
+      render: (exploits, vulnerability) => exploits == 'CISA' && <Exploits vulnerabilityID={vulnerability.ID? vulnerability.ID : ''}/>,
+    }, 
+    {
       title: 'Installed Version',
       dataIndex: 'InstalledVersion',
       key: 'InstalledVersion',
@@ -220,30 +231,6 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Title, b.Title),
       sortDirections: ['descend', 'ascend'],
     },
-    {
-      title: 'Published Date',
-      dataIndex: 'PublishedDate',
-      key: 'PublishedDate',
-      width: '5%',
-      ...getColumnSearchProps('PublishedDate'),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.PublishedDate, b.PublishedDate),
-      sortDirections: ['descend', 'ascend'],
-      render:(PublishedDate)=> (
-        dayjs(PublishedDate).format('YYYY-MM-DD')
-    ),
-    },
-    {
-      title: 'Last Modified Date',
-      dataIndex: 'LastModifiedDate',
-      key: 'LastModifiedDate',
-      width: '5%',
-      ...getColumnSearchProps('LastModifiedDate'),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.LastModifiedDate, b.LastModifiedDate),
-      sortDirections: ['descend', 'ascend'],
-      render:(LastModifiedDate)=> (
-        dayjs(LastModifiedDate).format('YYYY-MM-DD')
-    ),
-    },
   ];
 
   const handleExpand = (expanded: boolean, record: NormalizedResultForDataTable) => {
@@ -266,7 +253,8 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
         expandable={{
           expandedRowRender: (vulnerability) => (
             <div style={{ margin: 0 }}>
-              <strong>Description:</strong> {vulnerability.Description}   
+              <strong>Description:</strong> {vulnerability.Description} <br />
+              <strong>Published Date:</strong> {dayjs(vulnerability.PublishedDate).format('YYYY-MM-DD')}<strong> Last Modified Dates:</strong> {dayjs(vulnerability.LastModifiedDate).format('YYYY-MM-DD')}   
               <p><strong>References:</strong></p>
               <ul>
                 {vulnerability.References?.map((ref, index) => (

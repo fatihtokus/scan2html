@@ -4,14 +4,19 @@ import Papa, { ParseResult } from "papaparse";
 import TrivyReport from "./components/trivy-report/TrivyReport";
 import TableTitle from "./components/shared/TableTitle";
 import defaultData from "./data/results.json";
+import knownExploitedVulnerabilitiesData from "./data/cisa-known-exploited-vulnerabilities.json";
 import defaultEPSSData from "./data/epss.cvs?raw";
 import defaultResultMetaData from "./data/result-metadata.json";
 import { NormalizedResultForDataTable, UploadInfo } from "./types";
 import { EPSSPerVulnerability } from "./types/external/epss";
+import { CisaExploit, isCisaExploitArray } from "./types/external/cisaExploit";
 import { getSecrets, getLicenses, getMisconfigurationSummary, getK8sClusterSummaryForInfraAssessment, getK8sClusterSummaryForRBACAssessment, getMisconfigurations, getVulnerabilities, getSupplyChainSBOM } from "./utils/index";
 import { FileProtectOutlined, UploadOutlined, LockOutlined, ExclamationCircleOutlined, SettingOutlined, ClusterOutlined, ProfileOutlined, MenuFoldOutlined, MenuUnfoldOutlined, BugOutlined } from "@ant-design/icons";
 import "./App.css";
 import type { MenuProps } from "antd";
+
+
+const knownExploitedVulnerabilities: CisaExploit[] = isCisaExploitArray(knownExploitedVulnerabilitiesData) ? knownExploitedVulnerabilitiesData : [];
 
 type MenuItem = {
   key: string;
@@ -112,7 +117,7 @@ function App() {
 
   useEffect(() => {
     console.log(`loadedData.length ${loadedData.length}`);
-    setVulnerabilities(getVulnerabilities(loadedData, epssData));
+    setVulnerabilities(getVulnerabilities(loadedData, epssData, knownExploitedVulnerabilities));
     setSecrets(getSecrets(loadedData));
     setLicenses(getLicenses(loadedData));
     setMisconfigurations(getMisconfigurations(loadedData));
