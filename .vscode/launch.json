@@ -7,7 +7,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}",
-            "args": ["image", "ruby:3.1", "--scan2html-flags", "--output", "interactive_report.html", "--report-title", "Trivy Report Test", "--with-epss", "--with-exploits"]
+            "args": ["image", "--scanners", "vuln,secret,misconfig,license", "ruby:3.1", "--scan2html-flags", "--output", "interactive_report.html", "--report-title", "Trivy Report Test", "--with-epss", "--with-exploits"]
         },
         {
             "name": "Image scan with a custom exit code",
@@ -15,7 +15,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}",
-            "args": ["image", "--scanners", "vuln", "ruby:3.1", "--exit-code", "5", "--severity", "CRITICAL", "--scan2html-flags", "--output", "interactive_report.html"]
+            "args": ["image", "--scanners", "vuln,secret,misconfig,license", "ruby:3.1", "--exit-code", "5", "--severity", "CRITICAL", "--scan2html-flags", "--output", "interactive_report.html"]
         },
         {
             "name": "Regression-1",
@@ -31,7 +31,7 @@
             "request": "launch",
             "mode": "debug",
             "program": "${workspaceFolder}",
-            "args": ["generate", "--scan2html-flags", "--output", "interactive_report.html", "--from", "test/data/default/results.json,test/data/k8s/results.json"]
+            "args": ["generate", "--scan2html-flags", "--with-exploits", "--output", "interactive_report.html", "--from", "test/data/default/results.json,test/data/k8s/results.json"]
         },
         {
             "name": "Debug Scan2html with Depricated flags",
