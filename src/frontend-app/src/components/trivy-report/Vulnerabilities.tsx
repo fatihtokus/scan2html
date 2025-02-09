@@ -13,7 +13,7 @@ import { isNegligible } from '../shared/SeverityTag';
 import SeverityTag from '../shared/SeverityTag';
 import { severityFilters } from '../../constants';
 import SeverityToolbar from '../shared/SeverityToolbar';
-import Exploit from '../shared/Exploit';
+import Exploits from '../shared/Exploits';
 import dayjs from 'dayjs';
 
 interface VulnerabilitiesProps {
@@ -199,7 +199,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       ...getColumnSearchProps('Exploits'),
       sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => numberCompare(a.Exploits, b.Exploits),
       sortDirections: ['descend', 'ascend'],
-      render: (exploits, vulnerability) => exploits == 'CISA' && <Exploit vulnerabilityID={vulnerability.ID? vulnerability.ID : ''}/>,
+      render: (exploits, vulnerability) => exploits == 'CISA' && <Exploits vulnerabilityID={vulnerability.ID? vulnerability.ID : ''}/>,
     }, 
     {
       title: 'Installed Version',

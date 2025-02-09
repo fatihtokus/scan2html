@@ -32,7 +32,7 @@ export function getVulnerabilities(results: any[] //CommonScanResult[]
   }
 
   if (knownExloitedVulnerabilitiesData.length > 0 && knownExloitedVulnerabilitiesData[0].count > 0) {  
-    formattedResultJson = enrichWithEPSSCores1(formattedResultJson, knownExloitedVulnerabilitiesData[0]);
+    formattedResultJson = enrichWithExploits(formattedResultJson, knownExloitedVulnerabilitiesData[0]);
   }
     
   return formattedResultJson;
@@ -50,11 +50,11 @@ function enrichWithEPSSCores(vulnerabilities: NormalizedResultForDataTable[], ep
   return vulnerabilities;
 }
 
-function enrichWithEPSSCores1(vulnerabilities: NormalizedResultForDataTable[], knownExloitedVulnerabilitiesData: CisaExploit
+function enrichWithExploits(vulnerabilities: NormalizedResultForDataTable[], knownExloitedVulnerabilitiesData: CisaExploit
 ): NormalizedResultForDataTable[] {
   vulnerabilities.forEach(vulnerability => {
-    let EPSS_Score = knownExloitedVulnerabilitiesData.vulnerabilities.filter(epssPerVulnerability =>  epssPerVulnerability.cveID === vulnerability.ID)[0];
-    if (EPSS_Score) {
+    let isExploited = knownExloitedVulnerabilitiesData.vulnerabilities.filter(exploitPerVulnerability =>  exploitPerVulnerability.cveID === vulnerability.ID)[0];
+    if (isExploited) {
       vulnerability.Exploits = "CISA";
     }
   });

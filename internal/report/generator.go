@@ -208,13 +208,7 @@ func copyAndRemove(src, dst string) error {
 		return nil
 	}
 
-	// Remove the source file
-	if err := os.Remove(src); err != nil {
-		return fmt.Errorf("failed to remove source file %s: %v", src, err)
-	}
-
 	defer os.Remove(src)
-
 	return nil
 }
 

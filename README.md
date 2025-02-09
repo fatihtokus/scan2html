@@ -141,4 +141,7 @@ Examples:
   # Generate report with EPSS scores from multiple scan results
   trivy scan2html generate --scan2html-flags --with-epss --output interactive_report.html --from vulnerabilities.json,misconfigs.json,secrets.json
 
+  # Generate report with Exploitability from multiple scan results - experimental
+  trivy scan2html generate --scan2html-flags --with-exploits --output interactive_report.html --from vulnerabilities.json,misconfigs.json,secrets.json
+
 ```
