@@ -6,12 +6,12 @@ import { SeverityCount } from '../../types/ui/index.ts';
 
 interface SeverityToolbarProps {
   result: NormalizedResultForDataTable[];
-  onSeverityClick: (severity: string) => void;
+  onFilterClick: (severity: string) => void;
   onDeduplicationClick: () => void;
   deduplicationOn: boolean;
 }
 
-const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onSeverityClick, onDeduplicationClick, deduplicationOn }) => {
+const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onFilterClick, onDeduplicationClick, deduplicationOn }) => {
   const [resultsPerSeverity, setResultsPerSeverity] = useState<SeverityCount[]>([]);
 
   useEffect(() => {
@@ -64,11 +64,43 @@ const SeverityToolbar: React.FC<SeverityToolbarProps> = ({ result, onSeverityCli
             backgroundColor: color,
             color: '#000', // Set text color to black
           }}
-          onClick={() => onSeverityClick(severity.toLowerCase())}
+          onClick={() => onFilterClick(severity.toLowerCase())}
         >
-          {count} {severity}
+          {severity}({count})
         </Button>
       ))}
+    </Space>
+    <Space>
+      <Button
+          key="hasExploit"
+          style={{
+            backgroundColor: '#DDEE',
+            color: '#000', // Set text color to black
+          }}
+          onClick={() => onFilterClick("hasExploit")}
+        >
+        Has Exploit
+      </Button>
+      <Button
+          key="hasFix"
+          style={{
+            backgroundColor: '#DDEE',
+            color: '#000', // Set text color to black
+          }}
+          onClick={() => onFilterClick("hasFix")}
+        >
+        Has fix
+      </Button>
+      <Button
+          key="hasNoFix"
+          style={{
+            backgroundColor: '#DDEE',
+            color: '#000', // Set text color to black
+          }}
+          onClick={() => onFilterClick("hasNoFix")}
+        >
+        Has no fix
+      </Button>
       </Space>
       <Checkbox onClick={() => onDeduplicationClick()} checked={deduplicationOn}>
         Enable Deduplication

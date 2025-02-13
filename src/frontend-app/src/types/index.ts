@@ -7,7 +7,7 @@ export class NormalizedResultForDataTable {
   NVD_V2Score?: number;
   NVD_V3Score?: number;
   EPSS_Score?: number;
-  Exploits?: string;
+  Exploits: string = "";
   Severity?: string;
   InstalledVersion?: string;
   FixedVersion?: string;
