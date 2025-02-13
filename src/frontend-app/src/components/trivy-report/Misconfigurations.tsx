@@ -10,7 +10,7 @@ import SeverityTag from "../shared/SeverityTag";
 import { severityFilters } from "../../constants";
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
 import Highlighter from "react-highlight-words";
-import { filterDropdown, localeCompare, severityCompare, removeDuplicateResults } from "../../utils";
+import { filterResultByKeyword, filterDropdown, localeCompare, severityCompare, removeDuplicateResults } from "../../utils";
 import SeverityToolbar from '../shared/SeverityToolbar.tsx';
 import CodeDisplay from '../shared/CodeDisplay.tsx';
 
@@ -38,9 +38,8 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
     updateDeduplicatedResults(result);
   }, [deduplicationOn]);
 
-  const handleSeverityClick = (severity: string) => {
-    const filtered = result.filter(item => severity === 'all' || item.Severity?.toLowerCase() === severity); //doesn't work for negligible
-    updateFilteredData(filtered);
+  const handleFilterClick = (filterValue: string) => {
+    updateFilteredData(filterResultByKeyword(result, filterValue));
   };
 
   const updateDeduplicatedResults = (result: NormalizedResultForDataTable[]) => {
@@ -192,7 +191,7 @@ const Misconfigurations: React.FC<MisconfigurationsProps> = ({ result }) => {
 
   return (
     <>
-    <SeverityToolbar result={deduplicatedResults} onSeverityClick={handleSeverityClick} onDeduplicationClick={toggleDeduplication} deduplicationOn={deduplicationOn}/>
+    <SeverityToolbar result={deduplicatedResults} onFilterClick={handleFilterClick} onDeduplicationClick={toggleDeduplication} deduplicationOn={deduplicationOn}/>
     <Table columns={columns} dataSource={filteredData} pagination={{ defaultPageSize: 20 }} size="small" sticky 
       expandable={{
         expandedRowRender: (misconfiguration) => (
