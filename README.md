@@ -13,15 +13,32 @@ Before moving on, please consider giving us a GitHub star ⭐️. Thank you!
 ## About scan2html
 A [Trivy](https://github.com/aquasecurity/trivy) plugin that scans and outputs the results (vulnerabilities, misconfigurations, secrets, SBOM in containers, Kubernetes, code repositories, clouds and more) to an interactive html file.
 
+Built for teams that care about flexibility, privacy, and control.
+
+---
+
+## Why scan2html
+- 100% open-source (Apache-2.0)
+- No API keys or rate limits
+- Self-contained, data does not leave your system
+- Works with your existing Trivy json scan result files too
+- Easy to integrate into any CI/CD pipeline
+
+---
+
 ## Install
 ```sh
 trivy plugin install scan2html
 ```
 
+---
+
 ## Uninstall
 ```sh
 trivy plugin uninstall scan2html
 ```
+
+---
 
 ## Usage
 ### Generate a report from multiple json scan results
