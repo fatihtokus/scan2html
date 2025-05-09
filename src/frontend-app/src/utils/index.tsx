@@ -1,5 +1,6 @@
 import { NormalizedResultForDataTable } from "../types";
 import { CisaExploit } from "../types/external/cisaExploit";
+import { isASeverity } from '../components/shared/SeverityTag';
 import { CommonScanResult, CommonResult, Holder } from "../types/external/defaultResult";
 
 export function removeDuplicateResults(results: NormalizedResultForDataTable[])
@@ -150,6 +151,34 @@ export function filterDropdown(rowValue: any, searchValue: any) {
     .toString()
     .toLowerCase()
     .includes((searchValue as string).toLowerCase());
+}
+
+export function filterResultByKeyword(results: NormalizedResultForDataTable[], keyword: string): NormalizedResultForDataTable[] {
+  console.info("Filtering by keyword: " + keyword);
+
+  if (keyword === 'negligible' || keyword === 'unknown') {
+    return results.filter(item => item.Severity?.toLowerCase() === 'negligible' || item.Severity?.toLowerCase() === 'unknown');
+  }
+
+  if (isASeverity(keyword)) {
+    console.info("Filtering by severity keyword ");
+    return results.filter(item => item.Severity?.toLowerCase() === keyword);
+  }
+
+  if (keyword === 'hasExploit') {
+    return results.filter(item => item.Exploits);
+  }
+
+  if (keyword === 'hasFix') {
+    return results.filter(item => item.FixedVersion);
+  }
+
+  if (keyword === 'hasNoFix') {
+    return results.filter(item => !item.FixedVersion);
+  }
+
+  // keyword = all
+  return results;
 }
 
 export function localeCompare(argument1: any, argument2: any) {

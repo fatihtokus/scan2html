@@ -13,6 +13,21 @@ export function isNegligible(severity: string)
   }
 };
 
+export function isASeverity(severity: string)
+: boolean {
+  switch (severity.toLowerCase()) {
+    case "critical":
+    case "high":
+    case "medium":
+    case "low":
+    case "unknown":
+    case "negligible":
+      return true
+    default:
+      return false;
+  }
+};
+
 const SeverityTag = ({ severity }: { severity: string }) => {
   let color;
 

@@ -8,8 +8,7 @@ import type { InputRef } from 'antd';
 import type { ColumnType, ColumnsType } from 'antd/es/table';
 import type { FilterConfirmProps } from 'antd/es/table/interface';
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from '../../types';
-import { filterDropdown, localeCompare, severityCompare, numberCompare, removeDuplicateResults } from '../../utils';
-import { isNegligible } from '../shared/SeverityTag';
+import { filterResultByKeyword, filterDropdown, localeCompare, severityCompare, numberCompare, removeDuplicateResults } from '../../utils';
 import SeverityTag from '../shared/SeverityTag';
 import { severityFilters } from '../../constants';
 import SeverityToolbar from '../shared/SeverityToolbar';
@@ -59,9 +58,8 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
     setSearchText('');
   };
 
-  const handleSeverityClick = (severity: string) => {
-    const filtered = result.filter(item => severity === 'all' || item.Severity?.toLowerCase() === severity || isNegligible(item.Severity?.toLowerCase() || 'UNKNOWN'));
-    updateFilteredData(filtered);
+  const handleFilterClick = (filterValue: string) => {
+    updateFilteredData(filterResultByKeyword(result, filterValue));
   };
 
   const toggleDeduplication = () => {
@@ -197,7 +195,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       key: 'Exploits',
       width: '5%',
       ...getColumnSearchProps('Exploits'),
-      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => numberCompare(a.Exploits, b.Exploits),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.Exploits, b.Exploits),
       sortDirections: ['descend', 'ascend'],
       render: (exploits, vulnerability) => exploits == 'CISA' && <Exploits vulnerabilityID={vulnerability.ID? vulnerability.ID : ''}/>,
     }, 
@@ -243,7 +241,7 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
 
   return (
     <>
-      <SeverityToolbar result={deduplicatedResults} onSeverityClick={handleSeverityClick} onDeduplicationClick={toggleDeduplication} deduplicationOn={deduplicationOn}/>
+      <SeverityToolbar result={deduplicatedResults} onFilterClick={handleFilterClick} onDeduplicationClick={toggleDeduplication} deduplicationOn={deduplicationOn}/>
       <Table
         columns={columns}
         dataSource={filteredData}

@@ -5,9 +5,8 @@ import type { ColumnType, ColumnsType } from "antd/es/table";
 import type { FilterConfirmProps } from "antd/es/table/interface";
 import { useRef, useState, useEffect } from "react";
 import { NormalizedResultForDataTable, DataIndexForNormalizedResultForDataTable } from "../../types";
-import { filterDropdown, localeCompare, severityCompare, removeDuplicateResults } from "../../utils";
+import { filterResultByKeyword, filterDropdown, localeCompare, severityCompare, removeDuplicateResults } from "../../utils";
 import SeverityToolbar from '../shared/SeverityToolbar.tsx';
-import { isNegligible } from '../shared/SeverityTag';
 import SeverityTag from "../shared/SeverityTag";
 import { severityFilters } from "../../constants";
 import Highlighter from "react-highlight-words";
@@ -44,9 +43,8 @@ const Secrets: React.FC<Props> = ({ result }) => {
     setFilteredData(deduplicationOn ? removeDuplicateResults(result) : result);
   };
 
-  const handleSeverityClick = (severity: string) => {
-    const filtered = result.filter(item => severity === 'all' || item.Severity?.toLowerCase() === severity || isNegligible(item.Severity?.toLowerCase() || 'UNKNOWN'));
-    setFilteredData(filtered);
+  const handleFilterClick = (filterValue: string) => {
+    updateFilteredData(filterResultByKeyword(result, filterValue));
   };
 
   const handleSearch = (selectedKeys: string[], confirm: (param?: FilterConfirmProps) => void, dataIndex: DataIndexForNormalizedResultForDataTable) => {
@@ -190,7 +188,7 @@ const Secrets: React.FC<Props> = ({ result }) => {
 
   return (
     <>
-      <SeverityToolbar result={deduplicatedResults} onSeverityClick={handleSeverityClick} onDeduplicationClick={toggleDeduplication} deduplicationOn={deduplicationOn}/>
+      <SeverityToolbar result={deduplicatedResults} onFilterClick={handleFilterClick} onDeduplicationClick={toggleDeduplication} deduplicationOn={deduplicationOn}/>
       <Table columns={columns} dataSource={filteredData} pagination={{ defaultPageSize: 20 }} size="small" sticky 
       expandable={{
         expandedRowRender: (license) => (
