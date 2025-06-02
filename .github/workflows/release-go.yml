@@ -9,17 +9,12 @@ on:
         type: string
 
 #permissions:
-#  contents: read
-
-permissions:
-  contents: read
+#  contents: read this doesn't work on master
 
 jobs:
   release-go:
 #    permissions:
-#      contents: write  # for goreleaser/goreleaser-action to create a GitHub release
-    permissions:
-      contents: write  # for goreleaser/goreleaser-action to create a GitHub release
+#      contents: write  # for goreleaser/goreleaser-action to create a GitHub release this doesn't work on master
     name: Release go
     runs-on: ubuntu-latest
     if: ${{ inputs.next-version != '' }}
