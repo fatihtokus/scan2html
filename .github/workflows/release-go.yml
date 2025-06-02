@@ -67,7 +67,7 @@ jobs:
           echo "$GPG_KEY" > gpg.key
 
       - name: GoReleaser
-        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        uses: goreleaser/goreleaser-action@v6
         with:
           version: latest
           # this doesn't work
