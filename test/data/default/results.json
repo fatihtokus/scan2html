@@ -15578,8 +15578,9 @@
           ],
           "CVSS": {
             "ghsa": {
+              "V2Score": 4,
               "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-              "V3Score": 7.5
+              "V3Score": 7.111115
             },
             "nvd": {
               "V2Vector": "AV:N/AC:L/Au:N/C:N/I:N/A:P",
@@ -15589,7 +15590,7 @@
             },
             "redhat": {
               "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-              "V3Score": 7.5
+              "V3Score": 7.51111
             }
           },
           "References": [
@@ -16331,7 +16332,8 @@
           "CVSS": {
             "ghsa": {
               "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N",
-              "V3Score": 9.1
+              "V3Score": 9.1,
+              "V2Score": 6.5
             },
             "nvd": {
               "V2Vector": "AV:N/AC:L/Au:N/C:P/I:P/A:N",
@@ -16341,7 +16343,7 @@
             },
             "redhat": {
               "V3Vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N",
-              "V3Score": 9.1
+              "V3Score": 9.2
             }
           },
           "References": [

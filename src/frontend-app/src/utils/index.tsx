@@ -290,13 +290,25 @@ function mapVulnerabilityResults(results: CommonResult[]): NormalizedResultForDa
   results.forEach((result) => {
     if (result.Vulnerabilities) {
       result.Vulnerabilities.forEach((vulnerability) => {
-        let NVD_V2Score;
-        let NVD_V3Score;
-        if (vulnerability.CVSS) {
-          const CVSS = vulnerability.CVSS;
-          if (CVSS.nvd) {
-            NVD_V2Score = CVSS.nvd.V2Score ? CVSS.nvd.V2Score : '';
-            NVD_V3Score = CVSS.nvd.V3Score ? CVSS.nvd.V3Score : '';
+       
+        let NVD_V2Score = undefined;
+        let NVD_V3Score = undefined;
+
+        if (vulnerability?.CVSS) {
+          for (const [_, data] of Object.entries(vulnerability.CVSS)) {
+            if (typeof data?.V2Score === 'number') {
+              const v2Score = parseFloat(data.V2Score.toString());
+              if (NVD_V2Score === undefined || v2Score > NVD_V2Score) {
+                NVD_V2Score = v2Score;
+              }
+            }
+
+            if (typeof data?.V3Score === 'number') {
+              const v3Score = parseFloat(data.V3Score.toString());
+              if (NVD_V3Score === undefined || v3Score > NVD_V3Score) {
+                NVD_V3Score = v3Score;
+              }
+            }
           }
         }
 
