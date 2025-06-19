@@ -9,17 +9,12 @@ on:
         type: string
 
 #permissions:
-#  contents: read
-
-permissions:
-  contents: read
+#  contents: read this doesn't work on master
 
 jobs:
   release-go:
 #    permissions:
-#      contents: write  # for goreleaser/goreleaser-action to create a GitHub release
-    permissions:
-      contents: write  # for goreleaser/goreleaser-action to create a GitHub release
+#      contents: write  # for goreleaser/goreleaser-action to create a GitHub release this doesn't work on master
     name: Release go
     runs-on: ubuntu-latest
     if: ${{ inputs.next-version != '' }}
@@ -67,7 +62,7 @@ jobs:
           echo "$GPG_KEY" > gpg.key
 
       - name: GoReleaser
-        uses: goreleaser/goreleaser-action@9c156ee8a17a598857849441385a2041ef570552 # v6.3.0
+        uses: goreleaser/goreleaser-action@v6
         with:
           version: latest
           # this doesn't work
