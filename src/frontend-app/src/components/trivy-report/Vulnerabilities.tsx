@@ -133,6 +133,15 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
       sortDirections: ['descend', 'ascend'],
     },
     {
+      title: 'Artifact Name',
+      dataIndex: 'ArtifactName',
+      key: 'ArtifactName',
+      width: '10%',
+      ...getColumnSearchProps('ArtifactName'),
+      sorter: (a: NormalizedResultForDataTable, b: NormalizedResultForDataTable) => localeCompare(a.ArtifactName, b.ArtifactName),
+      sortDirections: ['descend', 'ascend'],
+    },
+    {
       title: 'Library/Package',
       dataIndex: 'Library',
       key: 'Library',
@@ -239,11 +248,52 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
     }
   };
 
+  const [visibleColumns, setVisibleColumns] = useState<string[]>(columns.map(col => col.key as string));
+
+  // Set default visible columns, with 'ArtifactName' excluded
+  useEffect(() => {
+    setVisibleColumns(columns.filter(col => col.key !== 'ArtifactName').map(col => col.key as string));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Only run on mount
+
+  const ColumnVisibilitySelector: React.FC<{
+    columns: ColumnsType<NormalizedResultForDataTable>,
+    visibleColumns: string[],
+    onChange: (cols: string[]) => void
+  }> = ({ columns, visibleColumns, onChange }) => (
+    <div>
+      <span style={{ marginRight: 8 }}>Show columns:</span>
+      {columns.map(col => (
+        <label key={col.key} style={{ marginRight: 8 }}>
+          <input
+            type="checkbox"
+            checked={visibleColumns.includes(col.key as string)}
+            onChange={e => {
+              if (e.target.checked) {
+                onChange([...visibleColumns, col.key as string]);
+              } else {
+                onChange(visibleColumns.filter(key => key !== col.key));
+              }
+            }}
+          />
+          {typeof col.title === 'function' ? col.title({}) : col.title}
+        </label>
+      ))}
+    </div>
+  );
+
   return (
     <>
       <SeverityToolbar result={deduplicatedResults} onFilterClick={handleFilterClick} onDeduplicationClick={toggleDeduplication} deduplicationOn={deduplicationOn}/>
-      <Table
+      <div style={{ marginBottom: 16 }}>
+      <ColumnVisibilitySelector
         columns={columns}
+        visibleColumns={visibleColumns}
+        onChange={setVisibleColumns}
+      />
+      </div>
+      <Table
+        columns={columns.filter((col) => visibleColumns.includes(col.key as string))}
         dataSource={filteredData}
         pagination={{ defaultPageSize: 20 }}
         size="small"
@@ -252,13 +302,14 @@ const Vulnerabilities: React.FC<VulnerabilitiesProps> = ({ result }) => {
           expandedRowRender: (vulnerability) => (
             <div style={{ margin: 0 }}>
               <strong>Description:</strong> {vulnerability.Description} <br />
-              <strong>Published Date:</strong> {dayjs(vulnerability.PublishedDate).format('YYYY-MM-DD')}<strong> Last Modified Dates:</strong> {dayjs(vulnerability.LastModifiedDate).format('YYYY-MM-DD')}   
+              <strong>Published Date:</strong> {dayjs(vulnerability.PublishedDate).format('YYYY-MM-DD')}
+              <strong> Last Modified Dates:</strong> {dayjs(vulnerability.LastModifiedDate).format('YYYY-MM-DD')}
               <p><strong>References:</strong></p>
               <ul>
                 {vulnerability.References?.map((ref, index) => (
-                <Link href={ref} target="_blank">
-                    <li key={index}>{ref}</li>
-                </Link>
+                  <Link href={ref} target="_blank" key={index}>
+                    <li>{ref}</li>
+                  </Link>
                 ))}
               </ul>
             </div>
