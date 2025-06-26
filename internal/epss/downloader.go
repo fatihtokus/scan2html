@@ -4,17 +4,17 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
-	"scan2html/internal/logger"
 	"net/http"
 	"os"
 	"path/filepath"
+	"scan2html/internal/logger"
 )
 
 // prepareEpssData downloads the EPSS dataset, saves it as a temporary file,
 // decompresses it, adds backticks at the start and end, and returns the final file path.
 func PrepareEpssData() (string, error) {
 	const (
-		epssURL        = "https://epss.cyentia.com"
+		epssURL        = "https://epss.empiricalsecurity.com"
 		epssGZFileName = "epss_scores-current.csv.gz"
 		epssFileName   = "epss_scores-current.csv"
 	)

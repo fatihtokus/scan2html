@@ -67,7 +67,11 @@ function getVulnerabilitiesFromAReport(
   results: any //CommonScanResult
 ): NormalizedResultForDataTable[] {
   if (results.Results) {
-    return mapVulnerabilityResults(results.Results);
+     var formattedResultJson =  mapVulnerabilityResults(results.Results);
+      formattedResultJson.forEach((result) => {
+        result.ArtifactName =  results.ArtifactName;   
+      });
+      return formattedResultJson;
   }
 
   if (results.Vulnerabilities) {
