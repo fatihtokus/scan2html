@@ -129,6 +129,8 @@ Flags:
   --output        Report name
   --report-title  Report Title
   --with-epss     Include EPSS data
+  --with-exploits Include Exploits
+  --from          Comma separated json scan result files
   
 Examples:
    # Scan an image
