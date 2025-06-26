@@ -23,6 +23,7 @@ export class NormalizedResultForDataTable {
   LastModifiedDate?: string;
   Description?: string;
   Resource?: string;
+  ArtifactName?: string;
   Code?: Code;
 
   // Secrets
