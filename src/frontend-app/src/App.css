@@ -2,6 +2,97 @@
   margin: 10px;
 }
 
+/* Theme support for main layout */
+#content {
+  background-color: inherit;
+}
+
+/* Dark theme support - match sidebar dark color */
+html[data-theme="dark"] #content {
+  background-color: #001529;
+  color: #ffffff;
+}
+
+/* Light theme support - match sidebar light color */
+html[data-theme="light"] #content {
+  background-color: #fafafa;
+  color: #000000;
+}
+
+html[data-theme="dark"] #menu {
+  background-color: #001529;
+}
+
+html[data-theme="light"] #menu {
+  background-color: #fafafa;
+}
+
+/* Make the main container also inherit the background */
+.ant-layout {
+  background-color: inherit !important;
+}
+
+/* Remove harsh borders and shadows in light mode */
+html[data-theme="light"] .ant-table-wrapper,
+html[data-theme="light"] .ant-table,
+html[data-theme="light"] .ant-card,
+html[data-theme="light"] .ant-btn,
+html[data-theme="light"] .ant-input,
+html[data-theme="light"] .ant-select-selector {
+  border: 1px solid rgba(0, 0, 0, 0.06) !important;
+  box-shadow: none !important;
+}
+
+/* Remove harsh borders and shadows in dark mode */
+html[data-theme="dark"] .ant-table-wrapper,
+html[data-theme="dark"] .ant-table,
+html[data-theme="dark"] .ant-card,
+html[data-theme="dark"] .ant-btn,
+html[data-theme="dark"] .ant-input,
+html[data-theme="dark"] .ant-select-selector {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: none !important;
+}
+
+/* Smooth table styling */
+.ant-table-thead > tr > th {
+  border-bottom: none !important;
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important;
+}
+
+html[data-theme="dark"] .ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Softer hover effects */
+.ant-table-tbody > tr:hover > td {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+}
+
+html[data-theme="dark"] .ant-table-tbody > tr:hover > td {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+/* Remove card shadows for seamless look */
+.ant-card {
+  box-shadow: none !important;
+  border-radius: 8px !important;
+}
+
+/* Button styling */
+.ant-btn {
+  border-radius: 6px !important;
+}
+
+/* Tag styling for better integration */
+.ant-tag {
+  border: none !important;
+  border-radius: 4px !important;
+}
+
 /* #root {
   max-width: 1280px;
   margin: 0 auto;

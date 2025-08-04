@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, notification, Menu, Switch, MenuTheme } from "antd";
+import { Button, notification, Menu, Switch, MenuTheme, ConfigProvider, theme as antdTheme } from "antd";
 import Papa, { ParseResult } from "papaparse";
 import TrivyReport from "./components/trivy-report/TrivyReport";
 import TableTitle from "./components/shared/TableTitle";
@@ -48,6 +48,11 @@ function App() {
   const onThemeChanged = (value: boolean) => {
     setTheme(value ? 'dark' : 'light');
   };
+
+  // Update document attribute when theme changes
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
 
   const onToggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -226,45 +231,78 @@ function App() {
   };
 
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      <div id="menu">
-        <Switch
-          checked={theme === 'dark'}
-          onChange={onThemeChanged}
-          checkedChildren="Dark"
-          unCheckedChildren="Light"
-        />
-        <Button type="primary" onClick={onToggleCollapsed} style={{ margin: 16 }}>
-          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </Button>
-        <Menu
-          defaultSelectedKeys={["vulnerabilities"]}
-          selectedKeys={[selectedMenu]}
-          mode="inline"
-          theme={theme}
-          inlineCollapsed={collapsed}
-          items={menuItems}
-          onClick={onMenuSelected}
-        />
+    <ConfigProvider
+      theme={{
+        algorithm: theme === "dark" ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+        token: {
+          borderRadius: 8,
+          colorBorder: theme === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
+          boxShadow: "none",
+          boxShadowSecondary: "none",
+          controlOutline: "none",
+        },
+        components: {
+          Table: {
+            borderColor: theme === "dark" ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.03)",
+            headerBg: "transparent",
+            bodySortBg: "transparent",
+            rowHoverBg: theme === "dark" ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.02)",
+          },
+          Card: {
+            boxShadow: "none",
+            boxShadowTertiary: "none",
+          },
+          Button: {
+            boxShadow: "none",
+            primaryShadow: "none",
+          },
+          Input: {
+            boxShadow: "none",
+            activeShadow: "none",
+          },
+        },
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          minHeight: "100vh",
+          backgroundColor: theme === "dark" ? "#001529" : "#fafafa",
+        }}
+      >
+        <div id="menu">
+          <Switch checked={theme === "dark"} onChange={onThemeChanged} checkedChildren="Dark" unCheckedChildren="Light" />
+          <Button type="primary" onClick={onToggleCollapsed} style={{ margin: 16 }}>
+            {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+          </Button>
+          <Menu defaultSelectedKeys={["vulnerabilities"]} selectedKeys={[selectedMenu]} mode="inline" theme={theme} inlineCollapsed={collapsed} items={menuItems} onClick={onMenuSelected} />
+        </div>
+        <div
+          id="content"
+          style={{
+            flexGrow: 1,
+            marginLeft: 20,
+            backgroundColor: theme === "dark" ? "#001529" : "#fafafa",
+          }}
+        >
+          <TableTitle title={reportTitle} />
+          <TrivyReport
+            vulnerabilities={vulnerabilities}
+            secrets={secrets}
+            licenses={licenses}
+            misconfigurations={misconfigurations}
+            misconfigurationSummary={misconfigurationSummary}
+            k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment}
+            k8sClusterSummaryRBACAssessment={k8sClusterSummaryRBACAssessment}
+            selectedMenu={selectedMenu}
+            supplyChainSBOM={supplyChainSBOM}
+            onReportUpload={onReportUpload}
+            loadedReportFiles={loadedReportFiles}
+            manuallyLoadedReportFile={manuallyLoadedReportFile}
+          />
+        </div>
       </div>
-      <div id="content" style={{ flexGrow: 1, marginLeft: 20 }}>
-        <TableTitle title={reportTitle}/>  
-        <TrivyReport
-          vulnerabilities={vulnerabilities}
-          secrets={secrets}
-          licenses={licenses}
-          misconfigurations={misconfigurations}
-          misconfigurationSummary={misconfigurationSummary}
-          k8sClusterSummaryInfraAssessment={k8sClusterSummaryInfraAssessment}
-          k8sClusterSummaryRBACAssessment={k8sClusterSummaryRBACAssessment}
-          selectedMenu={selectedMenu}
-          supplyChainSBOM={supplyChainSBOM}
-          onReportUpload={onReportUpload}
-          loadedReportFiles={loadedReportFiles}
-          manuallyLoadedReportFile={manuallyLoadedReportFile}
-        />
-      </div>
-    </div>
+    </ConfigProvider>
   );
 }
 
