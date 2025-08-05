@@ -28,69 +28,71 @@ html[data-theme="light"] #menu {
 }
 
 /* Make the main container also inherit the background */
-.ant-layout {
-  background-color: inherit !important;
+html[data-theme] .ant-layout {
+  background-color: inherit;
 }
 
 /* Remove harsh borders and shadows in light mode */
+html[data-theme="light"] .ant-table-wrapper .ant-table,
 html[data-theme="light"] .ant-table-wrapper,
 html[data-theme="light"] .ant-table,
-html[data-theme="light"] .ant-card,
-html[data-theme="light"] .ant-btn,
-html[data-theme="light"] .ant-input,
-html[data-theme="light"] .ant-select-selector {
-  border: 1px solid rgba(0, 0, 0, 0.06) !important;
-  box-shadow: none !important;
+html[data-theme="light"] .ant-card.ant-card,
+html[data-theme="light"] .ant-btn.ant-btn,
+html[data-theme="light"] .ant-input.ant-input,
+html[data-theme="light"] .ant-select .ant-select-selector {
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: none;
 }
 
 /* Remove harsh borders and shadows in dark mode */
+html[data-theme="dark"] .ant-table-wrapper .ant-table,
 html[data-theme="dark"] .ant-table-wrapper,
 html[data-theme="dark"] .ant-table,
-html[data-theme="dark"] .ant-card,
-html[data-theme="dark"] .ant-btn,
-html[data-theme="dark"] .ant-input,
-html[data-theme="dark"] .ant-select-selector {
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: none !important;
+html[data-theme="dark"] .ant-card.ant-card,
+html[data-theme="dark"] .ant-btn.ant-btn,
+html[data-theme="dark"] .ant-input.ant-input,
+html[data-theme="dark"] .ant-select .ant-select-selector {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: none;
 }
 
 /* Smooth table styling */
-.ant-table-thead > tr > th {
-  border-bottom: none !important;
+html[data-theme] .ant-table .ant-table-thead > tr > th {
+  border-bottom: none;
 }
 
-.ant-table-tbody > tr > td {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.03) !important;
+html[data-theme] .ant-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-html[data-theme="dark"] .ant-table-tbody > tr > td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+html[data-theme="dark"] .ant-table .ant-table-tbody > tr > td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* Softer hover effects */
-.ant-table-tbody > tr:hover > td {
-  background-color: rgba(0, 0, 0, 0.02) !important;
+html[data-theme] .ant-table .ant-table-tbody > tr:hover > td {
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
-html[data-theme="dark"] .ant-table-tbody > tr:hover > td {
-  background-color: rgba(255, 255, 255, 0.03) !important;
+html[data-theme="dark"] .ant-table .ant-table-tbody > tr:hover > td {
+  background-color: rgba(255, 255, 255, 0.03);
 }
 
 /* Remove card shadows for seamless look */
-.ant-card {
-  box-shadow: none !important;
-  border-radius: 8px !important;
+html[data-theme] .ant-card.ant-card {
+  box-shadow: none;
+  border-radius: 8px;
 }
 
 /* Button styling */
-.ant-btn {
-  border-radius: 6px !important;
+html[data-theme] .ant-btn.ant-btn {
+  border-radius: 6px;
 }
 
 /* Tag styling for better integration */
-.ant-tag {
-  border: none !important;
-  border-radius: 4px !important;
+html[data-theme] .ant-tag.ant-tag {
+  border: none;
+  border-radius: 4px;
 }
 
 /* #root {

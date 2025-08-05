@@ -24,6 +24,37 @@ type MenuItem = {
   label: string;
 };
 
+const getThemeConfig = (isDark: boolean) => ({
+  algorithm: isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
+  token: {
+    borderRadius: 8,
+    colorBorder: isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
+    boxShadow: "none",
+    boxShadowSecondary: "none",
+    controlOutline: "none",
+  },
+  components: {
+    Table: {
+      borderColor: isDark ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.03)",
+      headerBg: "transparent",
+      bodySortBg: "transparent",
+      rowHoverBg: isDark ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.02)",
+    },
+    Card: {
+      boxShadow: "none",
+      boxShadowTertiary: "none",
+    },
+    Button: {
+      boxShadow: "none",
+      primaryShadow: "none",
+    },
+    Input: {
+      boxShadow: "none",
+      activeShadow: "none",
+    },
+  },
+});
+
 function App() {
   const [vulnerabilities, setVulnerabilities] = useState<NormalizedResultForDataTable[]>([]);
   const [secrets, setSecrets] = useState<NormalizedResultForDataTable[]>([]);
@@ -232,42 +263,12 @@ function App() {
 
   return (
     <ConfigProvider
-      theme={{
-        algorithm: theme === "dark" ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm,
-        token: {
-          borderRadius: 8,
-          colorBorder: theme === "dark" ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)",
-          boxShadow: "none",
-          boxShadowSecondary: "none",
-          controlOutline: "none",
-        },
-        components: {
-          Table: {
-            borderColor: theme === "dark" ? "rgba(255, 255, 255, 0.05)" : "rgba(0, 0, 0, 0.03)",
-            headerBg: "transparent",
-            bodySortBg: "transparent",
-            rowHoverBg: theme === "dark" ? "rgba(255, 255, 255, 0.03)" : "rgba(0, 0, 0, 0.02)",
-          },
-          Card: {
-            boxShadow: "none",
-            boxShadowTertiary: "none",
-          },
-          Button: {
-            boxShadow: "none",
-            primaryShadow: "none",
-          },
-          Input: {
-            boxShadow: "none",
-            activeShadow: "none",
-          },
-        },
-      }}
+      theme={getThemeConfig(theme === "dark")}
     >
       <div
         style={{
           display: "flex",
           minHeight: "100vh",
-          backgroundColor: theme === "dark" ? "#001529" : "#fafafa",
         }}
       >
         <div id="menu">
@@ -282,7 +283,6 @@ function App() {
           style={{
             flexGrow: 1,
             marginLeft: 20,
-            backgroundColor: theme === "dark" ? "#001529" : "#fafafa",
           }}
         >
           <TableTitle title={reportTitle} />
