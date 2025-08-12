@@ -1,18 +1,47 @@
 import React from 'react';
-import { Typography } from 'antd';
+import { Typography, theme } from 'antd';
 import { Line } from '../../types';
 const { Text, Paragraph } = Typography;
+
 
 interface CodeDisplayProps {
   lines: Line[];
 }
 
 const CodeDisplay: React.FC<CodeDisplayProps> = ({ lines }) => {
+  const { token } = theme.useToken();
+  
+  const colors = {
+    light: {
+      background: '#fafafa',
+      border: '#e6e6e6',
+      text: '#2c3e50',
+      lineNumber: '#999',
+      errorText: '#dc3545',
+      errorBg: '#fff5f5',
+    },
+    dark: {
+      background: '#1a1a1a',
+      border: '#333',
+      text: '#e0e0e0',
+      lineNumber: '#666',
+      errorText: '#ff4d4f',
+      errorBg: 'rgba(255, 77, 79, 0.15)',
+    }
+  };
+
+  const isDarkMode = token.colorBgContainer === '#141414' || token.colorBgContainer === '#000000';
+  const currentTheme = isDarkMode ? colors.dark : colors.light;
   return (
     <div>
     <br />
     <strong>Lines:</strong>
-    <div style={{ background: '#f9f9f9', padding: '16px', borderRadius: '8px' }}>
+    <div style={{ 
+      background: currentTheme.background, 
+      padding: '16px', 
+      borderRadius: '8px', 
+      border: `1px solid ${currentTheme.border}` 
+    }}>
       
       {lines.map((line, index) => (
         <div
@@ -21,19 +50,27 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({ lines }) => {
             display: 'flex',
             alignItems: 'center',
             lineHeight: '1.6',
-            color: line.IsCause ? 'red' : 'black',
+            color: line.IsCause ? currentTheme.errorText : currentTheme.text,
           }}
         >
-          <Text type="secondary" style={{ width: '40px', textAlign: 'right', marginRight: '16px' }}>
+          <Text style={{ 
+            width: '40px', 
+            textAlign: 'right', 
+            marginRight: '16px', 
+            color: currentTheme.lineNumber 
+          }}>
             {line.Number}
           </Text>
           <Paragraph
             style={{
               margin: 0,
-              background: line.FirstCause || line.LastCause ? '#ffe7ba' : 'transparent',
+              background: line.FirstCause || line.LastCause ? currentTheme.errorBg : 'transparent',
               padding: line.FirstCause || line.LastCause ? '2px 4px' : '0',
               borderRadius: '4px',
               flexGrow: 1,
+              color: 'inherit',
+              borderLeft: line.FirstCause || line.LastCause ? `3px solid ${currentTheme.errorText}` : 'none',
+              boxShadow: line.FirstCause || line.LastCause ? `0 0 0 1px ${currentTheme.errorText}20` : 'none',
             }}
             code
           >
