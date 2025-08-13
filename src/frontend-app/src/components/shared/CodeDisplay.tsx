@@ -1,5 +1,5 @@
-import React from 'react';
-import { Typography, theme } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Typography } from 'antd';
 import { Line } from '../../types';
 const { Text, Paragraph } = Typography;
 
@@ -9,8 +9,29 @@ interface CodeDisplayProps {
 }
 
 const CodeDisplay: React.FC<CodeDisplayProps> = ({ lines }) => {
-  const { token } = theme.useToken();
-  
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => document.documentElement.getAttribute('data-theme') === 'dark'
+  );
+
+  // Listen for theme changes
+  useEffect(() => {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+          const newTheme = document.documentElement.getAttribute('data-theme');
+          setIsDarkMode(newTheme === 'dark');
+        }
+      });
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const colors = {
     light: {
       background: '#fafafa',
@@ -18,19 +39,18 @@ const CodeDisplay: React.FC<CodeDisplayProps> = ({ lines }) => {
       text: '#2c3e50',
       lineNumber: '#999',
       errorText: '#dc3545',
-      errorBg: '#fff5f5',
+      errorBg: '#fff5f5'
     },
     dark: {
       background: '#1a1a1a',
       border: '#333',
       text: '#e0e0e0',
-      lineNumber: '#666',
-      errorText: '#ff4d4f',
-      errorBg: 'rgba(255, 77, 79, 0.15)',
+      lineNumber: '#a0a0a0',
+      errorText: '#ff7875',
+      errorBg: 'rgba(255, 120, 117, 0.25)'
     }
   };
 
-  const isDarkMode = token.colorBgContainer === '#141414' || token.colorBgContainer === '#000000';
   const currentTheme = isDarkMode ? colors.dark : colors.light;
   return (
     <div>
