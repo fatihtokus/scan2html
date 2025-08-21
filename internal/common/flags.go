@@ -8,13 +8,16 @@ import (
 
 var AvailableFlags = map[string]bool{
 	//  name               : is boolean
-	"--scan2html-flags": true,
-	"--output":          false,
-	"--with-epss":       true,
-	"--with-exploits":   true,
-	"--report-title":    false,
-	"generate":          true,
-	"--from":            false,
+	"--scan2html-flags":      true,
+	"--output":               false,
+	"--with-epss":            true,
+	"--with-cached-epss":     true,
+	"--with-exploits":        true,
+	"--with-cached-exploits": true,
+	"--report-title":         false,
+	"--download-all":         true,
+	"generate":               true,
+	"--from":                 false,
 }
 
 type Flags map[string]string
@@ -46,6 +49,13 @@ func RetrievePluginFlagsAndCommand(args []string) (Flags, []string) {
 				trivyFlags = append(trivyFlags, arg)
 			}
 		}
+	}
+
+	// For caching only
+	if _, exists := pluginFlags["--download-all"]; exists {
+		logger.Logger.Infof("RetrievePluginFlagsAndCommand - pluginFlags: %v", pluginFlags)
+		logger.Logger.Infof("RetrievePluginFlagsAndCommand - trivyFlags: %v", trivyFlags)
+		return pluginFlags, trivyFlags
 	}
 
 	// Handle deprecated usage

@@ -27,12 +27,14 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 
 	reportName := pluginFlags["--output"]
 	_, withEpss := pluginFlags["--with-epss"]
+	_, withCachedEpss := pluginFlags["--with-cached-epss"]
 	_, withExploits := pluginFlags["--with-exploits"]
+	_, withCachedExploits := pluginFlags["--with-cached-exploits"]
 	reportTitle := pluginFlags["--report-title"]
 	// Log input parameters for clarity
 	logger.Logger.Infof("Base Directory: %s\n", baseDir)
-	logger.Logger.Infof("With EPSS: %t\n", withEpss)
-	logger.Logger.Infof("With Exploits: %t\n", withExploits)
+	logger.Logger.Infof("With EPSS: %t\n", withEpss || withCachedEpss)
+	logger.Logger.Infof("With Exploits: %t\n", withExploits || withCachedExploits)
 	logger.Logger.Infof("Report Title: %s\n", reportTitle)
 	logger.Logger.Infof("Report Name: %s\n", reportName)
 
@@ -63,12 +65,12 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 	// Handle EPSS data if enabled
 	// replaceTextByFile "$report_name" "\"TEMP_EPSS_DATA\"" "$epss_data"
 	// Schedule deletion of the EPSS data file upon function exit
-	shouldReturn, returnValue := handleEPSS(withEpss, reportName)
+	shouldReturn, returnValue := handleEPSS(withCachedEpss, withEpss, reportName)
 	if shouldReturn {
 		return returnValue
 	}
 
-	shouldReturn, returnValue = handleExploit(withExploits, reportName)
+	shouldReturn, returnValue = handleExploit(withCachedExploits, withExploits, reportName)
 	if shouldReturn {
 		return returnValue
 	}
@@ -77,41 +79,60 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 	return nil
 }
 
-func handleEPSS(withEpss bool, reportName string) (bool, error) {
-	if withEpss {
+func handleEPSS(withCachedEpss bool, withEpss bool, reportName string) (bool, error) {
+	var epssDataFile string;
+	var err error;
+	if withCachedEpss {
+		logger.Logger.Infoln("Cached EPSS enabled!")
+		epssDataFile, err = common.GetCachedEPSSDataFile()
+		if err != nil {
+			return true, err
+		}
+
+	} else if withEpss {
 		logger.Logger.Infoln("EPSS enabled!")
-		var epssDataFile, err = epss.PrepareEpssData()
+		epssDataFile, err = epss.PrepareEpssDataTemporarily()
 		if err != nil {
 			return true, fmt.Errorf("failed to prepare EPSS data: %v", err)
 		}
-
-		if err := replaceTextByFile(reportName, "\"TEMP_EPSS_DATA\"", epssDataFile); err != nil {
-			return true, fmt.Errorf("failed to replace EPSS data in %s: %v", reportName, err)
-		}
-
-		logger.Logger.Infoln("EPSS data imported!")
-
 		defer os.Remove(epssDataFile)
 	}
+
+	if err := replaceTextByFile(reportName, "\"TEMP_EPSS_DATA\"", epssDataFile); err != nil {
+		return true, fmt.Errorf("failed to replace EPSS data in %s: %v", reportName, err)
+	}
+
+	logger.Logger.Infoln("EPSS data imported!")
+
 	return false, nil
 }
 
-func handleExploit(withExploits bool, reportName string) (bool, error) {
-	if withExploits {
+func handleExploit(withCachedExploits bool, withExploits bool, reportName string) (bool, error) {
+	var exploitDataFile string;
+	var err error;
+	if withCachedExploits {
+	logger.Logger.Infoln("Cached Exploits enabled!")
+		exploitDataFile, err = common.GetCachedExploitDataFile()
+		if err != nil {
+			return true, err
+		}
+
+	} else if withExploits {
 		logger.Logger.Infoln("Exploits enabled!")
-		var exploitDataFile, err = exploit.PrepareExploitData()
+		var exploitDataFile, err = exploit.PrepareExploitDataTemporarily()
 		if err != nil {
 			return true, fmt.Errorf("failed to prepare Exploits data: %v", err)
 		}
 
-		if err := replaceTextByFile(reportName, "{TEMP_EXPLOITS:0}", exploitDataFile); err != nil {
-			return true, fmt.Errorf("failed to replace Exploits data in %s: %v", reportName, err)
-		}
-
-		logger.Logger.Infoln("Exploits data imported!")
-
 		defer os.Remove(exploitDataFile)
 	}
+
+	if err := replaceTextByFile(reportName, "{TEMP_EXPLOITS:0}", exploitDataFile); err != nil {
+		return true, fmt.Errorf("failed to replace Exploits data in %s: %v", reportName, err)
+	}
+
+	logger.Logger.Infoln("Exploits data imported!")
+
 	return false, nil
 }
 
