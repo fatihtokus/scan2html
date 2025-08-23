@@ -119,7 +119,7 @@ func handleExploit(withCachedExploits bool, withExploits bool, reportName string
 
 	} else if withExploits {
 		logger.Logger.Infoln("Exploits enabled!")
-		var exploitDataFile, err = exploit.PrepareExploitDataTemporarily()
+		exploitDataFile, err = exploit.PrepareExploitDataTemporarily()
 		if err != nil {
 			return true, fmt.Errorf("failed to prepare Exploits data: %v", err)
 		}
