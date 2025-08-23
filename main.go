@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"os"
 	"scan2html/internal/common"
+	"scan2html/internal/epss"
+	"scan2html/internal/exploit"
 	"scan2html/internal/logger"
 	"scan2html/internal/report"
 	"scan2html/internal/trivy"
@@ -28,6 +30,22 @@ func main() {
 			fmt.Printf("Error: %v\n", err)
 			os.Exit(1)
 		}
+	} else if _, exists := pluginFlags["--download-all"]; exists {
+		var epssDataFile, err = epss.PrepareEpssDataForCaching()
+		if err != nil {
+			fmt.Printf("Failed to prepare EPSS data: %v", err)
+			os.Exit(1)
+		}
+		fmt.Printf("EPSS data downloaded to: %s\n", epssDataFile)
+
+		var exploitDataFile, err2 = exploit.PrepareExploitDataForCaching()
+		if err2 != nil {
+			fmt.Printf("Failed to prepare Exploit data: %v", err2)
+			os.Exit(1)
+		}
+		fmt.Printf("Exploit data downloaded to: %s\n", exploitDataFile)
+
+		os.Exit(0)
 	} else {
 		exitCode, _ = trivy.GenerateJsonReport(trivyCommand)
 	}

@@ -7,12 +7,22 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"scan2html/internal/common"
 	"scan2html/internal/logger"
 )
 
 // prepareEpssData downloads the EPSS dataset, saves it as a temporary file,
 // decompresses it, adds backticks at the start and end, and returns the final file path.
-func PrepareEpssData() (string, error) {
+func PrepareEpssDataTemporarily() (string, error) {
+	return prepareEpssData(os.TempDir())
+}
+
+func PrepareEpssDataForCaching() (string, error) {
+	pathToPluginDir, _ := common.GetPathToPluginDir()
+	return prepareEpssData(pathToPluginDir)
+}
+
+func prepareEpssData(basePath string) (string, error) {
 	const (
 		epssURL        = "https://epss.empiricalsecurity.com"
 		epssGZFileName = "epss_scores-current.csv.gz"
@@ -20,8 +30,8 @@ func PrepareEpssData() (string, error) {
 	)
 
 	// Define paths for the compressed and uncompressed files
-	tmpEpssGZFilepath := filepath.Join(os.TempDir(), epssGZFileName)
-	tmpEpssFilepath := filepath.Join(os.TempDir(), epssFileName)
+	tmpEpssGZFilepath := filepath.Join(basePath, epssGZFileName)
+	tmpEpssFilepath := filepath.Join(basePath, epssFileName)
 	epssDownloadUrl := fmt.Sprintf("%s/%s", epssURL, epssGZFileName)
 	logger.Logger.Infof("Downloading EPSS Scores from: %s\n", epssDownloadUrl)
 
@@ -30,7 +40,7 @@ func PrepareEpssData() (string, error) {
 	}
 	logger.Logger.Infof("EPSS data downloaded to: %s\n", tmpEpssGZFilepath)
 
-	if err := DecompressFile(tmpEpssGZFilepath, tmpEpssFilepath); err != nil {
+	if err := decompressFile(tmpEpssGZFilepath, tmpEpssFilepath); err != nil {
 		return "", err
 	}
 
@@ -47,7 +57,7 @@ func PrepareEpssData() (string, error) {
 }
 
 // DecompressFile decompresses a GZIP file and writes the decompressed content to the specified destination.
-func DecompressFile(gzFilepath, outputFilepath string) error {
+func decompressFile(gzFilepath, outputFilepath string) error {
 	// Open the compressed file
 	gzFile, err := os.Open(gzFilepath)
 	if err != nil {
