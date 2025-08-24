@@ -100,6 +100,28 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 			wantTrivyCmd: []string{"--format", "json", "--output", expectedTempReportPath},
 		},
 		{
+			name: "Smoke Test - 7 : Download all security intelligence data",
+			args: []string{"ingored_flag", "--download-all"},
+
+			wantPlugin: Flags{
+				"--download-all": "",
+			},
+			wantTrivyCmd: []string{"ingored_flag"},
+		},
+		{
+			name: "Smoke Test - 8 : File scanning with cached EPSS and Exploit data",
+			args: []string{"ingored_flag", "fs", "--scanners", "vuln,secret,misconfig", ".", "--scan2html-flags", "--with-cached-epss", "--with-cached-exploits", "--output", "interactive_report.html"},
+
+			wantPlugin: Flags{
+				"--scan2html-flags": "",
+				"--with-cached-epss":       "",
+				"--with-cached-exploits":   "",
+				"--report-title":    "Trivy Report",
+				"--output":          "interactive_report.html",
+			},
+			wantTrivyCmd: []string{"fs", "--scanners", "vuln,secret,misconfig", ".", "--format", "json", "--output", expectedTempReportPath},
+		},
+		{
 			name: "Only boolean plugin flags",
 			args: []string{"ingored_flag", "k8s", "cluster", "--scan2html-flags", "--with-epss"},
 			wantPlugin: Flags{

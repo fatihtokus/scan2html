@@ -160,7 +160,14 @@ Examples:
   # Generate report with EPSS scores from multiple scan results
   trivy scan2html generate --scan2html-flags --with-epss --output interactive_report.html --from vulnerabilities.json,misconfigs.json,secrets.json
 
-  # Generate report with Exploitability from multiple scan results - experimental
+  # Generate report with Exploitability from multiple scan results
   trivy scan2html generate --scan2html-flags --with-exploits --output interactive_report.html --from vulnerabilities.json,misconfigs.json,secrets.json
+
+  # Download EPSS and Exploits data for caching - experimental
+  trivy scan2html --download-all
+
+  # Use cached EPSS and Exploits data  - experimental
+  trivy scan2html image alpine:latest --scan2html-flags --with-cached-epss --with-cached-exploits --output interactive_report.html
+
 
 ```
