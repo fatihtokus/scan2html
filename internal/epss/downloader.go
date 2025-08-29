@@ -47,12 +47,7 @@ func prepareEpssData(basePath string) (string, error) {
 	stats, _ := os.Stat(tmpEpssFilepath)
 	logger.Logger.Infof("File decompressed successfully to %s with size of: %d bytes\n", tmpEpssFilepath, stats.Size())
 
-	// Add backticks to the beginning and end of the file
-	if err := addBackticksToFile(tmpEpssFilepath); err != nil {
-		return "", fmt.Errorf("failed to add backticks to file: %w", err)
-	}
-
-	logger.Logger.Infof("Unzipped and modified EPSS data saved to: %s\n", tmpEpssFilepath)
+	logger.Logger.Infof("Unzipped EPSS data saved to: %s\n", tmpEpssFilepath)
 	return tmpEpssFilepath, nil
 }
 
@@ -118,7 +113,7 @@ func DownloadFile(url, filepath string) error {
 }
 
 // addBackticksToFile adds backticks to the start and end of the specified file.
-func addBackticksToFile(filepath string) error {
+func AddBackticksToFile(filepath string) error {
 	// Read the existing file contents
 	content, err := os.ReadFile(filepath)
 	if err != nil {
