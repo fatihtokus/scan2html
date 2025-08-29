@@ -80,6 +80,11 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 }
 
 func handleEPSS(withCachedEpss bool, withEpss bool, reportName string) (bool, error) {
+	if !withCachedEpss && !withEpss {
+		logger.Logger.Infoln("EPSS not enabled!")
+		return false, nil
+	}
+
 	var epssDataFile string;
 	var err error;
 	if withCachedEpss {
@@ -108,10 +113,15 @@ func handleEPSS(withCachedEpss bool, withEpss bool, reportName string) (bool, er
 }
 
 func handleExploit(withCachedExploits bool, withExploits bool, reportName string) (bool, error) {
+	if !withCachedExploits && !withExploits {
+		logger.Logger.Infoln("Exploits not enabled!")
+		return false, nil
+	}
+
 	var exploitDataFile string;
 	var err error;
 	if withCachedExploits {
-	logger.Logger.Infoln("Cached Exploits enabled!")
+		logger.Logger.Infoln("Cached Exploits enabled!")
 		exploitDataFile, err = common.GetCachedExploitDataFile()
 		if err != nil {
 			return true, err
