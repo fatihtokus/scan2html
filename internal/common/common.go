@@ -32,6 +32,14 @@ func GetScan2htmlTempReportPath() string {
 	return filepath.Join(os.TempDir(), "scan2html-temp-report.json")
 }
 
+func GetFilteredEPSSDataFile() string {
+	return filepath.Join(os.TempDir(), "epss_scores-current-filtered.csv")
+}
+
+func GetFilteredExploitDataFile() string {
+	return filepath.Join(os.TempDir(), "known_exploited_vulnerabilities-filtered.json")
+}
+
 func GetCachedEPSSDataFile() (string, error) {
 	path, _ := GetPathToPluginDirFor("epss_scores-current.csv")
 	if _, err := os.Stat(path); os.IsNotExist(err) {
