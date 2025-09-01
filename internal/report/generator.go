@@ -160,6 +160,8 @@ func filterEPSS(epssDataFile string) error {
 		// Handle the comment line - write it directly as raw text
 		if strings.HasPrefix(line, "#") {
 			// Write the comment line as a single CSV field
+			// Flush any pending CSV writes before writing raw text
+			 writer.Flush()
 
 			// Write the comment header line as a raw string first
 			if _, err := outputFile.WriteString(line + "\n"); err != nil {
@@ -209,7 +211,7 @@ func filterEPSS(epssDataFile string) error {
 
 	stats, _ := os.Stat(common.GetFilteredEPSSDataFile())
 	logger.Logger.Infof("File created: %s, size: %d bytes", common.GetFilteredEPSSDataFile(), stats.Size())
-	logger.Logger.Infof("Processed %d lines, found %d matches", lineCount, matchCount)
+	logger.Logger.Infof("Processed %d EPSS, found %d matches", lineCount, matchCount)
 
 	return nil
 }
@@ -289,7 +291,7 @@ func handleExploit(withCachedExploits bool, withExploits bool, reportName string
 
 	logger.Logger.Infoln("Filtering Exploit data started.")
 	if err := filterExploit(exploitDataFile); err != nil {
-		return true, fmt.Errorf("failed to replace EPSS data in %s: %v", reportName, err)
+		return true, fmt.Errorf("failed to filter Exploits data in %s: %v", reportName, err)
 	}
 	logger.Logger.Infoln("Filtering Exploit data completed.")
 
