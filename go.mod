@@ -1,8 +1,8 @@
 module scan2html
 
-go 1.22
+go 1.25
 
-toolchain go1.23.3
+toolchain go1.25.5
 
 require go.uber.org/zap v1.27.0
 
