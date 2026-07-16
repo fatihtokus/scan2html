@@ -404,6 +404,7 @@ func replaceTextByText(inputFile, searchText, replaceContent string) error {
 	if err != nil {
 		return fmt.Errorf("could not create temp file: %v", err)
 	}
+	defer tempFile.Close()
 
 	reader := bufio.NewReader(file)
 	writer := bufio.NewWriter(tempFile)

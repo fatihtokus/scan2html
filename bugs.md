@@ -12,7 +12,10 @@
   Fixed by processing `line` (write-or-replace) before checking/breaking on `io.EOF`, instead of discarding it.
   Covered by `TestReplaceTextByTextNoTrailingNewline_PlaceholderOnLastLine`, `TestReplaceTextByTextNoTrailingNewline_PassthroughOfLastLine`, and `TestReplaceTextByTextEmptyFile` in `internal/report/generator_test.go`.
 
+- **`tempFile` (from `os.CreateTemp`) was never explicitly `Close()`'d in `replaceTextByText`** (`internal/report/generator.go`)
+  A file descriptor leak — noticed while fixing the last-line-drop bug above. `bufio.Writer.Flush()` already flushed the buffered data to disk, so there was no data-loss risk, just a leaked fd per call (this function runs up to 5 times per report generation).
+  Fixed by adding `defer tempFile.Close()` right after `os.CreateTemp`, alongside the existing `defer file.Close()` for the input file. Safe with the later `copyAndRemove`, which reopens the temp file by name rather than using the original fd.
+
 ## Open
 
-- **`tempFile` (from `os.CreateTemp`) is never explicitly `Close()`'d in `replaceTextByText`** (`internal/report/generator.go`)
-  A file descriptor leak, unrelated to the two bugs above — noticed while fixing the last-line-drop bug. Not fixed here; worth its own follow-up.
+_None currently._
