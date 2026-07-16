@@ -410,10 +410,7 @@ func replaceTextByText(inputFile, searchText, replaceContent string) error {
 
 	for {
 		line, err := reader.ReadString('\n')
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
+		if err != nil && err != io.EOF {
 			return fmt.Errorf("error reading file: %v", err)
 		}
 
@@ -424,6 +421,10 @@ func replaceTextByText(inputFile, searchText, replaceContent string) error {
 			_, _ = writer.WriteString(replacedLine)
 		} else {
 			_, _ = writer.WriteString(line)
+		}
+
+		if err == io.EOF {
+			break
 		}
 	}
 

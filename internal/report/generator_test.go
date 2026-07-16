@@ -48,3 +48,68 @@ func TestReplaceTextByFileEscapesScriptBreakout(t *testing.T) {
 		t.Errorf("expected original payload text to survive escaping, got: %s", body)
 	}
 }
+
+func TestReplaceTextByTextNoTrailingNewline_PlaceholderOnLastLine(t *testing.T) {
+	tmpDir := t.TempDir()
+	inputFile := filepath.Join(tmpDir, "report.html")
+	if err := os.WriteFile(inputFile, []byte("line one\nline two: TEMP_APP_VERSION"), 0644); err != nil {
+		t.Fatalf("failed to write input file: %v", err)
+	}
+
+	if err := replaceTextByText(inputFile, "TEMP_APP_VERSION", "v1.2.3"); err != nil {
+		t.Fatalf("replaceTextByText returned error: %v", err)
+	}
+
+	got, err := os.ReadFile(inputFile)
+	if err != nil {
+		t.Fatalf("failed to read output file: %v", err)
+	}
+
+	want := "line one\nline two: v1.2.3"
+	if string(got) != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+func TestReplaceTextByTextNoTrailingNewline_PassthroughOfLastLine(t *testing.T) {
+	tmpDir := t.TempDir()
+	inputFile := filepath.Join(tmpDir, "report.html")
+	if err := os.WriteFile(inputFile, []byte("TEMP_APP_VERSION here\nfinal line with no newline"), 0644); err != nil {
+		t.Fatalf("failed to write input file: %v", err)
+	}
+
+	if err := replaceTextByText(inputFile, "TEMP_APP_VERSION", "v1.2.3"); err != nil {
+		t.Fatalf("replaceTextByText returned error: %v", err)
+	}
+
+	got, err := os.ReadFile(inputFile)
+	if err != nil {
+		t.Fatalf("failed to read output file: %v", err)
+	}
+
+	want := "v1.2.3 here\nfinal line with no newline"
+	if string(got) != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+func TestReplaceTextByTextEmptyFile(t *testing.T) {
+	tmpDir := t.TempDir()
+	inputFile := filepath.Join(tmpDir, "report.html")
+	if err := os.WriteFile(inputFile, []byte(""), 0644); err != nil {
+		t.Fatalf("failed to write input file: %v", err)
+	}
+
+	if err := replaceTextByText(inputFile, "TEMP_APP_VERSION", "v1.2.3"); err != nil {
+		t.Fatalf("replaceTextByText returned error: %v", err)
+	}
+
+	got, err := os.ReadFile(inputFile)
+	if err != nil {
+		t.Fatalf("failed to read output file: %v", err)
+	}
+
+	if len(got) != 0 {
+		t.Errorf("expected empty output, got %q", got)
+	}
+}

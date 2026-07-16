@@ -7,8 +7,12 @@
   Fixed in `internal/report/generator.go` / `internal/report/sanitize.go`: all content spliced into the inline `<script>` block is now run through `escapeForInlineScript` (escapes `</script` and `<!--`), and the report title is now JSON-encoded via `json.Marshal` instead of hand-built with `fmt.Sprintf`.
   Covered by `internal/report/sanitize_test.go` and `internal/report/generator_test.go`.
 
+- **`replaceTextByText` silently drops the last line of a file with no trailing newline** (`internal/report/generator.go`, function `replaceTextByText`)
+  The read loop called `reader.ReadString('\n')`; when it hit EOF it `break`ed immediately on `err == io.EOF` without processing the partial final line that `ReadString` still returns alongside the EOF error. If a placeholder ever ended up on a template's last line, or a caller passed a replace-file/report file that didn't end in `\n`, that content/replacement was lost.
+  Fixed by processing `line` (write-or-replace) before checking/breaking on `io.EOF`, instead of discarding it.
+  Covered by `TestReplaceTextByTextNoTrailingNewline_PlaceholderOnLastLine`, `TestReplaceTextByTextNoTrailingNewline_PassthroughOfLastLine`, and `TestReplaceTextByTextEmptyFile` in `internal/report/generator_test.go`.
+
 ## Open
 
-- **`replaceTextByText` silently drops the last line of a file with no trailing newline** (`internal/report/generator.go:407-424`)
-  The read loop calls `reader.ReadString('\n')`; when it hits EOF it `break`s immediately on `err == io.EOF` without processing the partial final line that `ReadString` still returns alongside the EOF error. If a placeholder ever ends up on a template's last line (currently doesn't — `report_template.html`'s placeholders are mid-file) or a caller passes a replace-file/report file that doesn't end in `\n`, that content/replacement is lost.
-  Not fixed as part of #214 (out of scope, doesn't affect the current XSS fix — templates end with a trailing newline before the placeholder lines), but worth a follow-up fix: process `line` before checking/breaking on `io.EOF`.
+- **`tempFile` (from `os.CreateTemp`) is never explicitly `Close()`'d in `replaceTextByText`** (`internal/report/generator.go`)
+  A file descriptor leak, unrelated to the two bugs above — noticed while fixing the last-line-drop bug. Not fixed here; worth its own follow-up.
