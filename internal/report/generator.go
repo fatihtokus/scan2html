@@ -56,7 +56,11 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 	}
 
 	// Replace placeholders with actual content in the report file
-	err = replaceTextByText(reportName, "{REPORT_TITLE:\"Temp Trivy Report\"}", fmt.Sprintf("{REPORT_TITLE:'%s'}", reportTitle))
+	titleJSON, err := json.Marshal(reportTitle)
+	if err != nil {
+		return fmt.Errorf("failed to encode report title: %v", err)
+	}
+	err = replaceTextByText(reportName, "{REPORT_TITLE:\"Temp Trivy Report\"}", fmt.Sprintf("{REPORT_TITLE:%s}", titleJSON))
 	if err != nil {
 		return fmt.Errorf("failed to replace report title in %s: %v", reportName, err)
 	}
@@ -384,7 +388,7 @@ func replaceTextByFile(inputFile, searchText, replaceFile string) error {
 	if err != nil {
 		return fmt.Errorf("could not read file %s: %v", replaceFile, err)
 	}
-	return replaceTextByText(inputFile, searchText, string(replaceContent))
+	return replaceTextByText(inputFile, searchText, escapeForInlineScript(string(replaceContent)))
 }
 
 // replaceTextByText replaces occurrences of search_text in the input file with replace_content.
