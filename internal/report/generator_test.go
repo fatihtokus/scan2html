@@ -49,6 +49,32 @@ func TestReplaceTextByFileEscapesScriptBreakout(t *testing.T) {
 	}
 }
 
+func TestReplaceTextByText_ReportTitleAndDefaultThemePlaceholders(t *testing.T) {
+	tmpDir := t.TempDir()
+	inputFile := filepath.Join(tmpDir, "report.html")
+	inputContent := "TN=[{REPORT_TITLE:`Temp Trivy Report`,DEFAULT_THEME:`light`}],"
+	if err := os.WriteFile(inputFile, []byte(inputContent), 0644); err != nil {
+		t.Fatalf("failed to write input file: %v", err)
+	}
+
+	if err := replaceTextByText(inputFile, "REPORT_TITLE:`Temp Trivy Report`", `REPORT_TITLE:"My Report"`); err != nil {
+		t.Fatalf("replaceTextByText returned error for REPORT_TITLE: %v", err)
+	}
+	if err := replaceTextByText(inputFile, "DEFAULT_THEME:`light`}", `DEFAULT_THEME:"dark"}`); err != nil {
+		t.Fatalf("replaceTextByText returned error for DEFAULT_THEME: %v", err)
+	}
+
+	got, err := os.ReadFile(inputFile)
+	if err != nil {
+		t.Fatalf("failed to read output file: %v", err)
+	}
+
+	want := `TN=[{REPORT_TITLE:"My Report",DEFAULT_THEME:"dark"}],`
+	if string(got) != want {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
 func TestReplaceTextByTextNoTrailingNewline_PlaceholderOnLastLine(t *testing.T) {
 	tmpDir := t.TempDir()
 	inputFile := filepath.Join(tmpDir, "report.html")

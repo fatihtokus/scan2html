@@ -15,6 +15,7 @@ var AvailableFlags = map[string]bool{
 	"--with-exploits":        true,
 	"--with-cached-exploits": true,
 	"--report-title":         false,
+	"--dark-mode":            true,
 	"--download-all":         true,
 	"generate":               true,
 	"--from":                 false,
@@ -113,6 +114,7 @@ Flags:
   -h, --help      Show usage.
   --output        Report name
   --report-title  Report title
+  --dark-mode     Default the report to dark mode
   --with-epss     Include EPSS data
   --with-exploits Include Exploits
   --from          Comma separated json scan result files

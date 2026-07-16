@@ -70,7 +70,7 @@ function App() {
   const [loadedData, setLoadedData] = useState([{}]);
   const [epssData, setEpssData] = useState<EPSSPerVulnerability[]>([]);
   const [collapsed, setCollapsed] = useState(false);
-  const [theme, setTheme] = useState<MenuTheme>('light');
+  const [theme, setTheme] = useState<MenuTheme>((defaultResultMetaData[0].DEFAULT_THEME as MenuTheme) || 'light');
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [reportTitle, setReportTitle] = useState('Trivy Report');
   const [filledResultsPerCategory, setFilledResultsPerCategory] = useState<string[]>([]);

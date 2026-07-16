@@ -61,6 +61,11 @@ trivy scan2html generate --scan2html-flags --with-epss --output interactive_repo
 ![result](docs/vulnerabilities.png)
 </details>
 
+### Generate a report that defaults to dark mode
+```sh
+trivy scan2html generate --scan2html-flags --dark-mode --output interactive_report.html --from vulnerabilities.json,misconfigs.json,secrets.json
+```
+
 ### Scan a local folder
 ```sh
 trivy scan2html fs --scanners vuln,secret,misconfig . --scan2html-flags --output interactive_report.html
@@ -128,6 +133,7 @@ Flags:
   -h, --help      Show usage.
   --output        Report name
   --report-title  Report Title
+  --dark-mode     Default the report to dark mode
   --with-epss     Include EPSS data
   --with-exploits Include Exploits
   --from          Comma separated json scan result files
