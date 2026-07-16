@@ -89,7 +89,85 @@ function getVulnerabilitiesFromAReport(
     return vulnerabilitiesForK8s(results.Findings);
   }
 
+  if (results.kind === "List" && results.items) {
+    // Trivy Operator CRD dump, e.g.:
+    // kubectl get vulnerabilityreports,clustervulnerabilityreports -A -o json
+    return vulnerabilitiesForOperatorReports(results.items);
+  }
+
+  if (isOperatorVulnerabilityReport(results)) {
+    // a single Trivy Operator VulnerabilityReport/ClusterVulnerabilityReport CRD object
+    return vulnerabilitiesForOperatorReports([results]);
+  }
+
   return [];
+}
+
+const TRIVY_OPERATOR_API_VERSION = "aquasecurity.github.io/v1alpha1";
+const TRIVY_OPERATOR_LABEL_NAMESPACE = "trivy-operator.resource.namespace";
+const TRIVY_OPERATOR_LABEL_KIND = "trivy-operator.resource.kind";
+const TRIVY_OPERATOR_LABEL_NAME = "trivy-operator.resource.name";
+const TRIVY_OPERATOR_LABEL_CONTAINER = "trivy-operator.container.name";
+
+function isOperatorVulnerabilityReport(item: any): boolean {
+  return item?.apiVersion === TRIVY_OPERATOR_API_VERSION &&
+    (item?.kind === "VulnerabilityReport" || item?.kind === "ClusterVulnerabilityReport");
+}
+
+function vulnerabilitiesForOperatorReports(items: any[]): NormalizedResultForDataTable[] {
+  const formattedResultJson: NormalizedResultForDataTable[] = [];
+  if (items === undefined) {
+    return formattedResultJson;
+  }
+
+  items.forEach((item) => {
+    if (!isOperatorVulnerabilityReport(item)) {
+      return;
+    }
+
+    const labels = item.metadata?.labels || {};
+    const namespace = labels[TRIVY_OPERATOR_LABEL_NAMESPACE] || item.metadata?.namespace || "";
+    const kind = labels[TRIVY_OPERATOR_LABEL_KIND] || "";
+    const resourceName = labels[TRIVY_OPERATOR_LABEL_NAME] || item.metadata?.name || "";
+    const containerName = labels[TRIVY_OPERATOR_LABEL_CONTAINER];
+    const name = containerName ? `${resourceName} (${containerName})` : resourceName;
+
+    const artifact = item.report?.artifact;
+    let target = artifact?.repository || "";
+    if (artifact?.tag) {
+      target += `:${artifact.tag}`;
+    } else if (artifact?.digest) {
+      target += `@${artifact.digest}`;
+    }
+
+    (item.report?.vulnerabilities || []).forEach((vulnerability: any) => {
+      const references = (vulnerability.links && vulnerability.links.length > 0)
+        ? vulnerability.links
+        : (vulnerability.primaryLink ? [vulnerability.primaryLink] : undefined);
+
+      formattedResultJson.push({
+        key: Math.random(),
+        Target: target,
+        ID: vulnerability.vulnerabilityID,
+        Library: vulnerability.resource,
+        Vulnerability: vulnerability.vulnerabilityID,
+        Severity: vulnerability.severity,
+        InstalledVersion: vulnerability.installedVersion,
+        FixedVersion: vulnerability.fixedVersion,
+        Title: vulnerability.title,
+        Description: vulnerability.description,
+        References: references,
+        PublishedDate: vulnerability.publishedDate,
+        LastModifiedDate: vulnerability.lastModifiedDate,
+        IsVulnerability: true,
+        Namespace: namespace,
+        Kind: kind,
+        Name: name,
+      } as NormalizedResultForDataTable);
+    });
+  });
+
+  return formattedResultJson;
 }
 
 export function getSecrets(results: any[] //CommonScanResult[]
@@ -222,7 +300,13 @@ function vulnerabilitiesForK8s(vulnerabilityHolders: Holder[]): NormalizedResult
   }
 
   vulnerabilityHolders.forEach((vulnerabilityHolder) => {
-    formattedResultJson = formattedResultJson.concat(mapVulnerabilityResults(vulnerabilityHolder.Results));
+    const holderResults = mapVulnerabilityResults(vulnerabilityHolder.Results);
+    holderResults.forEach((result) => {
+      result.Namespace = vulnerabilityHolder.Namespace;
+      result.Kind = vulnerabilityHolder.Kind;
+      result.Name = vulnerabilityHolder.Name;
+    });
+    formattedResultJson = formattedResultJson.concat(holderResults);
   });
 
   return formattedResultJson;

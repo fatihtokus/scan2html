@@ -35,6 +35,50 @@ export type Holder = {
   Results: CommonResult[];
 };
 
+// Trivy Operator CRD reports, e.g.:
+// kubectl get vulnerabilityreports,clustervulnerabilityreports -A -o json
+export type OperatorReportList = {
+  apiVersion: string;
+  kind: "List";
+  items: OperatorVulnerabilityReport[];
+};
+
+export type OperatorVulnerabilityReport = {
+  apiVersion: string;
+  kind: string; // "VulnerabilityReport" | "ClusterVulnerabilityReport"
+  metadata: OperatorMetadata;
+  report: {
+    artifact: {
+      repository: string;
+      tag?: string;
+      digest?: string;
+    };
+    vulnerabilities: OperatorVulnerability[];
+  };
+};
+
+export type OperatorMetadata = {
+  name: string;
+  namespace?: string;
+  labels?: { [key: string]: string };
+};
+
+export type OperatorVulnerability = {
+  vulnerabilityID: string;
+  resource: string;
+  installedVersion: string;
+  fixedVersion: string;
+  severity: string;
+  title?: string;
+  description?: string;
+  primaryLink?: string;
+  links?: string[];
+  publishedDate?: string;
+  lastModifiedDate?: string;
+  class?: string;
+  packageType?: string;
+};
+
 export type CommonResult = {
   // common for both default scan and k8s result
   Target: string;
