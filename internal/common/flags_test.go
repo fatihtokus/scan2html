@@ -31,6 +31,18 @@ func TestRetrievePluginFlagsAndCommand(t *testing.T) {
 			wantTrivyCmd: []string{"image", "ghcr.io/zalando/spilo-15:3.0-p1", "--format", "json", "--output", expectedTempReportPath},
 		},
 		{
+			name: "Smoke Test - Dark mode flag",
+			args: []string{"ingored_flag", "image", "alpine:latest", "--scan2html-flags", "--output", "interactive_report.html", "--dark-mode"},
+
+			wantPlugin: Flags{
+				"--scan2html-flags": "",
+				"--dark-mode":       "",
+				"--report-title":    "Trivy Report",
+				"--output":          "interactive_report.html",
+			},
+			wantTrivyCmd: []string{"image", "alpine:latest", "--format", "json", "--output", expectedTempReportPath},
+		},
+		{
 			name: "Smoke Test - 1 : File scanning",
 			args: []string{"ingored_flag", "fs", "--scanners", "vuln,secret,misconfig", ".", "--scan2html-flags", "--output", "interactive_report.html"},
 

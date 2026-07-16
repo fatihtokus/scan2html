@@ -34,6 +34,7 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 	_, withExploits := pluginFlags["--with-exploits"]
 	_, withCachedExploits := pluginFlags["--with-cached-exploits"]
 	reportTitle := pluginFlags["--report-title"]
+	_, darkMode := pluginFlags["--dark-mode"]
 	// Log input parameters for clarity
 	logger.Logger.Infof("Base Directory: %s\n", baseDir)
 	logger.Logger.Infof("With EPSS: %t\n", withEpss || withCachedEpss)
@@ -56,10 +57,28 @@ func GenerateHtmlReport(pluginFlags common.Flags, version string) error {
 	}
 
 	// Replace placeholders with actual content in the report file
-	err = replaceTextByText(reportName, "{REPORT_TITLE:\"Temp Trivy Report\"}", fmt.Sprintf("{REPORT_TITLE:'%s'}", reportTitle))
+	titleJSON, err := json.Marshal(reportTitle)
+	if err != nil {
+		return fmt.Errorf("failed to encode report title: %v", err)
+	}
+	err = replaceTextByText(reportName, "REPORT_TITLE:`Temp Trivy Report`", fmt.Sprintf("REPORT_TITLE:%s", titleJSON))
 	if err != nil {
 		return fmt.Errorf("failed to replace report title in %s: %v", reportName, err)
 	}
+
+	defaultTheme := "light"
+	if darkMode {
+		defaultTheme = "dark"
+	}
+	themeJSON, err := json.Marshal(defaultTheme)
+	if err != nil {
+		return fmt.Errorf("failed to encode default theme: %v", err)
+	}
+	err = replaceTextByText(reportName, "DEFAULT_THEME:`light`}", fmt.Sprintf("DEFAULT_THEME:%s}", themeJSON))
+	if err != nil {
+		return fmt.Errorf("failed to replace default theme in %s: %v", reportName, err)
+	}
+
 	err = replaceTextByFile(reportName, "{TEMP_RESULTS:0}", common.GetScan2htmlTempReportPath())
 	if err != nil {
 		return fmt.Errorf("failed to replace temp results in %s: %v", reportName, err)
@@ -384,7 +403,7 @@ func replaceTextByFile(inputFile, searchText, replaceFile string) error {
 	if err != nil {
 		return fmt.Errorf("could not read file %s: %v", replaceFile, err)
 	}
-	return replaceTextByText(inputFile, searchText, string(replaceContent))
+	return replaceTextByText(inputFile, searchText, escapeForInlineScript(string(replaceContent)))
 }
 
 // replaceTextByText replaces occurrences of search_text in the input file with replace_content.
@@ -400,16 +419,14 @@ func replaceTextByText(inputFile, searchText, replaceContent string) error {
 	if err != nil {
 		return fmt.Errorf("could not create temp file: %v", err)
 	}
+	defer tempFile.Close()
 
 	reader := bufio.NewReader(file)
 	writer := bufio.NewWriter(tempFile)
 
 	for {
 		line, err := reader.ReadString('\n')
-		if err != nil {
-			if err == io.EOF {
-				break
-			}
+		if err != nil && err != io.EOF {
 			return fmt.Errorf("error reading file: %v", err)
 		}
 
@@ -420,6 +437,10 @@ func replaceTextByText(inputFile, searchText, replaceContent string) error {
 			_, _ = writer.WriteString(replacedLine)
 		} else {
 			_, _ = writer.WriteString(line)
+		}
+
+		if err == io.EOF {
+			break
 		}
 	}
 

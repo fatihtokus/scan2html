@@ -1,0 +1,4 @@
+Supported result formats
+kubectl get vulnerabilityreports,clustervulnerabilityreports -A -o json > vulnerability-reports.json
+
+trivy scan2html generate --from vulnerability-reports.json --output report.html
